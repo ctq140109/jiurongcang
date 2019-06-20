@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>品牌详情</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		/*.aui-searchbar{position: fixed;top: 0;left: 0;width: 100%;}
+		.aui-tab{position: fixed;top: 44px;left: 0;width: 100%;}*/
+		.shanchu{border-bottom: solid 1px #666;}
+
+		.aui-searchbar-input{height: 1.5rem;line-height: 1.5rem;}
+		.aui-searchbar-input input{height: 1.5rem;line-height: 1.5rem;}
+		.serch-icon{width: 0.7rem;vertical-align:text-top;margin-right: 0.5rem}
+
+		.td{width: 0.5rem; vertical-align: middle; }
+		.sx{width: 0.8rem; vertical-align: middle;}
+		.aui-tab span{display: inline-block;height: 99%;}
+		.aui-active{border-bottom: none !important;}
+		.aui-active span{border-bottom:solid 2px #35adbe;color:#35adbe; font-weight: bold;}
+
+	</style>
+
+	<body class="aui-bg-grayer">
+		<div id="app" v-cloak>
+	  <header class="aui-bar aui-bar-nav aui-bar-light aui-padded-r-12 aui-padded-l-12" id="search">
+		    <a class="aui-pull-left" onclick="closeWin()">
+		        <span class="aui-iconfont aui-icon-left"></span>
+		    </a>
+				<div class="aui-searchbar aui-pull-left" id="search" style="width: 88%;background-color: #fff;">
+						<div class="aui-searchbar-input aui-border-radius aui-bg-grayer" tapmode @click="doSearch()" style="border-radius: 2.25rem;width:100%">
+								<img class='serch-icon' src="../../image/sousuo.png">
+								<form action="javascript:search();">
+										<input type="search" readonly  value="搜索商品" id="search-input" style="width:100%">
+								</form>
+						</div>
+				</div>
+		</header>
+		<!--筛选-->
+		<div class="aui-tab" id="tab">
+		    <div class="aui-tab-item aui-text-grayBlue" :class="{' aui-active':idx==1}">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5" @click="rec()">
+		    		综合
+						<!-- <img class="td aui-margin-l-5" src="../../image/4.png"/> -->
+		    	</span>
+		    </div>
+		    <div class="aui-tab-item aui-text-grayBlue" :class="{' aui-active':idx==2}">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5" @click="sx()">
+		    		价格<img class="td aui-margin-l-10" src="../../image/0.png" v-if="price==0"/>
+								<img class="td aui-margin-l-10" src="../../image/1.png" v-if="price==1"/>
+								<img class="td aui-margin-l-10" src="../../image/2.png" v-if="price==2"/>
+		    	</span>
+		   	</div>
+		    <div class="aui-tab-item aui-text-grayBlue" :class="{' aui-active':idx==3}">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5" @click="sxs()">
+						销量
+		    		<!--  <img class="td aui-margin-l-10" src="../../image/0.png" v-if="sales==0"/>
+								<img class="td aui-margin-l-10" src="../../image/1.png" v-if="sales==1"/>
+								<img class="td aui-margin-l-10" src="../../image/2.png" v-if="sales==2"/> -->
+		    	</span>
+		    </div>
+		    <div class="aui-tab-item aui-text-grayBlue" @click="left()">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5">
+		    		筛选 <img class="sx aui-margin-l-5" src="../../image/shaixuan.png"/>
+		    	</span>
+		    </div>
+		</div>
+
+
+
+	</div>
+</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			idx:'1',
+			token:'',
+			area_id:'',
+			sales:'',
+			price:'',
+			prefecture_id:'',//专区id
+			country_id: '',	//国家id
+			classify_id: '',		//	商品一级分类id
+			agency_manage_id:'',  //区域id
+			floor_price:'',
+			tag:'',
+			top_price:''
+		},
+		methods:{
+			doSearch:function() {
+				api.openWin({
+            name: 'search_win',
+            url: 'widget://html/index/search_win.html',
+          });
+			},
+			left:function() {
+				// api.openFrame({
+				// 	name: 'shaixuan_frm',
+				// 	url: 'widget://html/pageone/shaixuan_frm.html',
+				// 	rect: {
+				// 		x:0,
+				// 		y:0,
+				// 		w:'auto',
+				// 		h:api.winHeight
+				// 	},
+				// 	pageParam:{
+				// 		id:vm.id,
+				// 		country_id: vm.country_id,
+				// 		classify_id: vm.classify_id,
+				// 		floor_price:vm.floor_price,
+				// 		top_price:vm.top_price,
+				// 		brand_id:vm.brand_id,
+				//
+				// 	},
+				// 	animate:{
+				// 		type:"movein",                //动画类型（详见动画类型常量）
+    		// 		subType:"from_right",       //动画子类型（详见动画子类型常量）
+    		// 		duration:300                //动画过渡时间，默认300毫秒
+				// 	},
+				// });
+				api.sendEvent({
+				    name: 'left',
+				});
+
+			},
+			rec:function () {
+				vm.idx=1;
+				vm.is_rec=1;
+				vm.floor_price='',
+				vm.top_price='',
+				vm.country_id='',
+				vm.classify_id='',
+				api.sendEvent({
+				    name: 'rec',
+				    extra: {
+				        is_rec: 1,
+								sales:0,
+								price:0
+				    }
+				});
+			},
+			sx:function(){
+				vm.idx=2;
+				vm.sales=0;
+				vm.is_rec=0;
+				if(vm.price==0){
+					vm.price=1;
+				}else if(vm.price==1){
+					vm.price=2;
+				}else if(vm.price==2){
+					vm.price=1;
+				}
+				vm.floor_price='',
+				vm.top_price='',
+				vm.country_id='',
+				vm.classify_id='',
+				api.sendEvent({
+				    name: 'rec',
+				    extra: {
+				        is_rec: 0,
+								sales:0,
+								price:vm.price
+				    }
+				});
+
+			},
+			sxs:function(){
+				vm.idx=3;
+				vm.price=0;
+				vm.is_rec=0;
+				if(vm.sales==0){
+					vm.sales=1;
+				}else if(vm.sales==1){
+					vm.sales=2;
+				}else if(vm.sales==2){
+					vm.sales=1;
+				}
+				vm.floor_price='',
+				vm.top_price='',
+				vm.country_id='',
+				vm.classify_id='',
+				api.sendEvent({
+				    name: 'rec',
+				    extra: {
+				        is_rec: 0,
+								sales:vm.sales,
+								price:0
+				    }
+				});
+			},
+
+
+
+
+
+
+
+
+		}
+	})
+	apiready = function(){
+		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+		 vm.token=$api.getStorage('token');
+		 vm.tag=$api.getStorage('tag');
+		 if(vm.tag==1){   //判断是否  认证过  	是否绑定区域 0：否 1：是
+			 var tab= $api.dom('#tab').offsetHeight
+		 }else{
+			 var tab=0
+		 }
+     api.openFrame({
+        name: 'pinpaiDetails_frm',
+        url: 'widget://html/shop/pinpaiDetails_frm.html',
+        rect: {
+            x: 0,
+            y: $api.dom('header').offsetHeight+tab,
+            w: 'auto',
+            h: api.winHeight - $api.dom('header').offsetHeight -tab
+        },
+        bounces: true,
+        pageParam: {
+            id: api.pageParam.id
+        }
+      });
+	};
+
+</script>

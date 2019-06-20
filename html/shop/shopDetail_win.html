@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>商品详情</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.icon{width: 1.2rem;}
+		.sc{width: 1.1rem;}
+		.line{position: absolute;top: 7px;right: 10px;width:16px;height:16px;border-radius:50%;background-color:#f32c52;text-align:center;line-height:16px;font-size:0.5rem;color:#fff;border: 1px solid #fff;}
+	</style>
+
+	<body>
+		<div id="app" v-cloak>
+			<header class="aui-bar aui-bar-nav aui-bar-light">
+			    <a class="aui-pull-left aui-btn" onclick="close_Win()">
+			        <span class="aui-iconfont aui-icon-left"></span>
+			    </a>
+			    <div class="aui-title">{{title}}</div>
+			    <a class="aui-pull-right" onclick="share()" style="display: block;">
+			        <img src="../../image/fenxiang.png"/ style="width: 1rem;vertical-align: text-bottom;">
+			    </a>
+			</header>
+
+			<footer class="aui-bar aui-bar-tab aui-border-t clearfix" id="footer" >
+		    	<div class="aui-row" >
+		    		<div class="aui-col-xs-2 aui-border-r" style="line-height: 45px;" onclick="open_meiQia()">
+		    			<img class="sc" src="../../image/kefu1.png" / style="vertical-align: middle;">
+		    		</div>
+		    		<div class="aui-col-xs-2 aui-border-r" style="line-height: 45px;" @click="carts()">
+		    			<div class="line top-li" v-if="num">{{num}}</div>
+		    			<img class="sc" src="../../image/gwc1.png" / style="vertical-align: middle;">
+		    		</div>
+		    		<div class="aui-col-xs-4 aui-border-r aui-font-size-15 aui-text-decoration" style="line-height: 46px;height:46px" @click="spec()">
+		    			加入购物车
+		    		</div>
+		    		<div class="aui-col-xs-4 aui-btn-blue aui-font-size-15 aui-text-decoration" style="line-height: 46px;height:46px" @click="spec_pay()">
+		    			立即购买
+		    		</div>
+		    	</div>
+			</footer>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm =new Vue({
+		el:'#app',
+		data:{
+			token:'',
+			area_id:'',
+			title:"商品详情",
+			state:1,
+			list:[],
+			num:'',
+			id:''
+		},
+		methods:{
+			init:function () {
+				api.ajax({   //banner
+						url: add_footprint_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+						method: 'post',
+						data: {
+								values: {
+										token: vm.token,
+										id:vm.id
+								}
+						}
+					},function(ret, err){
+						if (ret) {
+
+						}
+				});
+			},
+			carts:function() {
+				api.sendEvent({
+						name: 'on_indexs',
+						extra: {
+								on_indexs: 2
+						}
+				});
+				setTimeout(function() {
+					api.closeToWin({
+							name: 'root'
+					});
+				},300)
+
+			},
+			spec:function () {
+				if(!vm.token){
+					is_login();
+					return;
+				}
+				api.sendEvent({
+				    name: 'spec_chage',
+				});
+			},
+			spec_pay:function() {
+				if(!vm.token){
+					is_login();
+					return;
+				}
+				api.sendEvent({
+				    name: 'spec_pay',
+
+				});
+			},
+			cart:function() {
+				api.ajax({   //banner
+						url: cart_num_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+						method: 'post',
+						data: {
+								values: {
+										token: vm.token
+								}
+						}
+					},function(ret, err){
+						if (ret) {
+							if(ret.status==1){
+									vm.num=ret.data.cart_count
+							}
+						}
+				});
+			},
+			open_frm:function() {
+					if(vm.state==1){
+						setTimeout(function() {
+							api.closeFrame({
+							    name: 'pingjia_frm'
+							});
+
+						},300)
+						api.openFrame({
+		           name: 'shopDetail_frm',
+		           url: 'widget://html/shop/shopDetail_frm.html',
+		           rect: {
+		               x: 0,
+		               y: $api.dom('header').offsetHeight,
+		               w: 'auto',
+		               h: api.winHeight - $api.dom('header').offsetHeight - $api.dom('footer').offsetHeight
+		           },
+		           bounces: true,
+		           pageParam: {
+		               id: vm.id
+		           }
+		       });
+				 }else{
+					 setTimeout(function() {
+						 api.closeFrame({
+								 name: 'shopDetail_frm'
+						 });
+
+					 },300)
+					 api.openFrame({
+	 	           name: 'pingjia_frm',
+	 	           url: 'widget://html/shop/pingjia_frm.html',
+	 	           rect: {
+	 	               x: 0,
+	 	               y: $api.dom('header').offsetHeight,
+	 	               w: 'auto',
+	 	               h: api.winHeight - $api.dom('header').offsetHeight - $api.dom('footer').offsetHeight
+	 	           },
+	 	           bounces: true,
+	 	           pageParam: {
+	 	               id: vm.id
+	 	           }
+	 	       });
+				 }
+			}
+		}
+	})
+	apiready = function(){
+		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+		 vm.token=$api.getStorage('token');
+		 vm.area_id=$api.getStorage('area_id');
+		 vm.id=api.pageParam.id;
+		 console.log(vm.id);
+		 vm.cart();
+		 vm.init();
+		 vm.open_frm();
+			api.addEventListener({
+			    name: 'pj'
+			}, function(ret, err){
+			    if( ret ){
+			        vm.state=2;
+							vm.title="评价详情";
+							vm.open_frm();
+			    }
+			});
+			api.addEventListener({
+			    name: 'shop'
+			}, function(ret, err){
+			    if( ret ){
+			        vm.list=ret.value.list
+			    }
+			});
+
+		 api.addEventListener({
+		     name: 'addCart_init'
+		  }, function(ret, err){
+		     if( ret ){
+					vm.token=$api.getStorage('token');
+					vm.cart();
+		     }
+		 });
+		 api.addEventListener({
+		     name: 'reshuf'
+		  }, function(ret, err){
+		     if( ret ){
+					vm.token=$api.getStorage('token');
+					vm.cart();
+		     }
+		 });
+
+	};
+	function close_Win(){
+		if(vm.state==1){
+			api.closeWin();
+		}else{
+			vm.state=1;
+			vm.title="商品详情";
+			vm.open_frm();
+		}
+	}
+	function share() {
+		api.openFrame({
+			name: 'share',
+			url: 'widget://html/pageone/share.html',
+			rect: {
+				x:0,
+				y:0,
+				w:'auto',
+				h:api.winHeight
+			},
+			pageParam:{
+				name:vm.list.name,
+				id:vm.id
+			},
+		});
+	}
+</script>

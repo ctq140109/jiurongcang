@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>更换手机号</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+	</style>
+	<body class="aui-bg-grayer">
+		<div  id="app" v-cloak onclick="closeKeyborder()">
+		<div class="aui-bg-grayer aui-padded-15 aui-padded-l-12 aui-text-grayer aui-font-size-13 tel">
+			您目前绑定的手机号是{{phone}}，请输入你希望绑定的新手机号
+		</div>
+		<div class="aui-bg-white">
+		    <ul class="aui-list">
+		        <li class="aui-list-item aui-border-b aui-padded-l-12 aui-padded-t-5 aui-padded-b-5 aui-padded-l-0">
+		            <div class="aui-list-item-inner aui-text-grayer aui-padded-r-12">
+		            	<div class="aui-list-item-title">当前手机号</div>
+		            	<div class="aui-list-item-right aui-text-black aui-font-size-15">{{phone}}</div>
+		            </div>
+		        </li>
+		        <li class="aui-list-item aui-padded-t-5 aui-padded-l-12 aui-padded-b-5 aui-padded-l-0">
+		            <div class="aui-list-item-inner aui-padded-r-12">
+		                <div class="aui-list-item-title aui-border-r aui-padded-r-12 new" style="width: 30%;">新手机号</div>
+		                <div class="aui-list-item-right aui-font-size-15" style="max-width:none;">
+		                	<span class="aui-text-black">+86</span>
+		                	<input style="width: 80%;" placeholder="" type="" readonly="" />
+		                </div>
+		            </div>
+		        </li>
+		    </ul>
+		</div>
+		<div class="aui-padded-12" style="margin-top: 2rem;" @click="next()">
+			<div class="aui-btn aui-btn-block aui-btn-blue" style="border-radius: 1.5rem;">下一步</div>
+		</div>
+	</div>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/vue.js"></script>
+	<script type="text/javascript" src="../../script/common.js"></script>
+	<script>
+	var vm = new Vue({
+			el:'#app',
+			data:{
+					token:'',
+					phone:'',
+					mobile:''
+			},
+			methods:{
+					init:function(){
+						api.ajax({
+								url: show_phone_url,
+								method: 'get',
+								timeout:30,
+								returnAll:false,
+								data: {
+										values: {
+												token: vm.token
+										}
+								}
+						},function(ret, err){
+								if (ret) {
+										vm.phone = ret.data.account.phone;
+								}
+						});
+
+					},
+					next:function(){
+						UIInput = api.require('UIInput');
+							UIInput.closeKeyboard({
+									id:0
+							});
+							UIInput.closeKeyboard({
+									id:1
+							});
+						if(vm.mobile==''){
+							api.toast({
+							    msg: '手机号不能为空',
+							    duration: 2000,
+							    location: 'bottom'
+							});
+							return;
+						}
+						api.ajax({
+							url:information_change_getMobileCode_url,
+							method:'post',
+							timeout:30,
+							dataType:'json',
+							returnAll:false,
+							data:{
+								values:{
+									phone:vm.mobile,
+									token:vm.token
+								}
+							}
+						},function(ret,err){
+							if(ret){
+								if(ret.status==1){
+									api.openWin({
+										name: 'verificationCode_win',
+										url: 'widget://html/set/verificationCode_win.html',
+										pageParam:{
+											phone:vm.mobile
+										}
+									});
+								}else{
+									api.toast({
+									    msg: ret.msg,
+									    duration: 2000,
+									    location: 'bottom'
+									});
+										return;
+								}
+							}else{
+								api.toast({
+								    msg: ret.msg,
+								    duration: 2000,
+								    location: 'bottom'
+								});
+
+								return;
+							}
+						});
+					}
+			}
+	})
+
+
+	apiready = function(){
+			vm.token = $api.getStorage('token');
+			vm.phone=api.pageParam.tel
+
+			vm.init();
+			UIInput = api.require('UIInput');
+			//输入框初始化
+			mobile();
+	}
+	function mobile(){
+			var iHeight = $api.dom('li').offsetHeight+$api.dom('.tel').offsetHeight+25;
+			UIInput.open({
+			    rect: {
+			        x: $api.dom('.new').offsetWidth+45,
+			        y: iHeight,
+			        w: api.winWidth-170,
+			        h: 40
+			    },
+			    styles: {
+			        bgColor: "rgba(0,0,0,0)",
+			        size: 16,
+			        color: '#000',
+			        placeholder: {
+			            color: '#ccc'
+			        }
+			    },
+			    isCenterVertical:true,
+			    autoFocus: false,
+					alignment:'right',
+			    maxRows: 1,
+			    placeholder: '请输入手机电话',
+			    keyboardType: 'number',
+			    fixedOn: api.frameName,
+			    fixed:false,
+			}, function(ret) {
+			    if (ret.eventType == 'change') {
+
+		    		UIInput.value({
+			    		id:ret.id,
+			    	},function(ret) {
+
+					    if (ret) {
+					        vm.mobile = ret.msg
+					    }
+					});
+
+			    }
+			});
+
+	}
+	function closeKeyborder(){
+			UIInput = api.require('UIInput');
+				UIInput.closeKeyboard({
+						id:0
+				});
+				UIInput.closeKeyboard({
+						id:1
+				});
+		}
+	</script>
+</html>

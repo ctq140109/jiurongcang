@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>退款/售后</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.aui-tab span{display: inline-block;height: 99%;position: relative;}
+		.aui-active{border-bottom: none !important;}
+		.aui-active span{border-bottom:solid 2px #35adbe;color:#35adbe; font-weight: bold;}
+	</style>
+	<body>
+		<div id="app" v-cloak>
+			<header class="aui-bar aui-bar-nav aui-bar-light">
+			    <a class="aui-pull-left aui-btn" onclick="closeWin()">
+			        <span class="aui-iconfont aui-icon-left"></span>
+			    </a>
+			    <div class="aui-title">退款/售后</div>
+			</header>
+			<div class="aui-tab" id="tab">
+			    <div class="aui-tab-item aui-text-blacker" :class="{'aui-active':tab==4}" @click="tabs(4)">
+			    	<span class="aui-font-size-15 aui-padded-l-15 aui-padded-r-15">
+			    		退款中
+			    	</span>
+			    </div>
+			    <div class="aui-tab-item aui-text-blacker" :class="{'aui-active':tab==6}" @click="tabs(6)">
+			    	<span class="aui-font-size-15 aui-padded-l-15 aui-padded-r-15">
+			    		退款完成
+			    	</span>
+			   	</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm  = new Vue({
+		el:'#app',
+		data:{
+			tab:'4'
+		},
+		methods:{
+			tabs:function(idx) {
+					vm.tab=idx;
+					api.sendEvent({
+					    name: 'tabes',
+					    extra: {
+					        tab_shouhou: idx
+					    }
+					});
+
+			}
+		}
+	})
+	apiready = function(){
+		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+	    api.openFrame({
+	        name: 'shouhou_frm',
+	        url: 'widget://html/order/shouhou_frm.html',
+	        rect: {
+	            x: 0,
+	            y: $api.dom('header').offsetHeight+$api.dom('#tab').offsetHeight,
+	            w: 'auto',
+	            h: api.winHeight - $api.dom('header').offsetHeight- $api.dom('#tab').offsetHeight
+	        },
+	        bounces: true,
+	        pageParam: {
+	            id: api.pageParam.id
+	        }
+	    });
+	};
+
+</script>

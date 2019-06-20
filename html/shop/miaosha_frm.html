@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>掌上秒杀</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.aui-row{background-color: #1f2020;}
+		.aui-row .item{border-right: solid 0.5px #aeb8b9;}
+		.aui-row .aui-col-xs-3:last-child .item{border-right:none !important;}
+		.active{background-color: #ff2742;color: #fff !important;}
+		.active .item{border-right: none !important;}
+		.time{width: 1.2rem;height: 1.2rem;border-radius: 0.25rem;display: inline-block;text-align: center;line-height: 1.2rem;}
+
+		.aui-list-item-media{width: 5.25rem !important;height: 5.5rem;overflow: hidden;padding-right: 0.6rem !important;}
+	    .aui-list-item-media img{width: 100%;height: 100%;object-fit: cover;}
+	    .aui-btn-danger{width: 3.5rem;text-align: center;line-height: 1.3rem;position: relative;bottom: -13px;font-size: 12px;}
+
+	    .aui-ellipsis-2 {height: 44px;line-height: 22px;}
+
+	</style>
+	<body>
+		<div class="aui-content" id="app" v-cloak v-if="is_load">
+
+
+			<div class="aui-list aui-media-list">
+				<ul class="aui-list-item aui-padded-l-0 aui-padded-b-15">
+					<template v-for="(v,index) in list">
+						<li class="aui-media-list-item-inner aui-padded-12 aui-padded-t-5 aui-padded-b-5 aui-border-b"  @click="det(v.id,v.time_tag)">
+							<div class="aui-list-item-media">
+								<img :src="v.thumb" />
+							</div>
+							<div class="aui-list-item-inner aui-padded-r-0">
+								<div class="aui-list-item-text aui-font-size-14">
+									<span class="aui-ellipsis-2  aui-text-black">{{v.name}}</span>
+								</div>
+								<div class="aui-list-item-text aui-text-danger aui-padded-t-5">
+									<span class="aui-font-size-15 aui-text-danger" v-if="v.market_price">￥{{v.market_price}}
+										<span class="aui-font-size-12 aui-text-grayerBlue" style="text-decoration: line-through;" v-if="v.original_price">￥{{v.original_price}}</span>
+									</span>
+									<span class='aui-btn-danger aui-pull-right' style="border-radius: 1rem;" v-if="v.time_tag==1">去抢购</span>
+									<span class='aui-btn-danger aui-pull-right' style="border-radius: 1rem;background-color:#999 !important" v-else>去抢购</span>
+								</div>
+								<!-- <div class="aui-list-item-text aui-text-grayer aui-font-size-10">已售35件</div> -->
+							</div>
+						</li>
+				</template>
+				</ul>
+			</div>
+
+		</div>
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			is_load:'',
+			idx:'1',
+			token:'',
+			field_id:'',
+			area_id:'',
+			pageNo:'',
+			state:0,
+			totalRow:'',
+			field_list:[],
+			list:[],
+			pageSize:10
+		},
+		methods:{
+			det:function(id,tag){
+				if(tag==1){
+					api.openWin({
+	          name: 'shopDetail_win',
+	          url: 'widget://html/shop/shopDetail_win.html',
+						pageParam:{
+							id:id
+						}
+	        });
+				}else{
+					api.toast({
+							msg: '抱歉活动还未开始',
+							duration: 2000,
+							location: 'bottom'
+					});
+				}
+
+			},
+			init:function () {
+				api.showProgress();
+
+				api.ajax({   //积分
+				    url: skill_goods_more_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+				    method: 'post',
+				    data: {
+				        values: {
+				            token: vm.token,
+										agency_manage_id:vm.area_id,
+										field_id:vm.field_id,
+										pageNo:vm.pageNo,
+										pageSize:vm.pageSize
+				        }
+				    }
+					},function(ret, err){
+				    if (ret) {
+								api.hideProgress();
+
+								console.log(JSON.stringify(ret));
+								if(ret.status==1){
+									vm.field_list=ret.data.field_list;
+									if(vm.state==0){
+										api.sendEvent({
+												name: 'field_list',
+												extra: {
+													field_list: ret.data.field_list,
+												}
+										});
+										vm.state=1;
+									}
+
+
+									vm.list=vm.list.concat(ret.data.page.list);
+									vm.totalRow=ret.data.page.totalRow;
+									api.sendEvent({
+											name: 'field_kill',
+											extra: {
+													kill_end_time:ret.data.page.list[0].kill_end_time,
+													kill_start_time:ret.data.page.list[0].kill_start_time,
+													time_tag:ret.data.page.list[0].time_tag,
+											}
+									});
+									vm.is_load=1;
+								}
+				    }else{
+							api.hideProgress();
+							console.log(JSON.stringify(err));
+							vm.is_load=2;
+							if(err.statusCode==500){
+								api.toast({
+										msg: '服务器请求错误！',
+										duration: 2000,
+										location: 'middle'
+								});
+							}else{
+									if(err.statusCode==404){
+										api.toast({
+												msg: '请求失败',
+												duration: 2000,
+												location: 'middle'
+										});
+									}else{
+										api.toast({
+												msg: '请求超时，请检查网络',
+												duration: 2000,
+												location: 'middle'
+										});
+									}
+
+							}
+						}
+				});
+			}
+		}
+	})
+	apiready = function(){
+		vm.token=$api.getStorage('token');
+		vm.area_id=$api.getStorage('area_id');
+		vm.init();
+		api.setRefreshHeaderInfo({
+				 visible: true,
+				 loadingImg: 'widget://image/refresh.png',
+					bgColor: '#f6f6f6',
+				 textColor: '#999',
+				 textDown: '下拉刷新...',
+				 textUp: '松开刷新...',
+				 showTime: true
+		 }, function (ret, err) {
+			 if(ret){
+				 vm.list = [];
+				 vm.pageNo = 1;
+				 vm.init();
+				 setTimeout("api.refreshHeaderLoadDone()", '500');
+			 }
+		 });
+		 //上啦加载
+			api.addEventListener({
+					 name:'scrolltobottom',
+					 extra:{
+						 threshold:300
+					 }
+				 },function(ret,err){
+					 if(vm.totalRow == vm.list.length){
+
+				 	return;
+			 }
+			 vm.pageNo++;
+			 vm.init();
+		 });
+		 api.addEventListener({
+		     name: 'time_list'
+		 }, function(ret, err){
+		     if( ret ){
+					 console.log(JSON.stringify(ret));
+					 vm.list = [];
+					vm.pageNo = 1;
+					vm.init();
+		     }
+		 });
+		 api.addEventListener({
+		     name: 'file'
+		 }, function(ret, err){
+		     if( ret ){
+					  vm.area_id=$api.getStorage('area_id');
+	          vm.field_id=ret.value.id;
+						vm.list = [];
+					  vm.pageNo = 1;
+					  vm.init();
+		     }
+		 });
+
+
+	};
+
+</script>

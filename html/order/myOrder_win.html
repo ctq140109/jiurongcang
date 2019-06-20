@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>我的订单</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.aui-tab span{display: inline-block;height: 99%;position: relative;}
+		.aui-active{border-bottom: none !important;}
+		.aui-active span{border-bottom:solid 2px #35adbe;color:#35adbe; font-weight: bold;}
+		.aui-badge{position: absolute;top: 7px;left:45px; height: 0.8rem;width: 0.8rem;text-align: center;}
+	</style>
+	<body>
+		<header class="aui-bar aui-bar-nav aui-bar-light">
+		    <a class="aui-pull-left aui-btn" onclick="close_window()">
+		        <span class="aui-iconfont aui-icon-left"></span>
+		    </a>
+		    <div class="aui-title">我的订单</div>
+		</header>
+		<div class="aui-tab" id="tab">
+		    <div class="aui-tab-item aui-text-blacker" :class="{'aui-active':state==-1}" @click="tabchange(-1)">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5">
+		    		全部
+		    	</span>
+		    </div>
+		    <div class="aui-tab-item aui-text-blacker" :class="{'aui-active':state==0}" @click="tabchange(0)">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5">
+		    		待付款
+		    		<div class="aui-badge aui-bg-danger" v-if="no_pay_count">{{no_pay_count}}</div>
+		    	</span>
+		   	</div>
+		    <div class="aui-tab-item aui-text-blacker" :class="{'aui-active':state==1}" @click="tabchange(1)">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5">
+		    		待发货
+						<div class="aui-badge aui-bg-danger" v-if="no_deliver_count">{{no_deliver_count}}</div>
+		    	</span>
+		    </div>
+		    <div class="aui-tab-item aui-text-blacker" :class="{'aui-active':state==2}" @click="tabchange(2)">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5">
+		    		待收货
+						<div class="aui-badge aui-bg-danger" v-if="no_receiving_count">{{no_receiving_count}}</div>
+		    	</span>
+		   	</div>
+		    <div class="aui-tab-item aui-text-blacker" :class="{'aui-active':state==3}" @click="tabchange(3)">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5">
+		    		已完成
+						<div class="aui-badge aui-bg-danger" v-if="no_evaluation_count">{{no_evaluation_count}}</div>
+		    	</span>
+		    </div>
+		</div>
+
+
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+			el:"#tab",
+			data:{
+					state:-1,
+					no_pay_count:'',
+					all_pay_count:'',
+					no_evaluation_count:'',
+					no_deliver_count:'',
+					no_receiving_count:'',
+			},
+			methods:{
+					tabchange:function(idx){
+
+							vm.state = idx;
+							api.sendEvent({
+									name: 'myorder_init',
+									extra: {
+											state:idx
+									}
+							});
+
+					}
+			}
+	})
+	apiready = function(){
+		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+      api.openFrame({
+          name: 'myOrder_frm',
+          url: 'widget://html/order/myOrder_frm.html',
+          rect: {
+              x: 0,
+              y: $api.dom('header').offsetHeight+$api.dom('#tab').offsetHeight,
+              w: 'auto',
+              h: api.winHeight - $api.dom('header').offsetHeight- $api.dom('#tab').offsetHeight
+          },
+          bounces: true,
+          pageParam: {
+              id: api.pageParam.id,
+							state: api.pageParam.state
+          }
+      });
+			api.addEventListener({
+		      name: 'order_init'
+		  }, function(ret, err){
+		      if( ret ){
+		        vm.state = -1
+		      }
+		  });
+			api.addEventListener({
+		      name: 'myorder_init'
+		  }, function(ret, err){
+		      vm.state = ret.value.state
+		  });
+
+		  api.addEventListener({
+		      name: 'orderdetail_paysuccess_init'
+		  }, function(ret, err){
+		      vm.state = api.pageParam.state
+		  });
+		  api.addEventListener({
+		      name: 'order_init'
+		  }, function(ret, err){
+		      if( ret ){
+		        vm.state = -1
+		      }
+		  });
+
+
+		  //监听确认收货之后
+		  api.addEventListener({
+		      name: 'order_info_list_init'
+		  }, function(ret, err){
+		    vm.state = api.pageParam.state
+		  });
+
+
+
+			vm.state = api.pageParam.state;
+			//订单列表支付监听
+			api.addEventListener({
+			    name: 'order_paysuccess_init'
+			}, function(ret, err){
+			  	vm.state = ret.value.state;
+			});
+			api.addEventListener({
+			    name: 'count'
+			}, function(ret, err){
+			    if( ret ){
+						console.log(JSON.stringify(ret));
+						vm.no_pay_count=ret.value.no_pay_count;
+						vm.no_deliver_count=ret.value.no_deliver_count;
+					  vm.all_pay_count=ret.value.all_pay_count;
+					  vm.no_evaluation_count=ret.value.no_evaluation_count;
+					  vm.no_receiving_count=ret.value.no_receiving_count;
+			    }
+			});
+
+
+			//订单详情支付监听
+
+			api.addEventListener({
+			    name: 'orderdetail_paysuccess_init'
+			}, function(ret, err){
+			    vm.state = ret.value.state;
+			});
+	};
+	function close_window(){
+			var is_sub = api.pageParam.is_suborder;
+			console.log(api.pageParam.is_suborder)
+			if(!is_sub){
+					api.closeWin();
+
+			}else if(is_sub==1){
+					api.closeToWin({
+					    name: 'shopDetail_win'
+					});
+			}else{
+				api.closeToWin({
+						name: 'root'
+				});
+			}
+	}
+
+</script>

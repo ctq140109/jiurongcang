@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>用户协议</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <style>
+    	body{
+
+    	}
+    </style>
+</head>
+<body>
+	<div class="aui-content  aui-padded-10" style="text-indent:1.5rem">
+
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		api.ajax({
+	        url:privacy_policy_url,
+	        method:'get',
+	        timeout:30,
+	        dataType:'json',
+	        returnAll:false
+        },function(ret,err){
+					console.log(JSON.stringify(ret))
+        	if(ret){
+        		$api.html($api.dom('.aui-content'),ret.data.privacy_policy.answer)
+        	}else{
+        		console.log(JSON.stringify(err))
+        	}
+        });
+	};
+</script>
+</html>

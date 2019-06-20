@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>专属定制</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+	</style>
+
+	<body class="aui-bg-grayer">
+		<header class="aui-bar aui-bar-nav aui-bar-light">
+		    <a class="aui-pull-left aui-btn" onclick="closeWin()">
+		        <span class="aui-iconfont aui-icon-left"></span>
+		    </a>
+		    <div class="aui-title">专属定制</div>
+		</header>
+
+		<footer class="aui-bar aui-bar-tab aui-bg-grayer aui-border-t" id="footer">
+			<div class="aui-row">
+				<div class="aui-col-xs-6 aui-border-r">
+					<div class="aui-btn-block aui-btn-success" onclick="sub()"> <img class="aui-margin-r-5" src="../../image/dingzhi.png"/ style="width: 1rem;vertical-align: middle;"> 我要定制</div>
+				</div>
+				<div class="aui-col-xs-6">
+					<div class="aui-btn-block aui-btn-blue"  onclick="open_meiQia()"> <img class="aui-margin-r-5" src="../../image/kefu.png" style="width: 1rem;vertical-align: middle;"> 联系客服</div>
+				</div>
+			</div>
+		</footer>
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	apiready = function(){
+		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+      api.openFrame({
+          name: 'dingzhi_frm',
+          url: 'widget://html/index/dingzhi_frm.html',
+          rect: {
+              x: 0,
+              y: $api.dom('header').offsetHeight,
+              w: 'auto',
+              h: api.winHeight - $api.dom('header').offsetHeight - $api.dom('footer').offsetHeight
+          },
+          bounces: true,
+          pageParam: {
+              id: api.pageParam.id
+          }
+      });
+	};
+	function  sub() {
+		api.openFrame({
+			name: 'myDingzhi',
+			url: 'widget://html/pageone/myDingzhi.html',
+			rect: {
+				x:0,
+				y:0,
+				w:api.winWidth,
+				h:api.winHeight
+			},
+			pageParam:{
+			}
+		});
+	}
+
+</script>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>添加收货地址</title>
+	<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+</head>
+<style type="text/css">
+	.aui-list.aui-form-list .aui-list-item {
+		border-bottom: 1px solid #eee;
+		padding-left: 0;
+		margin-left: 0.75rem;
+	}
+
+	.aui-list.aui-form-list .aui-list-item:last-child {
+		border-bottom: none;
+	}
+
+	.aui-list .aui-list-item-inner {
+		min-height: 2.35rem;
+	}
+
+	input::-webkit-input-placeholder {
+		color: #8b9394;
+		font-size: 0.7rem;
+	}
+
+	input:-moz-placeholder {
+		color: #8b9394;
+		font-size: 0.7rem;
+	}
+
+	input::-moz-placeholder {
+		color: #8b9394;
+		font-size: 0.7rem;
+	}
+
+	input:-ms-input-placeholder {
+		color: #8b9394;
+		font-size: 0.7rem;
+	}
+
+	.aui-btn {
+		border-radius: 1.5rem;
+		margin-top: 2rem;
+	}
+</style>
+
+<body class="aui-bg-grayer">
+	<div class="aui-content" id="app" v-cloak onclick="closeKeyborder()">
+		<div class="aui-list aui-form-list aui-padded-l-12  aui-border-bgT">
+			<div class="aui-list-item aui-margin-l-0  aui-padded-l-0" @click="pick_area()">
+				<div class="aui-list-item-inner aui-list-item-arrow">
+					<div class="aui-list-item-input aui-font-size-12">
+						<input type="text" readonly="" :value="full_address">
+					</div>
+				</div>
+			</div>
+			<div class="aui-list-item aui-margin-l-0">
+				<div class="aui-list-item-inner aui-padded-l-0">
+					<div class="aui-list-item-input">
+						<input type="tel" readonly="" value="" id="mobile">
+					</div>
+				</div>
+			</div>
+			<div class="aui-list-item aui-margin-l-0">
+				<div class="aui-list-item-inner aui-padded-l-0">
+					<div class="aui-list-item-input">
+						<input type="text" readonly="" value="">
+					</div>
+				</div>
+			</div>
+			<div class="aui-list-item aui-margin-l-0">
+				<div class="aui-list-item-inner aui-padded-l-0">
+					<div class="aui-list-item-input">
+						<input type="text" readonly="" value="">
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- <div class="aui-border-bgT aui-bg-white aui-padded-12 aui-padded-t-15 aui-padded-b-15">
+		    	设为默认地址
+		    	<div class="aui-pull-right aui-margin-r-5 aui-font-size-15">
+					<input type="checkbox" name="is_pay" class="aui-radio"/>
+				</div>
+		    </div> -->
+
+		<div class="aui-padded-12">
+			<div class="aui-btn aui-btn-block aui-btn-blue" @click="saveAddress()">完成</div>
+		</div>
+	</div>
+</body>
+
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var UIInput = null,
+		y;
+
+	var vm = new Vue({
+		el: "#app",
+		data: {
+			token: '',
+			username: '',
+			mobile: '',
+			address_info: '',
+			pro: '',
+			city: '',
+			dir: '',
+			list: '',
+			is_edit: 0,
+			full_address: '省份、城市、县区',
+			mobile_res: /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/,
+		},
+		methods: {
+
+			pick_area: function() { //地区选择
+				closeKeyborder();
+				var UIActionSelector = api.require('UIActionSelector');
+				UIActionSelector.open({
+					datas: 'widget://res/city.json',
+					layout: {
+						row: 5,
+						col: 3,
+						height: 30,
+						size: 12,
+						sizeActive: 14,
+						rowSpacing: 5,
+						colSpacing: 10,
+						maskBg: 'rgba(0,0,0,0.2)',
+						bg: '#fff',
+						color: '#888',
+						colorActive: '#f00',
+						colorSelected: '#f00'
+					},
+					animation: true,
+					cancel: {
+						text: '取消',
+						size: 12,
+						w: 90,
+						h: 35,
+						bg: '#fff',
+						bgActive: '#ccc',
+						color: '#888',
+						colorActive: '#fff'
+					},
+					ok: {
+						text: '确定',
+						size: 12,
+						w: 90,
+						h: 35,
+						bg: '#fff',
+						bgActive: '#ccc',
+						color: '#888',
+						colorActive: '#fff'
+					},
+					title: {
+						text: '请选择',
+						size: 12,
+						h: 44,
+						bg: '#eee',
+						color: '#888'
+					},
+					fixedOn: api.frameName
+				}, function(ret) {
+					if (ret) {
+						if (ret.eventType == 'ok') {
+							vm.pro = ret.level1;
+							vm.city = ret.level2;
+							vm.dir = ret.level3;
+							vm.full_address = ret.level1 + " " + ret.level2 + " " + ret.level3;
+						}
+					}
+				});
+
+
+			},
+			saveAddress: function() {
+
+				if (vm.username == "") {
+					api.toast({
+						msg: '请输入收货人姓名',
+						duration: 2000,
+						location: 'middle'
+					});
+
+					return;
+				}
+
+				if (vm.mobile == '') {
+					api.toast({
+						msg: '请输入手机号',
+						duration: 2000,
+						location: 'middle'
+					});
+
+					return;
+				}
+				if (!vm.mobile_res.test(vm.mobile)) {
+					api.toast({
+						msg: '手机号输入有误',
+						duration: 2000,
+						location: 'middle'
+					});
+
+					return;
+				}
+
+				if (vm.pro == '' && vm.full_address == "省份、城市、县区") {
+					api.toast({
+						msg: '省份、城市、县区',
+						duration: 2000,
+						location: 'middle'
+					});
+
+					return;
+				}
+
+				if (vm.address_info == '') {
+					api.toast({
+						msg: '请输入详细地址',
+						duration: 2000,
+						location: 'middle'
+					});
+
+					return;
+				}
+
+				if (vm.is_edit == 1) { //是否为编辑地址
+
+					api.ajax({
+						url: address_update_url,
+						method: 'post',
+						timeout: 30,
+						dataType: "json",
+						returnAll: false,
+						data: {
+							values: {
+								id: vm.list.id,
+								name: vm.username,
+								token: vm.token,
+								mobile: vm.mobile,
+								full_address: vm.full_address,
+								address_info: vm.address_info,
+								province: vm.pro,
+								city: vm.city,
+								district: vm.dir
+							}
+						}
+					}, function(ret, err) {
+						if (ret) {
+							if (ret.status == 1) {
+								api.toast({
+									msg: '修改成功',
+									duration: 2000,
+									location: 'middle'
+								});
+
+								api.sendEvent({
+									name: 'addressManager_init'
+								});
+
+								setTimeout(function() {
+									api.closeWin();
+								}, 500)
+							} else {
+								api.toast({
+									msg: ret.msg,
+									duration: 2000,
+									location: 'middle'
+								});
+							}
+						}
+					});
+
+					return;
+				}
+				//添加地址
+				api.ajax({
+					url: add_address_url,
+					method: 'post',
+					timeout: 30,
+					dataType: 'json',
+					returnAll: false,
+					data: {
+						values: {
+							token: vm.token,
+							name: vm.username,
+							mobile: vm.mobile,
+							full_address: vm.full_address,
+							address_info: vm.address_info,
+							province: vm.pro,
+							city: vm.city,
+							district: vm.dir
+						}
+					}
+				}, function(ret, err) {
+					if (ret) {
+						if (ret.status == 1) {
+							api.toast({
+								msg: ret.msg,
+								duration: 2000,
+								location: 'middle'
+							});
+
+							api.sendEvent({
+								name: 'add_address_init'
+							});
+
+							setTimeout(function() {
+								api.closeWin();
+							}, 500)
+						} else {
+							api.toast({
+								msg: ret.msg,
+								duration: 2000,
+								location: 'middle'
+							});
+						}
+					}
+				});
+			}
+		}
+	})
+
+	apiready = function() {
+
+		vm.token = $api.getStorage("token");
+
+		//判断是否编辑地址
+		if (api.pageParam.is_edit) {
+
+			vm.list = api.pageParam.list;
+
+			vm.full_address = vm.list.full_address;
+
+			vm.is_edit = api.pageParam.is_edit;
+
+		}
+		//初始化input
+		UIInput = api.require('UIInput');
+		//添加地址信息框内容
+		user();
+		mobile();
+		addressinfo();
+
+		//设置地址信息框内容
+		set_user();
+		set_mobile();
+		set_addressinfo();
+
+
+
+	}
+
+	y = $api.dom('.aui-list-item').offsetHeight;
+
+	console.log(y)
+
+	function user() {
+		var iHeight = y * 2 + (y - 25) / 2
+		UIInput.open({
+			rect: {
+				x: 15,
+				y: iHeight,
+				w: api.winWidth - 30,
+				h: 45
+			},
+			styles: {
+				bgColor: "rgba(0,0,0,0)",
+				size: 16,
+				color: '#000',
+				placeholder: {
+					color: '#ccc'
+				}
+			},
+			isCenterVertical: true,
+			autoFocus: false,
+			maxRows: 1,
+			placeholder: '姓名',
+			inputType: 'default',
+			fixedOn: api.frameName,
+			fixed: false,
+		}, function(ret) {
+
+			UIInput.value({
+				id: ret.id,
+			}, function(ret) {
+
+				if (ret) {
+					vm.username = ret.msg
+				}
+			});
+			if (ret.eventType == 'change') {
+
+				UIInput.value({
+					id: ret.id,
+				}, function(ret) {
+
+					if (ret) {
+						vm.username = ret.msg
+					}
+				});
+			}
+		});
+	}
+
+
+	function set_user() {
+		var id = '';
+		if (api.systemType == "ios") {
+			id = 1;
+		} else {
+			id = 0;
+		}
+
+		if (vm.is_edit == 1) {
+
+			UIInput.value({
+				id: id,
+				msg: vm.list.name
+			});
+
+		}
+	}
+
+	function mobile() {
+		var iHeight = y * 3 + (y - 25) / 2;
+		UIInput.open({
+			rect: {
+				x: 15,
+				y: iHeight,
+				w: api.winWidth - 30,
+				h: 45
+			},
+			styles: {
+				bgColor: "rgba(0,0,0,0)",
+				size: 16,
+				color: '#000',
+				placeholder: {
+					color: '#ccc'
+				}
+			},
+			isCenterVertical: true,
+			autoFocus: false,
+			maxRows: 1,
+			placeholder: '手机号码',
+			keyboardType: 'number',
+			inputType: 'text',
+			fixedOn: api.frameName,
+			fixed: false,
+		}, function(ret) {
+
+			UIInput.value({
+				id: ret.id,
+			}, function(ret) {
+
+				if (ret) {
+					vm.mobile = ret.msg
+				}
+			});
+
+			if (ret.eventType == 'change') {
+
+				UIInput.value({
+					id: ret.id,
+				}, function(ret) {
+
+					if (ret) {
+						vm.mobile = ret.msg
+					}
+				});
+			}
+		});
+	}
+
+	function set_mobile() {
+
+		var id = '';
+		if (api.systemType == "ios") {
+			id = 2;
+		} else {
+			id = 1;
+		}
+		if (vm.is_edit == 1) {
+
+			UIInput.value({
+				id: id,
+				msg: vm.list.mobile
+			});
+
+		}
+	}
+
+	function addressinfo() {
+		var iHeight = y + (y - 25) / 2;
+		UIInput.open({
+			rect: {
+				x: 15,
+				y: iHeight,
+				w: api.winWidth - 30,
+				h: 45
+			},
+			styles: {
+				bgColor: "rgba(0,0,0,0)",
+				size: 16,
+				color: '#000',
+				placeholder: {
+					color: '#ccc'
+				}
+			},
+			isCenterVertical: true,
+			autoFocus: false,
+			maxRows: 1,
+			placeholder: '详细地址，如街道、楼牌号等',
+			inputType: 'text',
+			fixedOn: api.frameName,
+			fixed: false,
+		}, function(ret) {
+
+			UIInput.value({
+				id: ret.id,
+			}, function(ret) {
+
+				if (ret) {
+					vm.address_info = ret.msg
+				}
+			});
+			if (ret.eventType == 'change') {
+				UIInput.value({
+					id: ret.id,
+				}, function(ret) {
+
+					if (ret) {
+						vm.address_info = ret.msg
+					}
+				});
+			}
+		});
+	}
+
+
+	function set_addressinfo() {
+		var id = '';
+		if (api.systemType == "ios") {
+			id = 3;
+		} else {
+			id = 2;
+		}
+		if (vm.is_edit == 1) {
+			UIInput.value({
+				id: id,
+				msg: vm.list.address_info
+			});
+
+		}
+	}
+
+	function closeKeyborder() {
+		UIInput = api.require('UIInput');
+		UIInput.closeKeyboard({
+			id: 0
+		});
+		UIInput.closeKeyboard({
+			id: 1
+		});
+		UIInput.closeKeyboard({
+			id: 2
+		});
+		UIInput.closeKeyboard({
+			id: 3
+		});
+	}
+</script>

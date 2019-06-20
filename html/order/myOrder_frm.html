@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>我的订单</title>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" href="../../css/global.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+</head>
+<style>
+
+	.aui-media-list-item-inner{align-items: center;}
+
+    .pay{ width: 1rem;height: 1rem;vertical-align: middle;}
+
+	.aui-list-item-media{width: 5.25rem !important;padding-right: 0.6rem !important;padding-top: 0 !important; padding-bottom: 0 !important;}
+    .shop-pic{height: 4.5rem;width: 4.5rem;border-radius: 0.25rem;overflow: hidden;}
+    .aui-list-item-media img{width: 100%;height: 100%;object-fit: cover;}
+    .aui-list-item-inner{padding: 0 !important;}
+    .aui-ellipsis-2{height: 44px; line-height: 22px;}
+
+	.aui-btn{width: 4rem; border-radius:1rem;margin-right: .5rem;}
+	.blue{border-color:#35adbe !important;}
+
+</style>
+<body class="aui-bg-grayer">
+	<div class="aui-content" id="app" v-cloak v-if="is_load">
+    <template v-for="(vo,index) in list">
+  		<div class="aui-list aui-media-list aui-border-bgT">
+  			<div class="aui-list-header aui-padded-12 aui-bg-white aui-font-size-15" >
+  				<div class="">订单编号：{{vo.order_sn}}</div>
+  				<span class="aui-text-blue" style="float: right;" v-if="vo.status==0">等待买家付款</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==1">等待卖家发货</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==2">等待收货</span>
+          <!-- <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==3">待评价</span> -->
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==3 && vo.is_evaluation==0">待评价</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==3 && vo.is_evaluation==1">交易完成</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==4">退款中</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==5">退款失败</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==6">已退款</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==7">已取消</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==8">已关闭</span>
+  			</div>
+          <template v-for="(voo,idx) in vo.goods_order_list">
+      			<div class="aui-list-item aui-padded-b-12 aui-padded-l-0" @click="openDetail(index,vo.id,vo.status)">
+      				<div class="aui-media-list-item-inner aui-padded-l-12 aui-padded-r-12">
+      					<div class="aui-list-item-media">
+      						<div class="shop-pic">
+      							<img :src="voo.thumb"  />
+      						</div>
+      					</div>
+      					<div class="aui-list-item-inner aui-padded-r-0">
+      						<div class="aui-list-item-text aui-font-size-14">
+      							<span class="aui-ellipsis-2  aui-text-blacker">{{voo.goods_name}}</span>
+      						</div>
+      						<div class="aui-list-item-text aui-font-size-12 aui-text-grayerBlue">
+      							<span class="" v-if="voo.spec_name!=''">{{voo.spec_name}}</span>
+      							<span class="aui-pull-right">x{{voo.goods_num}}</span>
+      						</div>
+      						<div class="aui-list-item-text aui-padded-t-10">
+      							<span class="aui-font-size-17 aui-text-danger">￥{{voo.goods_price}}</span>
+      							<!-- <span class="aui-pull-right aui-text-black">退款中</span> -->
+      						</div>
+      					</div>
+      				</div>
+      			</div>
+          </template>
+  			<!-- <div class="aui-padded-b-12 aui-font-size-14 aui-text-blacker" style="padding-left: 3rem;">优惠<span class="aui-text-grayerBlue aui-margin-l-5">满300送长城红酒一箱</span> </div> -->
+  			<div class="aui-padded-b-12 aui-font-size-14 aui-text-blacker" style="padding-left: 2rem;" v-if="vo.total_return_score">送积分<span class="aui-text-grayerBlue aui-margin-l-5">{{vo.total_return_score}}积分</span> </div>
+
+  			<div class="aui-padded-12 aui-text-blacker aui-font-size-14 aui-padded-t-15 aui-padded-b-15 aui-text-right aui-border-t">
+  				共{{vo.goods_num}}件商品 合计：￥ <span class="aui-font-size-18">{{vo.pay_price}}</span>
+  			</div>
+
+  			<div class="aui-list-item"  v-if="vo.status==0">
+  	            <div class="aui-list-item-inner">
+  	                <div class="aui-font-size-13 aui-text-right">
+  	                	<div class="aui-btn aui-btn-outlined aui-font-size-14 aui-text-gray" @click="cancelOrder(vo.id,index)">取消订单</div>
+  	                	<div class="aui-btn aui-btn-outlined aui-font-size-14 aui-text-blue  blue"  @click="payOrder(vo.id,vo.pay_type)">付款</div>
+  	                </div>
+  	            </div>
+  	        </div>
+
+  	        <div class="aui-list-item"  v-else-if="vo.status==1">
+  	            <div class="aui-list-item-inner">
+  	                <div class="aui-font-size-13 aui-text-right">
+  	                	<div class="aui-btn aui-btn-outlined aui-font-size-14 aui-text-gray" onclick="server()">联系卖家</div>
+  	                	 <div class="aui-btn aui-btn-outlined aui-font-size-14 aui-text-blue  blue" @click="tk(vo.id)">申请退款</div>
+  	                </div>
+  	            </div>
+  	        </div>
+
+  	        <div class="aui-list-item"  v-else-if="vo.status==2">
+  	            <div class="aui-list-item-inner">
+  	                <div class="aui-font-size-13 aui-text-right">
+                      <div class="aui-btn aui-btn-outlined aui-font-size-12" onclick="open_meiQia()">联系客服</div>
+  	                	<div class="aui-btn aui-btn-outlined aui-font-size-14 aui-text-blue  blue"  @click="confirmOrder(vo.id)">确认收货</div>
+  	                </div>
+  	            </div>
+  	        </div>
+
+  	         <div class="aui-list-item" v-else-if="vo.status==3">
+  	            <div class="aui-list-item-inner">
+  	                <div class="aui-font-size-13 aui-text-right">
+                      	<div class="aui-btn aui-btn-outlined aui-font-size-14 aui-text-gray" onclick="server()">联系客服</div>
+  	                	<div class="aui-btn aui-btn-outlined aui-font-size-14 aui-text-gray" @click="wuliu(vo.id)" v-if="vo.level==0 || vo.level==null">物流评价</div>
+  	                </div>
+  	            </div>
+  	        </div>
+           <div class="aui-list-item" v-else-if="vo.status==7 || vo.status==8 || vo.status==4 || vo.status==5 || vo.status==6">
+              <div class="aui-list-item-inner">
+                  <div class="aui-font-size-13 aui-text-right">
+                      <div class="aui-btn aui-btn-outlined aui-font-size-14 aui-text-gray" onclick="server()">联系客服</div>
+                  </div>
+              </div>
+          </div>
+          </div>
+      </template>
+      <div class="aui-text-center" v-if="totalRow==0 && is_load==1">
+          <img src="../../icon/nodata.png" style="width:12.5rem;height:12.5rem;margin:5rem auto 0"/>
+      </div>
+      <div class="aui-text-center" v-if="is_load==2">
+          <img src="../../icon/nopage.png" style="width:12.5rem;height:12.5rem;margin:5rem auto 0"/>
+      </div>
+
+      <div class="aui-col-xs-12 aui-text-center" id="bot" v-if="list.length>10">
+           <span class="aui-font-size-12 aui-text-gray">正在加载</span>
+           <img src="../../image/uploading.gif" style="width:0.7rem;height:0.7rem;vertical-align:middle"/>
+      </div>
+	</div>
+
+</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script>
+
+var vm = new Vue({
+  el:'#app',
+  data:{
+      token:'',
+      state:'-1',
+      order_sn:'',
+      pageNumber:1,
+      pageSize:10,
+      list:[],
+      totalRow:0,
+      is_load:'',
+  },
+  methods:{
+      wuliu:function(id){
+        api.openFrame({
+					name: 'wuliu_frm',
+					url: 'widget://html/pageone/wuliu_frm.html',
+					rect: {
+						x:0,
+						y:0,
+						w:'auto',
+						h:api.winHeight
+					},
+					pageParam:{
+						id:id
+					},
+					animate:{
+						type:"movein",                //动画类型（详见动画类型常量）
+						subType:"from_bottom",       //动画子类型（详见动画子类型常量）
+						duration:300                //动画过渡时间，默认300毫秒
+					},
+				});
+      },
+      tk:function (id) {
+        api.openWin({
+    				name: 'tuikuan_chage_win',
+    				url: 'widget://html/order/tuikuan_chage_win.html',
+    				pageParam: {
+    						id:id
+    				}
+    		});
+      },
+      init:function(){
+          if(!vm.is_load){
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '加载中...',
+            });
+          }
+
+          api.ajax({
+              url: order_list_url,
+              method: 'get',
+              timeout:20,
+              dataType:'json',
+              returnAll:false,
+              data: {
+                  values: {
+                      token:vm.token,
+                      status:vm.state,
+                      pageNo:vm.pageNumber,
+                      pageSize:vm.pageSize
+                  }
+              }
+          },function(ret, err){
+              if (ret) {
+                  console.log(JSON.stringify(ret))
+                  api.hideProgress();
+                  vm.is_load = 1;
+                  if(ret.status==1){
+                      vm.list = vm.list.concat(ret.data.page.list);
+                      vm.totalRow = ret.data.page.totalRow;
+
+                      api.sendEvent({
+                          name: 'count',
+                          extra: {
+                            no_pay_count:ret.data.no_pay_count,
+                            all_pay_count:ret.data.all_pay_count,
+                            no_deliver_count:ret.data.no_deliver_count,
+                            no_evaluation_count:ret.data.no_evaluation_count,
+                            no_receiving_count:ret.data.no_receiving_count
+                          }
+                      });
+
+
+                  }else{
+                    api.toast({
+                        msg: ret.msg,
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                  }
+
+              } else {
+                  vm.is_load = 2;
+                  api.hideProgress();
+    							if(err.statusCode==500){
+    								api.toast({
+    										msg: '服务器请求错误！',
+    										duration: 2000,
+    										location: 'middle'
+    								});
+    							}else{
+    									api.toast({
+    											msg: '请求超时，请检查网络',
+    											duration: 2000,
+    											location: 'middle'
+    									});
+    							}
+
+              }
+          });
+
+      },
+      confirmOrder:function(id){
+          api.confirm({
+              title: '订单提示',
+              msg: '确认已经收到商品了吗？',
+              buttons: ['确定', '取消']
+          }, function(ret, err){
+              if( ret ){
+                   if(ret.buttonIndex==1){
+                     api.ajax({
+                         url: confirm_receipt_url,
+                         method: 'post',
+                         timeout:30,
+                         dataType:'json',
+                         returnAll:false,
+                         data: {
+                             values: {
+                                 token:vm.token,
+                                 id:id
+                             }
+                         }
+                     },function(ret, err){
+                         if (ret) {
+                             if(ret.status==1){
+                                 api.toast({
+                                     msg: ret.msg,
+                                     duration: 2000,
+                                     location: 'middle'
+                                 });
+
+                                 vm.state = 3;
+                                 vm.pageNumber = 1;
+                                 vm.list = [];
+                                 vm.init();
+
+                                 api.sendEvent({
+                                     name: 'order_change_init'
+                                 });
+
+
+                             }else{
+                                 api.toast({
+                                     msg: ret.msg,
+                                     duration: 2000,
+                                     location: 'middle'
+                                 });
+                             }
+                         } else {
+                             if(err.statusCode==500){
+                                 api.toast({
+                                     msg: '服务端请求错误！',
+                                     duration: 2000,
+                                     location: 'middle'
+                                 });
+
+                             }else{
+                               api.toast({
+                                   msg: '请求失败，请检查网络连接',
+                                   duration: 2000,
+                                   location: 'middle'
+                               });
+
+                             }
+                         }
+                     });
+                   }
+              }
+          });
+
+
+
+      },
+      payOrder:function(id,type){
+          var msg = '',url = '';
+          if(type==1){
+              msg = '以微信支付此订单，确认要支付吗？';
+              url = wx_my_order_submit_url;
+          }else if(type==2){
+              msg = '以支付宝支付此订单，确认要支付吗？';
+              url = my_order_submit_url;
+          }else{
+            msg = '以银联支付此订单，确认要支付吗？';
+            url = bank_my_order_submit_url;
+          }
+          api.confirm({
+              title: '支付提示',
+              msg: msg,
+              buttons: ['确定', '取消']
+          }, function(ret, err){
+              if( ret ){
+                   if(ret.buttonIndex==1){
+                     api.showProgress({
+                         style: 'default',
+                         animationType: 'fade',
+                         title: '加载中...'
+                     });
+
+                     api.ajax({
+                         url: url,
+                         method: 'post',
+                         timeout:30,
+                         dataType:'json',
+                         returnAll:false,
+                         data: {
+                             values: {
+                                 token:vm.token,
+                                 id:id,
+                                 pay_type:type
+                             },
+                         }
+                     },function(ret, err){
+                         if (ret) {
+                           if(type==1){
+                               vm.wxpay(ret);
+                           }else if(type==2){
+                               vm.alipay(ret)
+                           }else{
+                             	vm.unPays(ret);
+                           }
+                         } else {
+                             api.hideProgress();
+                             if(err.statusCode==500){
+                               api.toast({
+                                   msg: '服务器请求错误！',
+                                   duration: 2000,
+                                   location: 'middle'
+                               });
+                             }else{
+                                 api.toast({
+                                     msg: '请求超时，请检查网络',
+                                     duration: 2000,
+                                     location: 'middle'
+                                 });
+                             }
+
+                         }
+                     });
+                   }
+              }
+          });
+
+
+
+      },
+      cancelOrder:function(id,idx){
+          api.confirm({
+              title: '订单取消',
+              msg: '确定要取消此订单吗？',
+              buttons: ['确定', '取消']
+          }, function(ret, err){
+              if( ret ){
+                   if(ret.buttonIndex==1){
+                     api.ajax({
+                         url: order_del_url,
+                         method: 'post',
+                         timeout:30,
+                         dataType:'json',
+                         returnAll:false,
+                         data: {
+                             values: {
+                                 token:vm.token,
+                                 id:id
+                             }
+                         }
+                     },function(ret, err){
+                         if (ret) {
+                             if(ret.status==1){
+                                 api.toast({
+                                     msg: ret.msg,
+                                     duration: 2000,
+                                     location: 'middle'
+                                 });
+
+                                 vm.list = [];
+                                 vm.init();
+
+                                 api.sendEvent({
+                                     name: 'order_change_init'
+                                 });
+
+
+                             }else{
+                                 api.toast({
+                                     msg: ret.msg,
+                                     duration: 2000,
+                                     location: 'middle'
+                                 });
+
+                             }
+                         } else {
+                             api.toast({
+                                 msg: '请求超时！',
+                                 duration: 2000,
+                                 location: 'bottom'
+                             });
+
+                         }
+                     });
+                   }
+              }
+          });
+
+      },
+      goEvalute:function(id,idx){
+          api.openWin({
+              name: 'myPingjia_win',
+              url: 'widget://html/order/myPingjia_win.html',
+              pageParam: {
+                  id: id,
+                  state:idx
+              }
+          });
+
+      },
+      openDetail:function(idx,id,status,is_evaluation){
+          if(status==0){
+              api.openWin({
+                  name: 'daifukuan_win',
+                  url: 'widget://html/order/daifukuan_win.html',
+                  pageParam: {
+                      id:id,
+                      idx:idx
+                  }
+              });
+          }else if(status==1){
+            api.openWin({
+                name: 'daifahuo_win',
+                url: 'widget://html/order/daifahuo_win.html',
+                pageParam: {
+                    id:id
+                }
+            });
+          }else if(status==2){
+            api.openWin({
+                name: 'daishouhuo_win',
+                url: 'widget://html/order/daishouhuo_win.html',
+                pageParam: {
+                    id:id,
+                    idx:idx
+                }
+            });
+          }else if(status==3){
+            api.openWin({
+                name: 'wancheng_win',
+                url: 'widget://html/order/wancheng_win.html',
+                pageParam: {
+                    id:id
+                }
+            });
+
+
+
+
+          }else if(status==7){
+            api.openWin({
+                name: 'yiquxiao_win',
+                url: 'widget://html/order/yiquxiao_win.html',
+                pageParam: {
+                    id:id
+                }
+            });
+          }else if(status==8){
+            api.openWin({
+                name: 'guanbi_win',
+                url: 'widget://html/order/guanbi_win.html',
+                pageParam: {
+                    id:id
+                }
+            });
+          }else if(status==4 || status==5 || status==6){
+            api.openWin({
+                name: 'tuikuan_win',
+                url: 'widget://html/order/tuikuan_win.html',
+                pageParam: {
+                    id:id,
+                    status:status
+                }
+            });
+          }
+
+
+
+      },
+      wxpay:function(ret){
+
+				var wxPay = api.require('wxPay');
+					wxPay.payOrder({
+						apiKey:ret.appid,
+							orderId: ret.prepayid,
+							mchId: ret.partnerid,
+							nonceStr: ret.noncestr,
+							timeStamp: ret.timestamp,
+							package:ret.package,
+							sign: ret.sign
+					}, function(ret, err) {
+						api.hideProgress();
+							if (ret.status) {
+
+							api.toast({
+									msg:'付款成功',
+									duration:2000,
+									location:'middle'
+								});
+
+                vm.state = 1;
+                vm.pageNumber = 1;
+                vm.list = [];
+                vm.init();
+
+                setTimeout(function(){
+                  api.sendEvent({
+                      name: 'order_paysuccess_init',
+                      extra: {
+                          state:1
+                      }
+                  });
+                },300)
+
+
+							} else {
+									if(err.code==-2){
+
+										api.toast({
+											 msg:'已取消支付',
+											 duration:2000,
+											 location:'middle'
+										 });
+
+								}
+						}
+				});
+			},
+      unPays:function(ret){
+        	api.showProgress();
+				console.log(JSON.stringify(ret));
+				// var unPay = api.require('unionPay');
+				// unPay.pay({
+				// 		tn: '20190515151906991',
+				// 		devMode: true
+				// }, function(ret, err){
+				// 	 console.log(JSON.stringify(ret));
+				// });
+				// var browser = api.require('webBrowser');
+				// browser.open({
+				//     url: ret.data
+				// });
+        vm.order_sn=ret.orderSn;
+				var obj = api.require('UIWebBrowser');
+					obj.open({
+					    rect: {
+					        x: 0,
+					        y: 0,
+					        w: api.winWidth,
+					        h: api.winHeight + 1000
+					    },
+					    path: ret.data,
+					    fixedOn: api.frameName,
+					    fixed: false,
+					    button: {
+					        normal: 'widget://res/UIWebBrowser/normal.png',
+					        highlight: 'widget://res/UIWebBrowser/highlight.png',
+					        selected: 'widget://res/UIWebBrowser/selected.png',
+					        title: 'test',
+					        width: 55,
+					        height: 30,
+					        position: 'bottom'
+					    }
+					}, function(ret) {
+					    console.log(JSON.stringify(ret));
+							if(ret.eventType=='show'){
+                api.hideProgress();
+                vm.codes()
+
+							}
+					});
+
+			},
+      codes:function(){
+				var timer = null;
+				timer = setInterval(function(){
+						api.ajax({   //时刻请求数据
+						    url: bank_backUrl_url,
+								dataType:'json',
+								returnAll:false,
+								timeout:30,
+						    method: 'post',
+						    data: {
+						        values: {
+						            token: vm.token,
+                        orderSn:vm.order_sn
+						        }
+						    }
+							},function(ret, err){
+								console.log(JSON.stringify(ret));
+						    if (ret) {
+										if(ret.status==1){
+                      api.toast({
+                        msg:'付款成功',
+                        duration:2000,
+                        location:'middle'
+                      });
+
+                      setTimeout(function(){
+                        clearInterval(timer);
+                        api.sendEvent({
+                            name: 'order_paysuccess_init',
+                            extra: {
+                                state:1
+                            }
+                        });
+                      },300)
+										}else if(ret.status==0){
+                      clearInterval(timer);
+											 api.toast({
+													msg:'已取消支付',
+													duration:2000,
+													location:'middle'
+												});
+										}
+						    }
+						});
+				},3000)
+			},
+			alipay:function(ret){
+
+
+				var aliPayPlus = api.require('aliPayPlus');
+					aliPayPlus.payOrder({
+							orderInfo: ret.data
+					}, function(ret, err) {
+						api.hideProgress();
+
+						if(ret.code==9000){
+
+							  api.toast({
+									msg:'付款成功',
+									duration:2000,
+									location:'middle'
+								});
+
+                setTimeout(function(){
+                  api.sendEvent({
+                      name: 'order_paysuccess_init',
+                      extra: {
+                          state:1
+                      }
+                  });
+                },300)
+
+						}
+
+						if(ret.code==4000){
+							api.toast({
+								msg:'支付失败，请重新支付',
+								duration:2000,
+								location:'middle'
+							});
+						}
+
+						if(ret.code==6001){
+
+							api.toast({
+								msg:'已取消支付',
+								duration:2000,
+								location:'middle'
+							});
+
+						}
+				});
+			},
+  }
+})
+
+apiready = function(){
+
+  vm.token = $api.getStorage('token');
+
+  vm.state = api.pageParam.state;
+
+  vm.init();
+
+  api.addEventListener({
+      name: 'myorder_init'
+  }, function(ret, err){
+      vm.is_load = '';
+      vm.list = [];
+      vm.pageNumber = 1;
+      vm.state = ret.value.state;
+      vm.init();
+  });
+
+  api.addEventListener({
+      name: 'orderdetail_paysuccess_init'
+  }, function(ret, err){
+      vm.state = api.pageParam.state;
+      vm.list = [];
+      vm.pageNumber = 1;
+      vm.init();
+  });
+  api.addEventListener({
+      name: 'order_init'
+  }, function(ret, err){
+      if( ret ){
+        vm.state = -1;
+        vm.list = [];
+        vm.pageNumber = 1;
+        vm.init();
+      }
+  });
+
+
+  //监听确认收货之后
+  api.addEventListener({
+      name: 'order_info_list_init'
+  }, function(ret, err){
+    vm.state = api.pageParam.state;
+    vm.list = [];
+    vm.pageNumber = 1;
+    vm.init();
+  });
+
+  //监听评价成功刷新列表
+  api.addEventListener({
+      name: 'pingjia_save_init'
+  }, function(ret, err){
+      vm.list = [];
+      vm.pageNumber = 1;
+      vm.init();
+  });
+
+
+
+  api.addEventListener({
+      name: 'order_cancel_init'
+  }, function(ret, err){
+      var idx = ret.value.idx;
+      //vm.list.splice(idx,1);
+      vm.list = [];
+      vm.pageNumber = 1;
+      vm.init();
+  });
+
+
+  //下拉刷新
+   api.setRefreshHeaderInfo({
+        visible: true,
+        loadingImg: 'widget://image/refresh.png',
+        bgColor: '#f6f6f6',
+        textColor: '#999',
+        textDown: '下拉刷新...',
+        textUp: '松开刷新...',
+        showTime: true
+    }, function (ret, err) {
+        vm.token = $api.getStorage('token');
+        vm.list = [];
+        vm.pageNumber = 1;
+        vm.init();
+        setTimeout("api.refreshHeaderLoadDone()", '500');
+    });
+
+
+  //上啦加载
+  api.addEventListener({
+     name:'scrolltobottom',
+     extra:{
+       threshold:300
+     }
+  },function(ret,err){
+    if(vm.totalRow == vm.list.length){
+        if(vm.totalRow>10){
+              $api.html($api.byId('bot'),"<div style='background-color:#f5f5f5;color:#666;' class='aui-font-size-12 aui-padded-t-10 aui-padded-b-10'>到底了~</div>")
+            }
+        return;
+      }
+    vm.pageNumber++
+    vm.init();
+   });
+}
+
+</script>

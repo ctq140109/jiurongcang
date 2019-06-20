@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>精选品牌</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.banner{height: 9rem;width: 100%;overflow: hidden;}
+		.banner img{width: 100%;height: 100%;object-fit: cover;}
+		.aui-tab span{display: block;height: 99%;width:3rem;margin: auto;}
+		.aui-active{border-bottom: none !important;}
+		.aui-active span{border-bottom:solid 2px #35adbe;color:#35adbe; font-weight: bold;}
+		.aui-row{ display: flex;justify-content: flex-start;flex-wrap: wrap;}
+		.aui-col-xs-3{padding:1.5rem  0.6rem 0;text-align: center;}
+		.pic{display: flex ;display: -webkit-flex;align-items: center;}
+		.pic img{max-height: 100%;max-width: 100%; margin: auto;}
+
+		.fixed{ position: fixed;width:100%;top:0;background-color:#fff;z-index:9999}
+	</style>
+	<body class="">
+		<div id="app" v-cloak>
+			<div class="banner">
+				<!-- <img src="../../image/banner.jpg"/> -->
+			</div>
+			<!--筛选-->
+			<!-- <div class="aui-tab aui-border-b" id="tab">
+
+			</div> -->
+
+			<div class="aui-row aui-padded-12 aui-padded-t-0">
+				<template v-for="(v,index) in list">
+					<div class="aui-col-xs-3 aui-text-center aui-padded-b-5" @click="det(v.id)">
+						<div class="pic aui-text-center">
+							<img :src="v.icon" style="height:2.5rem !important;width:2.5rem !important;margin:0 auto;"/>
+						</div>
+						<div class=" aui-font-size-12 aui-padded-t-10 aui-ellipsis-1">{{v.name}}</div>
+					</div>
+				</template>
+
+			</div>
+			<div class="nodata aui-bg-white" v-if="totalRow==0">
+					<img src="../../image/nodata.png" style="height:100%;width:100%;display: block !important;"/>
+			</div>
+		</div>
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+var vm = new Vue({
+	el:'#app',
+	data:{
+		token:'',
+		area_id:'',
+		pageSize:20,
+		pageNo:1,
+		list:[],
+		totalRow:0,
+		banner_list:[],
+
+
+	},
+	methods:{
+		det:function (id) {
+			api.openWin({
+					name: 'pinpaiDetails_win',
+					url: 'widget://html/shop/pinpaiDetails_win.html',
+					pageParam: {
+						id:id
+					}
+			});
+		},
+		banner:function(){
+			api.ajax({   //banner
+					url: banners_url,
+					dataType:'json',
+					returnAll:false,
+					timeout:30,
+					method: 'post',
+					data: {
+							values: {
+									token: vm.token,
+									type:4,
+									agency_manage_id:vm.area_id
+							}
+					}
+				},function(ret, err){
+					if (ret) {
+							console.log(JSON.stringify(ret));
+						var banners_lists=[];
+						vm.banner_list=ret.data.banner_list;
+						if(ret.data.banner_list.length>0){
+							for (var i = 0; i < ret.data.banner_list.length; i++) {
+								 banners_lists.push($api.trimAll(ret.data.banner_list[i].pic));
+							}
+							vm.banns(banners_lists);
+
+						}
+					}
+			});
+		},
+		banns:function(banners_list){
+				var UIScrollPicture = api.require('UIScrollPicture');
+				UIScrollPicture.open({
+					 rect: {
+								x: 0,
+								y: 0,
+								w: api.winWidth,
+								h: 180
+						},
+						data: {
+								paths:banners_list,
+						},
+						styles: {
+								caption: {
+										height: 35,
+										color: '#E0FFFF',
+										size: 13,
+										bgColor: '#696969',
+										position: 'bottom'
+								},
+								indicator: {
+									 dot:{
+										 w:4,
+										 h:5,
+										 r:2,
+										 margin:5
+									},
+										align: 'center',
+										color: '#FFFFFF',
+										activeColor: '#34d594'
+								}
+						},
+						placeholderImg: 'widget://image/s_banner.png',
+						contentMode: 'scaleToFill',
+						interval: 3,
+						fixedOn: api.frameName,
+						loop: true,
+						fixed: false
+				}, function(ret, err) {
+						if(ret){
+
+							if(ret.eventType=='click'){
+								console.log(vm.banner_list);
+									console.log(vm.banner_list[ret.index].id);
+									// if(vm.banner_list!='' && vm.banner_list!=null){
+									// 	vm.openShopPic(ret.index);
+									// }
+									if(vm.banner_list){
+										if(vm.banner_list[ret.index].id==0){
+											api.openWin({
+													name: 'dingzhi_win',
+													url: 'widget://html/index/dingzhi_win.html',
+													pageParam: {
+
+													}
+											});
+										}else{
+											api.ajax({   //banner
+													url: good_detail_url,
+													dataType:'json',
+													returnAll:false,
+													timeout:30,
+													method: 'post',
+													data: {
+															values: {
+																	token: vm.token,
+																	agency_manage_id:vm.area_id,
+																	id:vm.banner_list[ret.index].id
+															}
+													}
+												},function(res, err){
+													if (res) {
+															api.hideProgress();
+															if(res.status==1){
+																	api.openWin({
+																			name: 'shopDetail_win',
+																			url: 'widget://html/shop/shopDetail_win.html',
+																			pageParam: {
+																					id:vm.banner_list[ret.index].id
+																			}
+																	});
+															}else{
+																api.toast({
+																		msg: res.msg,
+																		duration: 2000,
+																		location: 'bottom'
+																});
+
+															}
+													}else{
+														api.hideProgress();
+														if(err.statusCode==500){
+															api.toast({
+																	msg: '服务器请求错误！',
+																	duration: 2000,
+																	location: 'middle'
+															});
+														}else{
+																api.toast({
+																		msg: '请求超时，请检查网络',
+																		duration: 2000,
+																		location: 'middle'
+																});
+														}
+													}
+											});
+
+
+										}
+									}
+
+
+
+
+
+							}
+						}
+				});
+		},
+		openShopPic:function(idx){
+			var photoBrowser = api.require('photoBrowser');
+			photoBrowser.open({
+					images: vm.banner_list,
+					activeIndex:idx,
+					placeholderImg: 'widget://res/img/apicloud.png',
+					bgColor: '#000'
+			}, function(ret, err) {
+
+					if(ret.eventType == 'click'){
+							photoBrowser.close();
+
+					}
+			});
+			photoBrowser.setIndex({
+					index: idx
+			});
+
+		},
+		init:function(){
+			api.showProgress();
+
+			api.ajax({
+					url: select_brand_more_url,
+					method:'get',
+					timeout:30,
+					dataType:'json',
+					returnAll:false,
+					data: {
+							values: {
+									pageSize:vm.pageSize,
+                  pageNo:vm.pageNo,
+									token:vm.token
+							},
+					}
+			},function(ret, err){
+				if (ret) {
+					api.hideProgress();
+
+          if(ret.status==1){
+						console.log(JSON.stringify(ret));
+						vm.list=vm.list.concat(ret.data.page.list);
+
+						vm.totalRow=ret.data.page.totalRow
+					}else{
+            api.toast({
+                msg: ret.msg,
+                duration: 2000,
+                location: 'bottom'
+            });
+          }
+        }
+			});
+		},
+	}
+})
+apiready = function(){
+	vm.token=$api.getStorage('token');
+	vm.area_id=$api.getStorage('area_id')
+	vm.banner();
+	vm.init();
+
+	api.setRefreshHeaderInfo({
+		 visible: true,
+		 loadingImg: 'widget://image/refresh.png',
+			bgColor: '#f6f6f6',
+		 textColor: '#999',
+		 textDown: '下拉刷新...',
+		 textUp: '松开刷新...',
+		 showTime: true
+	 }, function (ret, err) {
+		 if(ret){
+			 vm.pageNo=1;
+			 vm.list = [];
+			 vm.init();
+			 setTimeout("api.refreshHeaderLoadDone()", '500');
+		 }
+	 });
+	 api.addEventListener({
+				name:'scrolltobottom',
+				extra:{
+					threshold:300
+				}
+			},function(ret,err){
+				if(vm.totalRow == vm.list.length){
+
+				return;
+			}
+			vm.pageNo++;
+			vm.init();
+		});
+}
+</script>

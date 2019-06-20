@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>个人中心</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.bg{height: 6.5rem;background: url(../../image/grzx.jpg) no-repeat;background-size:cover;}
+		.aui-list-item-title{ display: flex;display: -webkit-flex;align-items: center;}
+		.aui-list-item-media{width: 3.75rem !important;}
+		.head-pic{height: 3rem;width: 3rem;border-radius: 1.5rem;overflow: hidden;border: solid 1px #fff;}
+		.head-pic img{height:100%;width:100%;object-fit: cover;}
+		.dengji{display: inline-block;color: #1c8d61;padding: 0.1rem 0.5rem;border-radius: 1rem;}
+
+
+		.title{display: flex;align-items: center;justify-content: space-between;}
+		.aui-col-5,.aui-col-xs-3{margin: 1rem 0;}
+		.fl-pic{position: relative; width: 1.4rem;margin: auto;}
+		.aui-badge{position: absolute;top: -4px;right: 0; height: 0.9rem;width: 0.9rem;text-align: center; border:solid 1px #fff;padding: 0px;}
+
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content" id="app" v-cloak>
+			<div style="position:absolute;width: 100%;top: 0;right: 0;z-index:99999" v-if="token">
+				<div class="aui-padded-12 clearfix">
+					<a class="aui-pull-right"  style="position: relative;" @click="new_list()">
+
+						<div class="aui-badge aui-bg-danger" v-if="unread_num">{{unread_num}}</div>
+				        <img src="../../image/xiaoxi1.png" style="width: 1.2rem;">
+				    </a>
+				    <a class="aui-pull-right aui-margin-r-15" style="position: relative;">
+				        <img src="../../image/shezhi.png" style="width: 1.2rem;"  onclick="open_window('set','set_win')">
+				    </a>
+			    </div>
+			</div>
+
+			<div class="bg"  v-if="token">
+				<ul class="aui-list aui-media-list" style="background-color: initial !important;padding-top: 1.6rem;"   onclick="open_window('set','data_win')">
+					<li class="aui-list-item aui-list-item-middle" >
+						<div class="aui-media-list-item-inner">
+							<div class="aui-list-item-media">
+								<div class="head-pic"><img :src="account.head_portrait"></div>
+							</div>
+                <div class="aui-list-item-inner aui-padded-r-0">
+                    <div class="aui-list-item-text  aui-font-size-17 aui-text-white fweight-5">{{account.nick_name}}</div>
+                    <div class="aui-margin-t-5">
+                    	<span class="aui-bg-white aui-font-size-12 dengji">{{account.store_grade_name}}</span>
+                    </div>
+                </div>
+            </div>
+			    </li>
+				</ul>
+			</div>
+			<div class="bg" v-else  @click="login()">
+				<ul class="aui-list aui-media-list" style="background-color: initial !important;padding-top: 1.6rem;">
+					<li class="aui-list-item aui-list-item-middle" >
+						<div class="aui-media-list-item-inner">
+							<div class="aui-list-item-media">
+								<div class="head-pic"><img src="../../image/head.png"></div>
+							</div>
+                <div class="aui-list-item-inner aui-padded-r-0">
+                    <div class="aui-list-item-text  aui-font-size-17 aui-text-white fweight-5">点击登录</div>
+
+                </div>
+            </div>
+        	</li>
+				</ul>
+			</div>
+
+
+
+
+			<div class="aui-border-b fweight-5 title aui-padded-15 aui-padded-l-12 aui-padded-r-12 aui-bg-white" @click="order(-1)">
+				我的订单
+				<div class="aui-font-size-14 aui-text-gray">
+					<i class="aui-iconfont aui-icon-right aui-font-size-12 aui-font-weight"></i>
+				</div>
+			</div>
+			<div class="aui-row aui-bg-white aui-border-bgB">
+				<div class="aui-col-5 aui-text-center"  @click="order(0)">
+					<div class="fl-pic aui-margin-b-12">
+						<img src="../../image/grzx-icon.png" alt="" />
+						<div class="aui-badge aui-bg-danger" v-if="num.no_pay_count!=0">{{num.no_pay_count}}</div>
+					</div>
+					<div class="aui-text-gray aui-font-size-13">待付款</div>
+				</div>
+				<div class="aui-col-5 aui-text-center"  @click="order(1)">
+					<div class="fl-pic aui-margin-b-12">
+						<img src="../../image/grzx-icon1.png" alt="" />
+						<div class="aui-badge aui-bg-danger" v-if="num.no_deliver_count!=0">{{num.no_deliver_count}}</div>
+					</div>
+					<div class="aui-text-gray aui-font-size-13">待发货</div>
+				</div>
+				<div class="aui-col-5 aui-text-center"  @click="order(2)">
+					<div class="fl-pic aui-margin-b-12">
+						<img src="../../image/grzx-icon2.png" alt="" />
+						<div class="aui-badge aui-bg-danger" v-if="num.no_receiving_count!=0">{{num.no_receiving_count}}</div>
+					</div>
+					<div class="aui-text-gray aui-font-size-13">待收货</div>
+				</div>
+				<div class="aui-col-5 aui-text-center"  @click="order(3)">
+					<div class="fl-pic aui-margin-b-12">
+						<img src="../../image/grzx-icon3.png" alt="" />
+						<div class="aui-badge aui-bg-danger" v-if="num.no_evaluation_count!=0">{{num.no_evaluation_count}}</div>
+					</div>
+					<div class="aui-text-gray aui-font-size-13">待评价</div>
+				</div>
+				  <!-- @click="order(-1)" -->
+				<div class="aui-col-5 aui-text-center" onclick="check_login('order','shouhou_win')">
+					<div class="fl-pic aui-margin-b-12">
+						<img src="../../image/grzx-icon6.png" alt="" />
+					</div>
+					<div class="aui-text-gray aui-font-size-13">售后/退款</div>
+				</div>
+			</div>
+			<!--我的服务-->
+			<div class="aui-border-b fweight-5 aui-bg-white title aui-padded-15 aui-padded-l-12 aui-padded-r-12">
+				我的服务
+				<div class="aui-font-size-14 aui-text-gray">
+					<!-- <i class="aui-iconfont aui-icon-right aui-font-size-12 aui-font-weight"></i> -->
+				</div>
+			</div>
+			<div class="aui-row aui-bg-white aui-border-b">
+				<div class="aui-col-xs-3 aui-text-center" onclick="check_login('personal','jifens_win')">
+					<div class="fl-pic aui-margin-b-12">
+						<img src="../../image/grzx1.png" alt="" />
+					</div>
+					<div class="aui-text-gray aui-font-size-13">我的积分</div>
+				</div>
+				<div class="aui-col-xs-3 aui-text-center" onclick="check_login('personal','youhuiquan_win')">
+					<div class="fl-pic aui-margin-b-12">
+						<img src="../../image/grzx2.png" alt="" />
+					</div>
+					<div class="aui-text-gray aui-font-size-13">优惠券</div>
+				</div>
+				<div class="aui-col-xs-3 aui-text-center" onclick="check_login('personal','myCollection_win')">
+					<div class="fl-pic aui-margin-b-12">
+						<img src="../../image/grzx3.png" alt="" />
+					</div>
+					<div class="aui-text-gray aui-font-size-13">我的收藏</div>
+				</div>
+				<div class="aui-col-xs-3 aui-text-center" onclick="check_login('personal','myZuji_win')">
+					<div class="fl-pic aui-margin-b-12">
+						<img src="../../image/grzx4.png" alt="" />
+					</div>
+					<div class="aui-text-gray aui-font-size-13">我的足迹</div>
+				</div>
+			</div>
+			<div class="aui-row aui-bg-white">
+				<div class="aui-col-xs-3 aui-text-center" onclick="check_login('personal','address_win')">
+					<div class="fl-pic aui-margin-b-12">
+						<img src="../../image/grzx5.png" alt="" />
+					</div>
+					<div class="aui-text-gray aui-font-size-13">收货地址</div>
+				</div>
+				<div class="aui-col-xs-3 aui-text-center" onclick="open_window('personal','problem_win')">
+					<div class="fl-pic aui-margin-b-12">
+						<img src="../../image/grzx6.png" alt="" />
+					</div>
+					<div class="aui-text-gray aui-font-size-13">常见问题</div>
+				</div>
+				<div class="aui-col-xs-3 aui-text-center" onclick="check_login('set','yijian_win')">
+					<div class="fl-pic aui-margin-b-12">
+						<img src="../../image/grzx7.png" alt="" />
+					</div>
+					<div class="aui-text-gray aui-font-size-13">意见反馈</div>
+				</div>
+				<div class="aui-col-xs-3 aui-text-center" onclick="open_meiQia()">
+					<div class="fl-pic aui-margin-b-12">
+						<img src="../../image/grzx8.png" alt="" />
+					</div>
+					<div class="aui-text-gray aui-font-size-13">客服中心</div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			token:'',
+			account:'',
+			lat:'',
+			lon:'',
+			height:'',
+			my_icon:'',
+			unread_num:'',
+			num:''
+		},
+		methods:{
+			order:function (state) {
+				if(!vm.token){
+					is_login();
+					return;
+				}
+				api.openWin({
+					 name: 'myOrder_win',
+					 url: 'widget://html/order/myOrder_win.html',
+					 pageParam:{
+						state:state
+					 }
+			 });
+			},
+			init:function(){
+				api.ajax({
+				    url: my_index_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+				    method: 'post',
+				    data: {
+				        values: {
+				            token: vm.token
+				        }
+				    }
+				},function(ret, err){
+				    if (ret) {
+							if(ret.status==1){
+									vm.account=ret.data.account;
+
+							}
+				    }else{
+								console.log(JSON.stringify(err))
+						}
+				});
+
+			},
+			new_list:function() {
+				api.openWin({
+					name: 'news_win',
+					url: 'widget://html/news/news_win.html',
+					animation:{
+						type:'none',
+						duration:300
+					}
+				});
+			},
+			orderNum:function(){
+					api.ajax({
+					    url: order_num_url,
+					    method: 'get',
+							timeout:30,
+							dataType:'json',
+							returnAll:false,
+					    data: {
+					        values: {
+					          token:vm.token
+					        },
+					    }
+					},function(ret, err){
+					    if (ret) {
+					        console.log( JSON.stringify( ret ) );
+									vm.num = ret.data;
+					    } else {
+					        api.toast({
+					            msg: '加载失败，请检查网络连接',
+					            duration: 2000,
+					            location: 'middle'
+					        });
+
+					    }
+					});
+
+			},
+			login:function(){
+				api.openWin({
+					name: 'login',
+					url: 'widget://html/login/login.html',
+					rect: {
+						x:0,
+						y:vm.height,
+						w:'auto',
+						h:api.winHeight
+					},
+					bgColor:"#fff",
+					bounces:false,
+					animation:{
+						type:"movein",                //动画类型（详见动画类型常量）
+					  subType:"from_bottom",       //动画子类型（详见动画子类型常量）
+					  duration:300
+					}
+				});
+			},
+			new_list:function() {
+				api.ajax({   //品牌
+						url: unread_num_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+						method: 'post',
+						data: {
+								values: {
+										token: vm.token,
+										agency_manage_id:vm.area_id
+								}
+						}
+					},function(ret, err){
+						if (ret) {
+								if(ret.status==1){
+									  vm.unread_num=ret.data.unread_num
+
+								}
+						}
+				});
+			},
+		}
+	})
+	apiready = function(){
+		vm.token= $api.getStorage('token');
+		vm.height=$api.getStorage('height');
+		//个人首页信息
+		vm.init();
+		vm.new_list();
+		//订单数量
+		vm.orderNum();
+		api.addEventListener({
+		    name: 'reshuf'
+		}, function(ret, err){
+		    if( ret ){
+					vm.token= $api.getStorage('token');
+					vm.orderNum();
+				  vm.init();
+		    }
+		});
+
+		//订单详情取消订单支付
+		api.addEventListener({
+				name: 'order_cancel_init'
+		}, function(ret, err){
+				vm.orderNum();
+		});
+
+		//监听确认收货
+		api.addEventListener({
+				name: 'orderdetail_confirme_init'
+		}, function(ret, err){
+				vm.orderNum();
+		});
+
+
+
+		//监听订单状态变化
+		api.addEventListener({
+				name: 'order_change_init'
+		}, function(ret, err){
+				vm.orderNum();
+		});
+		api.addEventListener({
+				name: 'order_init'
+		}, function(ret, err){
+				vm.orderNum();
+		});
+
+
+		//监听订单提交
+		api.addEventListener({
+				name: 'addCart_init'
+		}, function(ret, err){
+				vm.orderNum();
+		});
+
+		api.addEventListener({
+		    name: 'login_init'
+		}, function(ret, err){
+		    if( ret ){
+					vm.token= $api.getStorage('token');
+					vm.orderNum();
+				  vm.init();
+		    }
+		});
+		api.addEventListener({
+		    name: 'my_icon'
+		}, function(ret, err){
+		    if( ret ){
+		        vm.my_icon=ret.value.my_icon
+		    }
+		});
+		api.addEventListener({
+		    name: 'order_num'
+		}, function(ret, err){
+		    if( ret ){
+					vm.token= $api.getStorage('token');
+					vm.orderNum();
+		    }
+		});
+
+
+		api.setRefreshHeaderInfo({
+				 visible: true,
+				 loadingImg: 'widget://image/refresh.png',
+					bgColor: '#f6f6f6',
+				 textColor: '#999',
+				 textDown: '下拉刷新...',
+				 textUp: '松开刷新...',
+				 showTime: true
+		 }, function (ret, err) {
+			 if(ret){
+				 vm.list = [];
+				 vm.orderNum();
+				 vm.init();
+				 setTimeout("api.refreshHeaderLoadDone()", '500');
+			 }
+		 });
+	}
+</script>

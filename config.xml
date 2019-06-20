@@ -1,0 +1,91 @@
+<widget id="A6015465525028" version="0.0.1">
+
+    <name>酒榕仓</name>
+
+    <description>
+
+        Example For APICloud.
+
+    </description>
+
+    <author email="developer@apicloud.com" href="http://www.apicloud.com">
+
+        Developer
+
+    </author>
+
+    <content src="index.html"/>
+
+    <access origin="*"/>
+
+    <preference name="pageBounce" value="false"/>
+
+    <preference name="appBackground" value="rgba(0,0,0,0.0)"/>
+
+    <preference name="windowBackground" value="rgba(0,0,0,0.0)"/>
+
+    <preference name="frameBackgroundColor" value="rgba(0,0,0,0.0)"/>
+
+    <preference name="hScrollBarEnabled" value="false"/>
+
+    <preference name="vScrollBarEnabled" value="false"/>
+
+    <preference name="autoLaunch" value="true"/>
+
+    <preference name="fullScreen" value="false"/>
+
+    <preference name="autoUpdate" value="true"/>
+
+    <preference name="smartUpdate" value="false"/>
+
+    <preference name="debug" value="true"/>
+
+    <preference name="statusBarAppearance" value="true"/>
+
+    <preference name="querySchemes" value="uppaysdk,uppaywallet,uppayx1,uppayx2,uppayx3"/>
+
+    <permission name="readPhoneState"/>
+
+    <permission name="camera"/>
+
+    <permission name="record"/>
+
+    <permission name="location"/>
+
+    <permission name="fileSystem"/>
+
+    <permission name="internet"/>
+
+    <permission name="bootCompleted"/>
+
+    <permission name="hardware"/>
+
+    <feature name="unionPay">
+        <param name="urlScheme" value="unionPayA6015465525028"/>
+    </feature>
+
+    <feature name="wxPay">
+        <param name="urlScheme" value="wx28ecf104aaf888d2"/>
+        <param name="apiKey" value="wx28ecf104aaf888d2"/>
+        <param name="apiSecret" value="2b8fb997ecc50de5f4fe0055c09517e6"/>
+    </feature>
+    <feature name="wx">
+        <param name="urlScheme" value="wx28ecf104aaf888d2"/>
+        <param name="apiKey" value="wx28ecf104aaf888d2"/>
+        <param name="apiSecret" value="2b8fb997ecc50de5f4fe0055c09517e6"/>
+    </feature>
+    <feature name="aliPayPlus">
+        <param name="urlScheme" value="AliPayPlusA6015465525028"/>
+    </feature>
+    <feature name="bMap">
+        <param name="android_api_key" value="5rsVFGVYXtn6A15jdOpZVUAyYCf8SHrb"/>
+        <param name="ios_api_key" value="azayN734bw9stoGOiWhUs5dYhsY9Mrv6"/>
+    </feature>
+
+    <feature name="qiniuUpfile">
+        <param name="bucket" value="jiurongcang"/>
+        <param name="SecretKey" value="qjRDT0DPaIXSqS9CVGEg2nXAjVGZ7MgltXaO4-jz"/>
+        <param name="AccessKey" value="bl881QRUgMWM_s3eAcH_ZzBDDA4bQAWA8IcNCnQX"/>
+    </feature>
+
+</widget>

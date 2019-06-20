@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>积分商城</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.bg{height:5.5rem;background: url(../../image/beijing.jpg) no-repeat;background-size:cover;}
+		.mc{background-color: rgba(0,0,0,.5); height: 100%;}
+		.aui-list-item-title{ display: flex;display: -webkit-flex;align-items: center;}
+		.head-pic{height: 2.5rem;width: 2.5rem;border-radius: 50%;overflow: hidden;}
+		.head-pic img{height:100%;width:100%;object-fit: cover;}
+
+		.aui-col-xs-6{width: 49%;margin-right: 2%;}
+		.aui-col-xs-6:nth-of-type(2n){margin-right: 0 !important;}
+		.ggao{width: 100%;border-radius: 0.25rem;overflow: hidden;}
+		.ggao1{height: 8.95rem;}
+		.ggao2{height:4.25rem;margin-bottom: 0.45rem;}
+		.ggao2:last-child{margin-bottom:0 !important;}
+		.ggao img{width: 100%;height: 100%;object-fit: cover;}
+
+		.aui-border{border-color: #f1f6f7 !important;}
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content" id="app" v-cloak style="padding-bottom:5rem">
+
+			<div class="bg">
+				<div class="mc" >
+					<ul class="aui-list" style="background-color: initial !important;padding-top: 1.5rem;">
+						<li class="aui-list-item">
+							<div class="aui-list-item-inner aui-padded-r-0">
+									<div class="aui-list-item-title">
+										<div class="head-pic aui-border" v-if="account!=null && account.head_portrait"><img :src="account.head_portrait?account.head_portrait:'../../image/head.png'"></div>
+										<div class="head-pic aui-border" v-else><img src="../../image/head.png"></div>
+											<div class="aui-padded-l-15">
+												<div class="aui-text-white fweight-5" v-if="account!=null">您的可用积分：{{account.score}}</div>
+											</div>
+									</div>
+									<div class="aui-list-item-right" @click="jf()" >
+										<img src="../../image/mingxi.png"/ style="height: 1.8rem;">
+									</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<!-- <div class="aui-row aui-padded-12 aui-padded-t-15 aui-padded-b-15 aui-bg-white aui-border-bgB">
+				<div class="aui-col-xs-6">
+					<div class="ggao1 ggao "><img src="../../image/ggt.jpg" /></div>
+				</div>
+				<div class=" aui-col-xs-6">
+					<div class="ggao2 ggao"><img src="../../image/ggt1.jpg" /></div>
+					<div class="ggao2 ggao"><img src="../../image/ggt2.jpg" /></div>
+				</div>
+			</div> -->
+
+			<!--热门兑换-->
+			<div class="aui-list  aui-padded-t-5 aui-padded-b-5 ">
+				<div class="aui-list-item aui-padded-l-12  aui-padded-r-12">
+					<div class="aui-list-item-inner aui-padded-r-0">
+						<div class="aui-list-item-title aui-font-size-15">
+							<div class="aui-pull-left fweight-5">
+								<span class="aui-bg-blue aui-margin-r-5" style="width: 4px;height: 15px;display: inline-block;position: relative;top: 2px; "></span>
+								兑换商品
+							</div>
+						</div>
+						<!-- <div class="aui-list-item-right aui-margin-l-0 aui-text-gray aui-font-size-12">查看更多
+							<i class="aui-iconfont aui-icon-right"></i>
+						</div> -->
+					</div>
+				</div>
+			</div>
+
+			<div class="aui-row aui-padded-l-12 aui-padded-r-12  aui-bg-white publis-list">
+				<template v-for="(v,index) in info">
+					<div class="aui-col-xs-6 aui-margin-b-10 aui-border" @click="det(v.id)">
+						<div class="list-pic">
+							<img :src="v.thumb" />
+						</div>
+						<div class="list-text aui-padded-l-5 aui-padded-r-5">
+							<div class="jianjei aui-ellipsis-1 aui-font-size-13 aui-padded-t-10">{{v.name}}</div>
+							<div class="aui-padded-t-5">
+								<span class="aui-text-danger fweight-5" v-if="v.exchange_score">{{v.exchange_score}}积分</span>
+							</div>
+						</div>
+					</div>
+				</template>
+
+
+			</div>
+
+
+		    <!--猜你喜欢-->
+		    <!-- <div class="aui-text-center aui-bg-grayer aui-font-size-16" style="padding: 1rem;">猜你喜欢</div>
+		    <div class="aui-row aui-padded-l-12 aui-padded-r-12 publis-list">
+
+					<template v-for="(v,index) in like_list">
+						<div class="aui-col-xs-6 aui-margin-b-10 aui-bg-white" @click="det(v.id)">
+							<div class="list-pic">
+								<img :src="v.thumb" />
+							</div>
+							<div class="list-text aui-padded-l-5 aui-padded-r-5">
+								<div class="jianjei aui-ellipsis-1 aui-font-size-13 aui-padded-t-10">{{v.name}}</div>
+								<div class="aui-padded-t-5">
+									<span class="aui-text-danger fweight-5" v-if="v.market_price">￥{{v.market_price}}</span>
+									<span class="aui-font-size-11 aui-text-grayer" style="text-decoration: line-through;" v-if="v.original_price">￥{{v.original_price}}</span>
+								</div>
+								<div class="aui-font-size-13 aui-text-grayer aui-padded-t-5 aui-text-brown" v-if="v.return_score">送{{v.return_score}}积分</div>
+								<div class="aui-padded-t-5">
+									<div class="aui-label aui-label-danger aui-label-outlined aui-font-size-10" v-if="v.full_reduction_tag==1">满赠</div>
+									<div class="aui-label aui-label-danger aui-label-outlined aui-font-size-10" v-if="v.reduce_tag==1">直降</div>
+								</div>
+							</div>
+						</div>
+					</template>
+				</div> -->
+
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			idx:'1',
+			token:'',
+			area_id:'',
+			totalRow:'',
+			info:[],
+			like_list:[],
+			account:'',
+			pageNo:'',
+			pageSize:10
+		},
+		methods:{
+			det:function(id){
+				api.openWin({
+					name: 'jifenDetails_win',
+					url: 'widget://html/shop/jifenDetails_win.html',
+					pageParam:{
+						id:id
+					}
+				});
+			},
+			jf:function() {
+				api.openWin({
+					name: 'jifens_win',
+					url: 'widget://html/personal/jifens_win.html',
+
+				});
+			},
+			init:function () {
+				api.ajax({   //积分  热门兑换
+				    url: score_good_list_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+				    method: 'post',
+				    data: {
+				        values: {
+				            token: vm.token,
+										agency_manage_id:vm.area_id,
+										pageNo:vm.pageNo,
+										pageSize:6
+				        }
+				    }
+					},function(ret, err){
+				    if (ret) {
+								console.log(JSON.stringify(ret));
+								if(ret.status==1){
+										vm.info=vm.info.concat(ret.data.page.list)
+										vm.totalRow=ret.data.page.totalRow;
+										vm.account=ret.data.account;
+										api.sendEvent({
+										    name: 'account',
+										    extra: {
+										        account: ret.data.account
+										    }
+										});
+
+								}else{
+									api.toast({
+									    msg: ret.msg,
+									    duration: 2000,
+									    location: 'bottom'
+									});
+								}
+
+				    }else{
+							if(err.statusCode==500){
+								api.toast({
+										msg: '服务器请求错误！',
+										duration: 2000,
+										location: 'middle'
+								});
+							}else{
+									if(err.statusCode==404){
+										api.toast({
+												msg: '请求失败',
+												duration: 2000,
+												location: 'middle'
+										});
+									}else{
+										api.toast({
+												msg: '请求超时，请检查网络',
+												duration: 2000,
+												location: 'middle'
+										});
+									}
+
+							}
+						}
+				});
+
+			},
+			list_info:function(){
+				api.ajax({
+				    url: guess_you_like_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+				    method: 'post',
+				    data: {
+				        values: {
+				            token: vm.token,
+										agency_manage_id:vm.area_id
+				        }
+				    }
+				},function(ret, err){
+				    if (ret) {
+							api.hideProgress();
+							if(ret.status==1){
+								vm.like_list=ret.data.page;
+
+							}else{
+									api.toast({
+									    msg: ret.msg,
+									    duration: 2000,
+									    location: 'bottom'
+									});
+
+							}
+				    }else{
+								console.log(JSON.stringify(err))
+						}
+				});
+			},
+		}
+	})
+	apiready = function(){
+		vm.token=$api.getStorage('token');
+		vm.area_id=$api.getStorage('area_id')
+		vm.init();
+		vm.list_info();
+		api.addEventListener({
+				 name:'scrolltobottom',
+				 extra:{
+					 threshold:300
+				 }
+			 },function(ret,err){
+				 if(vm.totalRow == vm.info.length){
+
+				return;
+		 }
+		 vm.pageNo++;
+		 vm.init();
+	 });
+	 api.setRefreshHeaderInfo({
+				visible: true,
+				loadingImg: 'widget://image/refresh.png',
+				 bgColor: '#f6f6f6',
+				textColor: '#999',
+				textDown: '下拉刷新...',
+				textUp: '松开刷新...',
+				showTime: true
+		}, function (ret, err) {
+			if(ret){
+				vm.info = [];
+				vm.pageNo = 1;
+				vm.init();
+				setTimeout("api.refreshHeaderLoadDone()", '500');
+			}
+		});
+	};
+
+</script>

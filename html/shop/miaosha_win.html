@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>掌上秒杀</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+		<link rel="stylesheet" href="../../css/swiper-4.3.3.min.css" />
+	</head>
+	<style type="text/css">
+	.aui-row{background-color: #1f2020;}
+	.aui-row .item{border-right: solid 0.5px #aeb8b9;}
+	.aui-row .aui-col-xs-3:last-child .item{border-right:none !important;}
+	.active{background-color: #ff2742;color: #fff !important;}
+	.active .item{border-right: none !important;}
+	.time{width: 1.2rem;height: 1.2rem;border-radius: 0.25rem;display: inline-block;text-align: center;line-height: 1.2rem;}
+
+	.aui-list-item-media{width: 5.25rem !important;height: 5.5rem;overflow: hidden;padding-right: 0.6rem !important;}
+		.aui-list-item-media img{width: 100%;height: 100%;object-fit: cover;}
+		.aui-btn-danger{width: 3.5rem;text-align: center;line-height: 1.3rem;position: relative;bottom: -13px;font-size: 12px;}
+
+		.aui-ellipsis-2 {height: 44px;line-height: 22px;}
+
+	</style>
+
+	<body class="aui-bg-grayer">
+
+		<div class="aui-content" id="app">
+			<header class="aui-bar aui-bar-nav aui-bar-light">
+					<a class="aui-pull-left aui-btn" onclick="closeWin()">
+							<span class="aui-iconfont aui-icon-left"></span>
+					</a>
+					<div class="aui-title">掌上秒杀</div>
+			</header>
+			<div class="aui-row list" style=" height: 60px;">
+				<div class="swiper-container" >
+					<div class="swiper-wrapper">
+						<template v-for="(v,index) in field_list">
+							<div class="swiper-slide aui-col-xs-3 aui-text-center aui-text-grayerBlue aui-padded-t-10 aui-padded-b-10" style="width:25% !important"	:class="{'active':idx==index}" @click="tachege(index,v.field_id)">
+								<div class="item">
+									<div class="aui-font-weight aui-font-size-19">{{v.kill_start_time}}</div>
+									<div class="aui-font-size-12" v-if="v.time_tag==1">正在进行</div>
+									<div class="aui-font-size-12" v-else>即将开始</div>
+								</div>
+							</div>
+						</template>
+					</div>
+				</div>
+			</div>
+			<!--倒计时-->
+			 <div class="aui-list aui-padded-t-5 aui-padded-b-5 aui-bg-grayer info" style="height:55px" v-if="field_list.length>0">
+				<div class="aui-list-item aui-padded-l-12  aui-padded-r-12" v-if="time_tag==1">
+					<div class="aui-list-item-inner aui-padded-r-0">
+						<div class="aui-list-item-title aui-font-size-15">
+							<img class="aui-margin-r-5" src="../../image/shijian.png"  style="width: 0.9rem;vertical-align: text-bottom;">抢购中
+						</div>
+						<div class="aui-list-item-right aui-margin-l-15 aui-text-blue">
+							<span class="aui-text-blacker aui-font-size-15 aui-margin-r-12">距结束</span>
+							<span class="time aui-bg-blue aui-text-white aui-font-size-11">{{h}}</span> ：<span class="time aui-bg-blue aui-text-white aui-font-size-11">{{m}}</span> ：<span class="time aui-bg-blue aui-text-white aui-font-size-11">{{s}}</span>
+						</div>
+					</div>
+				</div>
+				<div class="aui-list-item aui-padded-l-12  aui-padded-r-12" v-else>
+					<div class="aui-list-item-inner aui-padded-r-0">
+						<div class="aui-list-item-title aui-font-size-15">
+							<img class="aui-margin-r-5" src="../../image/shijian.png"  style="width: 0.9rem;vertical-align: text-bottom;">即将开始
+						</div>
+						<div class="aui-list-item-right aui-margin-l-15 aui-text-blue">
+							<span class="aui-text-blacker aui-font-size-15 aui-margin-r-12">距开始</span>
+							<span class="time aui-bg-blue aui-text-white aui-font-size-11">{{hs}}</span> ：<span class="time aui-bg-blue aui-text-white aui-font-size-11">{{ms}}</span> ：<span class="time aui-bg-blue aui-text-white aui-font-size-11">{{ss}}</span>
+						</div>
+					</div>
+				</div>
+				</div>
+			</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/swiper-4.3.3.min.js" ></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm =new Vue({
+		el:'#app',
+		data:{
+			idx:'0',
+			field_list:[],
+			kill_end_time:'',
+			kill_start_time:'',
+			time_tag:'',
+			h: '',
+		  m:'',
+			s:'',
+			hs: '',
+		  ms:'',
+			ss:''
+		},
+		methods:{
+			tachege:function(idx,id) {
+				vm.idx=idx;
+				vm.kill_end_time='';
+				vm.kill_start_time='';
+				vm.time_tag='';
+				vm.h= '',
+			  vm.m='',
+				vm.s='',
+				vm.hs= '',
+			  vm.ms='',
+				vm.ss='',
+				api.sendEvent({
+				    name: 'file',
+				    extra: {
+				        id:id
+				    }
+				});
+
+			},
+			dl:function() {
+				if(vm.time_tag==1){
+					setInterval(function(){
+						if(vm.kill_end_time){
+							if(vm.kill_end_time!='' && vm.kill_end_time!=undefined ){
+								var time = new Date(vm.kill_end_time.replace(/-/g,"/")).getTime();
+								var nowTime = new Date().getTime();
+								var endTime = time - nowTime;
+								var h,m,s;
+								if(endTime>=0){
+									h = Math.floor(endTime/1000/60/60%24);
+									m = Math.floor(endTime/1000/60%60);
+									s = Math.floor(endTime/1000%60);
+								}else{
+									api.sendEvent({
+											name: 'time_list',
+											extra:{
+												id:2
+											}
+									});
+								}
+								if(h < 10){
+									h = "0" + h
+								}
+								if(m < 10){
+									m = "0" + m
+								}
+								if(s < 10){
+									s = "0" + s
+								}
+								vm.h = h;
+								vm.m=m;
+								vm.s=s;
+							}
+
+						}
+					},1000)
+					return;
+				}
+				if(vm.time_tag==0){
+				 setInterval(function(){
+					 if(vm.kill_start_time  && vm.time_tag==0){
+	 					if(vm.kill_start_time!='' && vm.kill_start_time!=undefined && vm.time_tag==0){
+	 						var times = new Date(vm.kill_start_time.replace(/-/g,"/")).getTime();
+	 						var nowTimes = new Date().getTime();
+	 						var endTimes =times- nowTimes;
+	 						var hs,ms,ss;
+	 						if(endTimes>=0){
+	 							hs= Math.floor(endTimes/1000/60/60%24);
+	 							ms = Math.floor(endTimes/1000/60%60);
+	 							ss = Math.floor(endTimes/1000%60);
+	 						}else{
+	 							setTimeout(function() {
+	 								api.sendEvent({
+	 								    name: 'time_list',
+	 										extra:{
+	 											id:1
+	 										}
+	 								});
+	 							},500)
+	 						}
+	 						if(hs < 10){
+	 							hs = "0" + hs
+	 						}
+	 						if(ms < 10){
+	 							ms = "0" + ms
+	 						}
+	 						if(ss < 10){
+	 							ss = "0" + ss
+	 						}
+	 						vm.hs = hs;
+	 						vm.ms=ms;
+	 						vm.ss=ss;
+	 					}
+
+	 				}
+				 },1000)
+				 return;
+				}
+				setTimeout(function(){
+
+					var mySwiper = new Swiper('.swiper-container', {
+						slidesPerView:'auto',
+						spaceBetween: 10,
+						freeMode: true,
+						freeModeMomentumRatio:1
+					})
+				},300)
+			},
+
+		}
+	})
+
+	apiready = function(){
+		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+    api.openFrame({
+        name: 'miaosha_frm',
+        url: 'widget://html/shop/miaosha_frm.html',
+        rect: {
+            x: 0,
+            y: $api.dom('header').offsetHeight+115,
+            w: 'auto',
+            h: api.winHeight - $api.dom('header').offsetHeight -115
+        },
+        bounces: true,
+        pageParam: {
+            id: api.pageParam.id
+        }
+    });
+		api.addEventListener({
+		    name: 'field_kill'
+		}, function(ret, err){
+		    if( ret ){
+					console.log(JSON.stringify(ret));
+
+		        // vm.field_list=ret.value.field_list;
+						 vm.kill_end_time=ret.value.kill_end_time;
+						 vm.kill_start_time=ret.value.kill_start_time;
+						 vm.time_tag=ret.value.time_tag;
+						 vm.h= '';
+		 			   vm.m='';
+		 				 vm.s='';
+						 vm.hs= '';
+		 			   vm.ms='';
+		 				 vm.ss=''
+						 vm.dl();
+
+		    }
+		});
+		api.addEventListener({
+		    name: 'field_list'
+		}, function(ret, err){
+		    if( ret ){
+						console.log(JSON.stringify(ret));
+		         vm.field_list=ret.value.field_list;
+		    }
+		});
+
+
+	};
+
+</script>

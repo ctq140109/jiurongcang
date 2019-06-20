@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>我的订单</title>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" href="../../css/global.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+</head>
+<style>
+
+	.aui-media-list-item-inner{align-items: center;}
+
+    .pay{ width: 1rem;height: 1rem;vertical-align: middle;}
+
+	.aui-list-item-media{width: 5.25rem !important;padding-right: 0.6rem !important;padding-top: 0 !important; padding-bottom: 0 !important;}
+    .shop-pic{height: 4.5rem;width: 4.5rem;border-radius: 0.25rem;overflow: hidden;}
+    .aui-list-item-media img{width: 100%;height: 100%;object-fit: cover;}
+    .aui-list-item-inner{padding: 0 !important;}
+    .aui-ellipsis-2{height: 44px; line-height: 22px;}
+
+	.aui-btn{width: 4rem; border-radius:1rem;margin-right: .5rem;}
+	.blue{border-color:#35adbe !important;}
+
+</style>
+<body class="aui-bg-grayer">
+	<div class="aui-content" id="app" v-cloak v-if="is_load">
+    <template v-for="(vo,index) in list">
+  		<div class="aui-list aui-media-list aui-border-bgT">
+  			<div class="aui-list-header aui-padded-12 aui-bg-white aui-font-size-15" >
+  				<div class="">订单编号：{{vo.order_sn}}</div>
+  				<span class="aui-text-blue" style="float: right;" v-if="vo.status==0">等待买家付款</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==1">等待卖家发货</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==2">等待收货</span>
+          <!-- <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==3">待评价</span> -->
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==3 && vo.is_evaluation==0">待评价</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==3 && vo.is_evaluation==1">交易完成</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==4">退款中</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==5">退款失败</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==6">已退款</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==7">已取消</span>
+          <span class="aui-text-blue" style="float: right;" v-else-if="vo.status==8">已关闭</span>
+  			</div>
+          <template v-for="(voo,idx) in vo.goods_order_list">
+      			<div class="aui-list-item aui-padded-b-12 aui-padded-l-0" @click="openDetail(index,vo.id,vo.status)">
+      				<div class="aui-media-list-item-inner aui-padded-l-12 aui-padded-r-12">
+      					<div class="aui-list-item-media">
+      						<div class="shop-pic">
+      							<img :src="voo.thumb"  />
+      						</div>
+      					</div>
+      					<div class="aui-list-item-inner aui-padded-r-0">
+      						<div class="aui-list-item-text aui-font-size-14">
+      							<span class="aui-ellipsis-2  aui-text-blacker">{{voo.goods_name}}</span>
+      						</div>
+      						<div class="aui-list-item-text aui-font-size-12 aui-text-grayerBlue">
+      							<span class="" v-if="voo.spec_name!=''">{{voo.spec_name}}</span>
+      							<span class="aui-pull-right">x{{voo.goods_num}}</span>
+      						</div>
+      						<div class="aui-list-item-text aui-padded-t-10">
+      							<span class="aui-font-size-17 aui-text-danger">￥{{voo.goods_price}}</span>
+      							<!-- <span class="aui-pull-right aui-text-black">退款中</span> -->
+      						</div>
+      					</div>
+      				</div>
+      			</div>
+          </template>
+  			<!-- <div class="aui-padded-b-12 aui-font-size-14 aui-text-blacker" style="padding-left: 3rem;">优惠<span class="aui-text-grayerBlue aui-margin-l-5">满300送长城红酒一箱</span> </div> -->
+  			<div class="aui-padded-b-12 aui-font-size-14 aui-text-blacker" style="padding-left: 2rem;" v-if="vo.total_return_score">送积分<span class="aui-text-grayerBlue aui-margin-l-5">{{vo.total_return_score}}积分</span> </div>
+
+  			<div class="aui-padded-12 aui-text-blacker aui-font-size-14 aui-padded-t-15 aui-padded-b-15 aui-text-right aui-border-t">
+  				共{{vo.goods_num}}件商品 合计：￥ <span class="aui-font-size-18">{{vo.pay_price}}</span>
+  			</div>
+        </div>
+      </template>
+      <div class="aui-text-center" v-if="totalRow==0 && is_load==1">
+          <img src="../../icon/nodata.png" style="width:12.5rem;height:12.5rem;margin:5rem auto 0"/>
+      </div>
+      <div class="aui-text-center" v-if="is_load==2">
+          <img src="../../icon/nopage.png" style="width:12.5rem;height:12.5rem;margin:5rem auto 0"/>
+      </div>
+
+      <div class="aui-col-xs-12 aui-text-center" id="bot" v-if="list.length>10">
+           <span class="aui-font-size-12 aui-text-gray">正在加载</span>
+           <img src="../../image/uploading.gif" style="width:0.7rem;height:0.7rem;vertical-align:middle"/>
+      </div>
+	</div>
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+
+var vm = new Vue({
+  el:'#app',
+  data:{
+      token:'',
+      state:'4',
+      pageNumber:1,
+      pageSize:10,
+      list:[],
+      totalRow:0,
+      is_load:'',
+  },
+  methods:{
+      init:function(){
+          if(!vm.is_load){
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '加载中...',
+            });
+          }
+          api.ajax({
+              url: order_list_url,
+              method: 'get',
+              timeout:20,
+              dataType:'json',
+              returnAll:false,
+              data: {
+                  values: {
+                      token:vm.token,
+                      status:vm.state,
+                      pageNo:vm.pageNumber,
+                      pageSize:vm.pageSize
+                  }
+              }
+          },function(ret, err){
+              if (ret) {
+                  console.log(JSON.stringify(ret))
+                  api.hideProgress();
+                  vm.is_load = 1;
+                  if(ret.status==1){
+                      vm.list = vm.list.concat(ret.data.page.list);
+                      vm.totalRow = ret.data.page.totalRow;
+                  }else{
+                    api.toast({
+                        msg: ret.msg,
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                  }
+
+              } else {
+                  vm.is_load = 2;
+                  api.hideProgress();
+    							if(err.statusCode==500){
+    								api.toast({
+    										msg: '服务器请求错误！',
+    										duration: 2000,
+    										location: 'middle'
+    								});
+    							}else{
+    									api.toast({
+    											msg: '请求超时，请检查网络',
+    											duration: 2000,
+    											location: 'middle'
+    									});
+    							}
+
+              }
+          });
+
+    	},
+      openDetail:function(idx,id,status,is_evaluation){
+          if(status==0){
+              api.openWin({
+                  name: 'daifukuan_win',
+                  url: 'widget://html/order/daifukuan_win.html',
+                  pageParam: {
+                      id:id,
+                      idx:idx
+                  }
+              });
+          }else if(status==1){
+            api.openWin({
+                name: 'daifahuo_win',
+                url: 'widget://html/order/daifahuo_win.html',
+                pageParam: {
+                    id:id
+                }
+            });
+          }else if(status==2){
+            api.openWin({
+                name: 'daishouhuo_win',
+                url: 'widget://html/order/daishouhuo_win.html',
+                pageParam: {
+                    id:id,
+                    idx:idx
+                }
+            });
+          }else if(status==3){
+            api.openWin({
+                name: 'wancheng_win',
+                url: 'widget://html/order/wancheng_win.html',
+                pageParam: {
+                    id:id
+                }
+            });
+          }else if(status==7){
+            api.openWin({
+                name: 'yiquxiao_win',
+                url: 'widget://html/order/yiquxiao_win.html',
+                pageParam: {
+                    id:id
+                }
+            });
+          }else if(status==8){
+            api.openWin({
+                name: 'guanbi_win',
+                url: 'widget://html/order/guanbi_win.html',
+                pageParam: {
+                    id:id
+                }
+            });
+          }else if(status==4 || status==5 || status==6){
+            api.openWin({
+                name: 'tuikuan_win',
+                url: 'widget://html/order/tuikuan_win.html',
+                pageParam: {
+                    id:id,
+                    status:status
+                }
+            });
+          }
+
+
+
+      },
+
+
+  }
+})
+
+apiready = function(){
+  vm.token = $api.getStorage('token');
+
+  vm.init();
+
+	api.addEventListener({
+	    name: 'tabes'
+	}, function(ret, err){
+	    if( ret ){
+					console.log(JSON.stringify(ret));
+	        vm.state=ret.value.tab_shouhou;
+					vm.list=[];
+					vm.init();
+	    }
+	});
+
+
+  //下拉刷新
+   api.setRefreshHeaderInfo({
+        visible: true,
+        loadingImg: 'widget://image/refresh.png',
+        bgColor: '#f6f6f6',
+        textColor: '#999',
+        textDown: '下拉刷新...',
+        textUp: '松开刷新...',
+        showTime: true
+    }, function (ret, err) {
+        vm.token = $api.getStorage('token');
+        vm.list = [];
+        vm.pageNumber = 1;
+        vm.init();
+        setTimeout("api.refreshHeaderLoadDone()", '500');
+    });
+
+
+  //上啦加载
+  api.addEventListener({
+     name:'scrolltobottom',
+     extra:{
+       threshold:300
+     }
+  },function(ret,err){
+    if(vm.totalRow == vm.list.length){
+
+        return;
+      }
+    vm.pageNumber++
+    vm.init();
+   });
+}
+
+</script>

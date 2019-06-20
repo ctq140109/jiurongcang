@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>分享</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/animate.css" />
+	</head>
+	<style>
+		.guanbi{width: 1rem;}
+
+
+		.share{position: fixed;bottom: 0;left: 0;background-color: #f8f8f8; width: 100%;}
+		.share h1{text-align: center;color: #666;}
+		.aui-row{padding: 0.5rem 0;margin: 0 0.5rem;}
+		.aui-col-5{text-align: center;}
+		.aui-col-5 .pic{padding: 0 .6rem;}
+		.aui-col-5  p{font-size: 0.5rem;}
+		.qx{text-align: center; line-height: 2.5rem; color: #666;text-decoration:underline}
+	</style>
+	<body style="background: rgba(0,0,0,.4);">
+		<div class="hide" onclick="hide()"></div>
+		<div class="share aui-padded-b-10  animated slideInUp" id="app" v-cloak>
+			<a class="aui-pull-right" style="position: absolute;top: 0.6rem;right: 0.6rem;z-index: 999;" onclick="hide()">
+		      	<img class="guanbi" src="../../image/close2.png"/>
+		    </a>
+			<header class="aui-bar aui-bar-nav aui-bar-light aui-padded-t-12" style="background-color: #f8f8f8;">
+				分享
+			</header>
+			<div class="aui-row">
+					<div class="aui-col-5" @click="yaoqings(1)">
+						<div class="pic">
+							<img src="../../image/share1.jpg"/>
+						</div>
+						<p>微信</p>
+					</div>
+					<div class="aui-col-5 " @click="yaoqings(2)">
+						<div class="pic">
+							<img src="../../image/share2.jpg"/>
+						</div>
+						<p>朋友圈</p>
+					</div>
+					<!-- <div class="aui-col-5">
+						<div class="pic">
+							<img src="../../image/share8.jpg"/>
+						</div>
+						<p>二维码</p>
+					</div> -->
+			</div>
+
+		</div>
+
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			id:'',
+			list:[],
+			goods:[],
+			title:'',
+			score_tag:'',
+			brokerage_tag:'',
+			pay_type:''
+		},
+		methods:{
+			init:function() {
+				api.ajax({
+						url: app_share_url,
+						method: 'get',
+						timeout:30,
+						returnAll:false,
+						data: {
+								values: {
+										token: vm.token
+								}
+						}
+				},function(ret, err){
+						if (ret) {
+								console.log(JSON.stringify(ret));
+								if(ret.status){
+									vm.link=ret.data.link;
+
+								}
+						}
+				});
+			},
+			yaoqings:function(index){
+				if(index==1){
+					var wx = api.require('wx');
+					wx.shareWebpage({
+							apiKey: 'wx28ecf104aaf888d2',
+							scene:'session',
+							title: vm.title,
+							thumb: 'widget://image/logo.png',
+							contentUrl: vm.link
+					}, function(ret, err) {
+							if(ret.status==true){
+								api.toast({
+										msg: '分享成功',
+										duration: 2000,
+										location: 'bottom'
+								});
+							}else{
+								api.toast({
+										msg: '分享失败',
+										duration: 2000,
+										location: 'bottom'
+								});
+							}
+					});
+				}else if(index==2){
+					var wx = api.require('wx');
+					wx.shareWebpage({
+							scene:'timeline',
+							title: vm.title,
+							thumb: 'widget://image/logo.png',
+							contentUrl:base_url +  vm.link
+					}, function(ret, err) {
+							if(ret.status==true){
+								api.toast({
+										msg: '分享成功',
+										duration: 2000,
+										location: 'bottom'
+								});
+
+							}else{
+								api.toast({
+										msg: '分享失败',
+										duration: 2000,
+										location: 'bottom'
+								});
+							}
+					});
+				}
+
+			},
+		}
+	})
+
+	apiready = function(){
+		vm.token = $api.getStorage("token");
+		var h = api.winHeight-$api.dom('.share').offsetHeight;
+		$api.css($api.dom('.hide'),'height:'+h+'px')
+		vm.title=api.appName;
+		vm.init();
+	}
+
+	function hide(){
+		$api.removeCls($api.dom('.aui-content'),'slideInUp');
+		$api.addCls($api.dom('.aui-content'),'slideOutDown');
+
+		setTimeout(function(){
+
+			api.closeFrame();
+
+		},300)
+	}
+</script>

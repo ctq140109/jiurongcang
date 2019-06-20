@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>评价详情</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		/*.aui-list-item-media{width: auto !important;}
+		.header{width: 1.5rem;height: 1.5rem;border-radius: 50%;overflow: hidden;}
+		.header img{width: 100%;height: 100%;object-fit: cover;}
+		.list .aui-col-xs-4{width: 32.3333%;height: 5rem; margin-right: 1.5%;border-radius: 0.25rem;overflow: hidden;}
+		.list .aui-col-xs-4 img{width: 100%;height: 100%;object-fit: cover;}
+		.list .aui-col-xs-4:nth-of-type(3n){margin-right: 0 !important;}
+		.qb{height: 1.5rem;line-height: 1.5rem;width:5.5rem;border-radius: 1rem; margin: auto;}
+		.qb span{color: #333333;border-bottom: solid 1px #333333;}
+
+		.caozuo{ display: block;}
+		.left{display: inline-block;}
+		.plq{border-radius: 1.5rem; padding:.1rem 0.75rem;}
+		.plq img{width: .8rem;vertical-align: middle;}*/
+		body{ background: #fff;}
+	 .aui-list .aui-list-item{ margin-left:0.75rem;padding:0.5rem 0.75rem 0.5rem 0;}
+	 .star{ font-size: 0;}
+	 .star img{ width: 1rem;height: 1rem;vertical-align: middle;position: relative;top: -0.25rem;left: -0.15rem;}
+
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content" id="app" v-cloak>
+			<!--评价内容-->
+			<!-- <div class="list">
+				<div class="aui-list aui-padded-12 aui-padded-t-0 aui-border-bgT">
+					<div class="aui-list-item aui-list-item-middle aui-padded-l-0">
+			            <div class="aui-media-list-item-inner">
+			                <div class="aui-list-item-media">
+			                	<div class="header">
+			                    	<img src="../../image/lizi2.jpg">
+			                    </div>
+			                </div>
+			                <div class="aui-list-item-inner ">流浪男</div>
+			            </div>
+			        </div>
+			        <div class="aui-font-size-11 aui-text-grayerBlue">2014-12-15  颜色分类：白色B款   尺码：38</div>
+    				<div class="aui-padded-t-12 aui-padded-b-0 aui-font-size-15">等了一个月，终于没有白等，质量很好！</div>
+    				<div class="aui-row aui-padded-t-10">
+    					<div class="aui-col-xs-4 aui-margin-t-5">
+    						<img src="../../image/lizi2.jpg"/>
+    					</div>
+    					<div class="aui-col-xs-4 aui-margin-t-5">
+    						<img src="../../image/lizi2.jpg"/>
+    					</div>
+    					<div class="aui-col-xs-4 aui-margin-t-5">
+    						<img src="../../image/lizi2.jpg"/>
+    					</div>
+    					<div class="aui-col-xs-4 aui-margin-t-5">
+    						<img src="../../image/lizi2.jpg"/>
+    					</div>
+    					<div class="aui-col-xs-4 aui-margin-t-5">
+    						<img src="../../image/lizi2.jpg"/>
+    					</div>
+    					<div class="aui-col-xs-4 aui-margin-t-5">
+    						<img src="../../image/lizi2.jpg"/>
+    					</div>
+    				</div>
+
+    			</div>
+
+			</div> -->
+
+
+			<div class="aui-list aui-media-list aui-margin-b-10">
+			    <div class="aui-list-item aui-list-item-middle">
+			        <div class="aui-media-list-item-inner">
+			            <div class="aui-list-item-media" style="width: auto;">
+			                <img :src="dl.head_portrait" class="aui-img-round" style=" width:40px;height:40px;">
+			            </div>
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-text">
+			                    <div class="aui-font-size-14 aui-text-gray">{{dl.nick_name}}</div>
+
+
+			                </div>
+											<div class="aui-list-item-text aui-list-12">
+												<div class="star" v-if="dl.level==0">
+													<img src="../../image/star_empty.png" />
+													<img src="../../image/star_empty.png" />
+													<img src="../../image/star_empty.png" />
+													<img src="../../image/star_empty.png" />
+													<img src="../../image/star_empty.png" />
+													<span class="aui-font-size-13">{{dl.level}}分</span>
+												</div>
+												<div class="star" v-else-if="dl.level==1">
+													<img src="../../image/star_full.png" />
+													<img src="../../image/star_empty.png" />
+													<img src="../../image/star_empty.png" />
+													<img src="../../image/star_empty.png" />
+													<img src="../../image/star_empty.png" />
+													<span class="aui-font-size-13">{{dl.level}}分</span>
+												</div>
+												<div class="star" v-else-if="dl.level==2">
+													<img src="../../image/star_full.png" />
+													<img src="../../image/star_full.png" />
+													<img src="../../image/star_empty.png" />
+													<img src="../../image/star_empty.png" />
+													<img src="../../image/star_empty.png" />
+													<span class="aui-font-size-13">{{dl.score}}分</span>
+												</div>
+												<div class="star" v-else-if="dl.score==3">
+													<img src="../../image/star_full.png" />
+													<img src="../../image/star_full.png" />
+													<img src="../../image/star_full.png" />
+													<img src="../../image/star_empty.png" />
+													<img src="../../image/star_empty.png" />
+													<span class="aui-font-size-13">{{dl.level}}分</span>
+												</div>
+												<div class="star" v-else-if="dl.level==4">
+													<img src="../../image/star_full.png" />
+													<img src="../../image/star_full.png" />
+													<img src="../../image/star_full.png" />
+													<img src="../../image/star_full.png" />
+													<img src="../../image/star_empty.png" />
+													<span class="aui-font-size-13">{{dl.level}}分</span>
+												</div>
+												<div class="star" v-else-if="dl.level==5">
+													<img src="../../image/star_full.png" />
+													<img src="../../image/star_full.png" />
+													<img src="../../image/star_full.png" />
+													<img src="../../image/star_full.png" />
+													<img src="../../image/star_full.png" />
+													<span class="aui-font-size-13">{{dl.level}}分</span>
+												</div>
+											</div>
+
+			            </div>
+			        </div>
+							<div class="aui-list-item-text aui-list-12">
+									{{dl.create_time}}
+							</div>
+			        <div class="aui-font-size-14">{{dl.content}}</div>
+			    	<div class="aui-row" v-if="dl.pictures">
+			    		<template v-for="(vo,index) in dl.pictures">
+			    		<div class="aui-col-xs-4 aui-padded-5" @click="openShopPic(dl.pictures,index)"><img :src="vo" style="width:100%;height: 4.5rem"></div>
+			    		</template>
+			    	</div>
+			    </div>
+			</div>
+
+
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			id:'',
+			area_id:'',
+			goods_id:'',
+			token:'',
+			dl:[]
+		},
+		methods:{
+			init:function(){
+				api.ajax({
+					url:check_evaluate_url,
+					method:"get",
+					timeout:30,
+					dataType:'json',
+					returnAll:false,
+					data:{
+						values:{
+							token:vm.token,
+							order_id:vm.id,
+							goods_id:vm.goods_id
+						}
+					}
+				},function(ret,err){
+					if(ret){
+
+						console.log(JSON.stringify(ret))
+						if(ret.status){
+							vm.dl = ret.data.evaluate;
+						}
+
+					}else{
+						console.log(JSON.stringify(err))
+					}
+				});
+			},
+			openShopPic:function(pic,idx){
+				var photoBrowser = api.require('photoBrowser');
+				photoBrowser.open({
+						images: pic,
+						activeIndex:idx,
+						placeholderImg: 'widget://res/img/apicloud.png',
+						bgColor: '#000'
+				}, function(ret, err) {
+
+						if(ret.eventType == 'click'){
+								photoBrowser.close();
+
+						}
+				});
+				photoBrowser.setIndex({
+						index: idx
+				});
+
+			},
+		}
+	})
+
+	apiready = function(){
+		vm.token=$api.getStorage('token');
+		vm.id=api.pageParam.id,
+		vm.goods_id=api.pageParam.goods_id;
+		vm.list=api.pageParam.list;
+		vm.init();
+
+	}
+</script>

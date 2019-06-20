@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title></title>
+	<link rel="stylesheet" href="css/aui.css" />
+	<link rel="stylesheet" href="css/common.css" />
+</head>
+<style type="text/css">
+	.disnone {
+		display: none !important;
+	}
+
+	.disblock {
+		display: block !important;
+	}
+
+	.index .icon {
+		width: 1rem;
+	}
+
+	.index .myicon {
+		width: 1rem !important;
+		height: 1rem !important
+	}
+
+	.index .down {
+		position: absolute;
+		top: 50%;
+		right: 0.55rem;
+		margin-top: -0.5rem;
+		width: 1rem;
+		height: 1rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.index .down img {
+		width: 0.5rem;
+		height: 0.5rem;
+		vertical-align: middle;
+	}
+
+	input::-webkit-input-placeholder {
+		color: #bbc7c8;
+		font-size: 0.7rem;
+	}
+
+	input:-moz-placeholder {
+		color: #bbc7c8;
+		font-size: 0.7rem;
+	}
+
+	input::-moz-placeholder {
+		color: #bbc7c8;
+		font-size: 0.7rem;
+	}
+
+	input:-ms-input-placeholder {
+		color: #bbc7c8;
+		font-size: 0.7rem;
+	}
+
+	/*.fenlei {
+		width: 100%;
+	}*/
+
+	/*.aui-tab .aui-tab-item {
+		position: relative;
+	}*/
+
+	.aui-tab .aui-active {
+		border-bottom: none;
+		color: #35adbe;
+	}
+
+	.aui-tab .aui-active:after {
+		content: '';
+		position: absolute;
+		width: 1.4rem;
+		height: 2px;
+		left: 50%;
+		top: 77%;
+		margin-left: -0.7rem;
+		background-color: #35adbe;
+	}
+	#classify {
+		/*border: 1px solid #000;*/
+		margin: 0;
+		padding: 0;
+		text-align: right;
+		height: 1.6rem;
+		line-height: 1.6rem;
+	}
+
+	.td {
+		width: 0.4rem;
+		margin-left: 0.3rem;
+		vertical-align: middle;
+	}
+</style>
+
+<body>
+	<div id="app">
+		<!--主页-->
+		<header class="aui-bar aui-bar-nav aui-bar-light index disnone" style="overflow: hidden;" v-bind:class="{'disblock': on_index== 0}">
+			<a class="aui-pull-left aui-btn" v-if="is_shop==0" @click="area()">
+				<img src="image/zuobiao.jpg" class='icon' style="width: 0.8rem !important;">
+				<span class="aui-text-blacker aui-margin-l-5 aui-ellipsis-1">{{area_name}}</span>
+			</a>
+			<a class="aui-pull-left aui-btn" v-else>
+				<img src="image/zuobiao.jpg" class='icon' style="width: 0.8rem !important;">
+				<span class="aui-text-blacker aui-margin-l-5">{{area_name}}</span>
+			</a>
+			<a class="aui-pull-right aui-btn gwc aui-padded-r-0 aui-margin-r-12" @click="new_list()">
+				<img src="image/xiaoxi.png" style="opacity:0.9" class='icon' />
+				<div class="aui-badge aui-margin-l-0" style="top:0.3rem" v-if="unread_num">{{unread_num}}</div>
+
+			</a>
+			<a class="aui-pull-right aui-btn gwc aui-padded-r-0 aui-margin-r-10" @click="doSearch()">
+				<img src="image/sousuo-icon.png" class='icon' />
+			</a>
+		</header>
+		<!--分类-->
+		<header class="aui-bar aui-bar-nav aui-bar-light aui-margin-b-5  aui-padded-l-12 aui-padded-r-12 disnone aui-margin-t-5" style="align-items: center;overflow: hidden;" v-bind:class="{'disblock': on_index== 1}">
+			<div class="aui-font-size-14 aui-text-grayer" style="background-color: #eef3f4 !important; border-radius: 1rem;height: 1.5rem;line-height: 1.5rem;width: 100%;text-align: left;padding-left: 0.75rem;" @click="doSearch()">
+				<img src="image/sousuo.png" class="aui-margin-r-5" style="width:0.8rem;vertical-align: sub;" /> 搜索商品
+			</div>
+		</header>
+		<div class="fenlei aui-bg-grayer  disnone" id="first" v-bind:class="{'disblock': on_index== 1}">
+			<div class="aui-tab aui-bg-grayer" id="tab">
+				<div class="aui-tab-item aui-font-size-15 aui-active" style="background-color:rgba(0,0,0,0)"></div>
+			</div>
+			<div id="classify">
+				<span class="aui-padded-l-12 aui-padded-r-12 aui-text-gray aui-font-size-14" @click="sort(1)">
+    					价格
+    					<img class="td" src="image/0.png" v-if="price==0"/>
+							<img class="td" src="image/1.png" v-else-if="price==2"/>
+							<img class="td" src="image/2.png" v-else/>
+    				</span>
+				<span class="aui-padded-l-12 aui-padded-r-12 aui-text-gray aui-font-size-14" @click="sort(2)">
+    					销量
+							<img class="td" src="image/0.png" v-if="sales==0"/>
+    					<img class="td" src="image/1.png" v-else-if="sales==1"/>
+							<img class="td" src="image/2.png" v-else-if="sales==2"/>
+    				</span>
+			</div>
+		</div>
+
+		<!--购物车-->
+		<header class="aui-bar aui-bar-nav aui-bar-light disnone" style="overflow: hidden;" v-bind:class="{'disblock': on_index== 2}">
+			<!--<a class="aui-btn aui-btn-warning aui-pull-left" onclick="closeWin()">
+                <span class="aui-text-black aui-iconfont aui-icon-left"></span>
+            </a>-->
+			<div class="aui-title aui-font-size-17 aui-text-black">我的购物车({{cart_length}})</div>
+			<a class="aui-pull-right aui-btn">
+			</a>
+		</header>
+	</div>
+</body>
+
+</html>
+<script type="text/javascript" src="script/api.js"></script>
+<script type="text/javascript" src="script/vue.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+<script type="text/javascript">
+	var NVNavigationBar;
+	var vm = new Vue({
+		el: "#app",
+		data: {
+			on_index: 0,
+			area_name: '请选择仓库',
+			is_shop: '0',
+			list: [],
+			token: '',
+			state: 0,
+			id: '',
+			icon: '',
+			sj_pic: '',
+			headers: '',
+			navList: [],
+			cart_length: '',
+			unread_num: '',
+			sales: 0,
+			price: 0
+		},
+		methods: {
+			area: function() {
+				console.log($api.getStorage('area_id'));
+				console.log(vm.is_shop);
+				api.openWin({
+					name: 'cityList_win',
+					url: 'widget://html/index/cityList_win.html',
+				});
+			},
+			new_list: function() {
+				api.openWin({
+					name: 'news_win',
+					url: 'widget://html/news/news_win.html',
+				});
+			},
+			init: function() {
+				vm.headers = $api.dom('header').offsetHeight;
+				$api.setStorage('height', vm.headers);
+
+				api.openFrameGroup({
+					name: 'IndexGroup', //app首页frame组预加载
+					background: 'bgcolor',
+					scrollEnabled: false,
+					rect: {
+						x: 0,
+						y: $api.dom('header').offsetHeight,
+						w: api.winWidth,
+						h: api.winHeight - $api.dom('header').offsetHeight
+					},
+					index: vm.on_index,
+					preload: 4,
+					frames: [{
+							name: 'index0',
+							url: 'widget://html/index/index.html',
+							bgColor: 'bgcolor',
+							bounces: true
+						}, {
+							name: 'index1',
+							url: 'widget://html/classify/index.html',
+							bgColor: 'bgcolor',
+							bounces: false
+						},
+
+						{
+							name: 'index2',
+							url: 'widget://html/cart/index.html',
+							bgColor: 'bgcolor',
+							bounces: true,
+						},
+
+						{
+							name: 'index3',
+							url: 'widget://html/personal/index.html',
+							bgColor: 'bgcolor',
+							bounces: true
+						}
+					]
+				}, function(ret, err) {
+
+				});
+			},
+
+			doSearch: function() {
+				api.openWin({
+					name: 'search_win',
+					url: 'widget://html/index/search_win.html',
+				});
+			},
+			tarbar: function() {
+				var NVTabBar = api.require('NVTabBar');
+				NVTabBar.open({
+					styles: {
+						bg: '#fff',
+						h: 50,
+						dividingLine: {
+							width: 0.5,
+							color: '#dddddd'
+						},
+						badge: { //（可选项）JSON对象；徽章样式配置；若不传则去内部字段默认值
+							bgColor: '#ee3131', //（可选项）字符串类型；徽章背景色，支持rgb、rgba、#；默认：#ff0
+							numColor: '#fff', //（可选项）字符串类型；徽章数字字体颜色，支持rgb、rgba、#；默认：#fff
+							size: 6.0, //（可选项）数字类型；徽章半径大小；默认值：6.0
+
+						}
+					},
+					items: [{
+							w: api.winWidth / 4.0,
+							bg: {
+								marginB: -2,
+								image: 'rgba(0,0,0,0)'
+							},
+							iconRect: {
+								w: 21.0,
+								h: 21.0,
+							},
+							icon: {
+								normal: 'widget://res/navtab/footer1.jpg',
+								highlight: 'widget://res/navtab/footer1-on.jpg',
+								selected: 'widget://res/navtab/footer1-on.jpg'
+							},
+							title: {
+								text: '首页',
+								size: 10.0,
+								normal: '#222',
+								selected: '#21af9d',
+								marginB: 6.0
+							}
+						}, {
+							w: api.winWidth / 4.0,
+							bg: {
+								marginB: -2,
+								image: 'rgba(0,0,0,0)'
+							},
+							iconRect: {
+								w: 21.0,
+								h: 21.0,
+							},
+							icon: {
+								normal: 'widget://res/navtab/footer2.jpg',
+								highlight: 'widget://res/navtab/footer2-on.jpg',
+								selected: 'widget://res/navtab/footer2-on.jpg'
+							},
+							title: {
+								text: '分类',
+								size: 10.0,
+								normal: '#222',
+								selected: '#21af9d',
+								marginB: 6.0
+							}
+						}, {
+							w: api.winWidth / 4.0,
+							bg: {
+								marginB: -2,
+								image: 'rgba(0,0,0,0)'
+							},
+							iconRect: {
+								w: 21.0,
+								h: 21.0,
+							},
+							icon: {
+								normal: 'widget://res/navtab/footer3.jpg',
+								highlight: 'widget://res/navtab/footer3-on.jpg',
+								selected: 'widget://res/navtab/footer3-on.jpg'
+							},
+							title: {
+								text: '购物车',
+								size: 10.0,
+								normal: '#222',
+								selected: '#21af9d',
+								marginB: 6.0
+							}
+						}, {
+							w: api.winWidth / 4.0,
+							bg: {
+								marginB: -2,
+								image: 'rgba(0,0,0,0)'
+							},
+							iconRect: {
+								w: 21.0,
+								h: 21.0,
+							},
+							icon: {
+								normal: 'widget://res/navtab/footer4.jpg',
+								highlight: 'widget://res/navtab/footer4-on.jpg',
+								selected: 'widget://res/navtab/footer4-on.jpg'
+							},
+							title: {
+								text: '我',
+								size: 10.0,
+								normal: '#222',
+								selected: '#21af9d',
+								marginB: 6.0
+							}
+						}
+
+					],
+					selectedIndex: 0
+				}, function(ret, err) {
+					if (ret) {
+
+						if (ret.eventType == 'click') {
+							if (vm.on_index == ret.index) {
+								return false;
+							} else {
+								vm.on_index = ret.index;
+								api.setFrameGroupIndex({
+									name: 'IndexGroup',
+									index: vm.on_index
+								});
+								if (ret.index == 3) {
+									NVNavigationBar.close({
+										id: 'first'
+									});
+									api.setFrameGroupAttr({
+										name: 'IndexGroup',
+										rect: {
+											x: 0,
+											y: 25,
+											w: api.winWidth,
+											h: api.winHeight - 30
+										}
+									});
+
+
+								} else {
+									if (ret.index == 1) {
+										api.setFrameGroupAttr({
+											name: 'IndexGroup',
+											rect: {
+												x: 0,
+												y: vm.headers + 76,
+												w: api.winWidth,
+												h: api.winHeight - 15
+											}
+										});
+										NVNavigationBar.show({
+											id: 'first'
+										});
+										vm.classifyOne();
+
+									} else {
+										NVNavigationBar.close({
+											id: 'first'
+										});
+										api.setFrameGroupAttr({
+											name: 'IndexGroup',
+											rect: {
+												x: 0,
+												y: vm.headers,
+												w: api.winWidth,
+												h: api.winHeight - 65
+											}
+										});
+
+									}
+								}
+
+
+
+							}
+						}
+					}
+				});
+			},
+			sort: function(idx) {
+				if (idx == 1) {
+					vm.sales = 0;
+					if (vm.price == 0) {
+						vm.price = 1;
+					} else if (vm.price == 1) {
+						vm.price = 2;
+					} else {
+						vm.price = 1;
+					}
+
+				} else {
+					vm.price = 0;
+					if (vm.sales == '') {
+						vm.sales = 1;
+					} else if (vm.sales == 1) {
+						vm.sales = 2;
+					} else {
+						vm.sales = 1;
+					}
+				}
+
+				api.sendEvent({
+					name: 'classify_sort_init',
+					extra: {
+						price: vm.price,
+						sales: vm.sales
+					}
+				});
+
+			},
+			classifyOne: function() {
+				NVNavigationBar.open({
+					rect: {
+						x: 0,
+						y: vm.headers,
+						w: api.frameWidth,
+						h: 42
+					},
+					styles: {
+						orientation: 'horizontal',
+						bg: '#f1f6f7',
+						bgAlpha: 1,
+						font: {
+							size: 14,
+							sizeSelected: 16,
+							color: '#666',
+							colorSelected: '#35adbe',
+							alpha: 1
+						},
+						itemSize: {
+							w: 60,
+							h: 44
+						}
+					},
+					items: vm.navList,
+					selectedIndex: 0,
+					fixedOn: api.frameName,
+					id: 'first'
+				}, function(ret, err) {
+					if (ret.eventType == 'click') {
+						api.sendEvent({
+							name: 'classify_tabchange_init',
+							extra: {
+								idx: ret.index
+							}
+						});
+
+					}
+				});
+			}
+
+		}
+
+	})
+	apiready = function() {
+		//获取页面Header栏的高度
+		var headerlist = $api.domAll('header');
+		for (var i = 0; i < headerlist.length; i++) {
+			$api.fixIos7Bar(headerlist[i]); //修复ios系统bar
+		}
+		//$api.css($api.dom('.icones'),'width:'+api.winWidth+'px')
+		//设置手机顶部tabbar栏的高亮效果
+		//页面初始化
+		NVNavigationBar = api.require('NVNavigationBar');
+		vm.init();
+		vm.tarbar();
+		checkUpdate();
+		if (api.systemType == 'android') {
+			api.setStatusBarStyle({
+				style: "dark",
+
+			})
+		} else {
+			api.setStatusBarStyle({
+				style: "dark",
+				color: "#fff"
+			})
+		}
+		api.addEventListener({
+			name: 'select_city_init'
+		}, function(ret, err) {
+			if (ret) {
+				console.log(JSON.stringify(ret));
+				vm.area_name = ret.value.city
+			}
+		});
+		api.addEventListener({
+			name: 'unread_num'
+		}, function(ret, err) {
+			if (ret) {
+				vm.unread_num = ret.value.unread_num
+			}
+		});
+
+
+
+		//监听分类中的一级分类
+		api.addEventListener({
+			name: 'classify_one_list'
+		}, function(ret, err) {
+			vm.navList = ret.value.navList;
+			vm.classifyOne();
+			NVNavigationBar.close({
+				id: 'first'
+			});
+		});
+
+
+
+		api.addEventListener({
+			name: 'area'
+		}, function(ret, err) {
+			if (ret) {
+				vm.is_shop = ret.value.is_shop;
+				if (ret.value.is_shop == 1) {
+					vm.area_name = ret.value.area_name
+				} else if (ret.is_shop == 2) {
+					vm.area_name = '门店审核中请耐心等待'
+				} else {
+					vm.area_name = ret.value.area_name
+				}
+
+			}
+		});
+		api.addEventListener({
+			name: 'cart_len'
+		}, function(ret, err) {
+
+			if (ret) {
+				vm.cart_length = ret.value.cart_lens;
+				if (ret.value.cart_lens != 0) {
+					var NVTabBar = api.require('NVTabBar');
+					NVTabBar.setBadge({
+						index: 2,
+						badge: ret.value.cart_lens,
+
+					});
+				} else {
+					var NVTabBar = api.require('NVTabBar');
+					NVTabBar.setBadge({
+						index: 2
+
+					});
+				}
+			}
+		});
+
+
+		api.addEventListener({
+			name: 'on_indexs'
+		}, function(ret, err) {
+			NVNavigationBar.close({
+				id: 'first'
+			});
+			api.setFrameGroupAttr({
+				name: 'IndexGroup',
+				rect: {
+					x: 0,
+					y: vm.headers,
+					w: api.winWidth,
+					h: api.winHeight - 65
+				}
+			});
+			vm.on_index = ret.value.on_indexs;
+			api.setFrameGroupIndex({
+				name: 'IndexGroup',
+				index: ret.value.on_indexs
+			});
+			var NVTabBar = api.require('NVTabBar');
+			NVTabBar.setSelect({
+				index: ret.value.on_indexs,
+				selected: true,
+			});
+
+		});
+
+
+		api.addEventListener({
+			name: 'goodsDetail_init'
+		}, function(ret, err) {
+			vm.cart_size = ret.value.cart_size;
+		});
+
+		api.addEventListener({
+			name: "keyback"
+		}, function(ret, err) {
+			var mkeyTime = new Date().getTime();
+			//如果当前时间减去标志时间大于2秒，说明是第一次点击返回键，反之为2秒内点了2次，则退出。
+			if ((new Date().getTime() - mkeyTime) > 2000) {
+				mkeyTime = new Date().getTime();
+				api.toast({
+					msg: '再按一次退出程序',
+					duration: 2000,
+					location: 'bottom'
+				});
+			} else {
+				api.closeWidget();
+			}
+
+		});
+	};
+
+	function checkUpdate() {
+		var mam = api.require('mam');
+		mam.checkUpdate(function(ret, err) {
+			if (ret) {
+				if (api.systemType == "android") {
+					var result = ret.result;
+					if (result.update == true && result.closed == false) {
+						var str = '新版本型号:' + result.version + ';更新提示语:' + result.updateTip + ';下载地址:' + result.source + ';发布时间:' + result.time;
+						api.confirm({
+							title: '有新的版本,是否下载并安装 ',
+							msg: str,
+							buttons: ['确定', '取消']
+						}, function(ret, err) {
+							if (ret.buttonIndex == 1) {
+								if (api.systemType == "android") {
+									api.download({
+										url: result.source,
+										report: true
+									}, function(ret, err) {
+										if (ret && 0 == ret.state) { /* 下载进度 */
+											api.toast({
+												msg: "正在下载应用" + ret.percent + "%",
+												duration: 2000
+											});
+										}
+										if (ret && 1 == ret.state) { /* 下载完成 */
+											var savePath = ret.savePath;
+											api.installApp({
+												appUri: savePath
+											});
+										}
+									});
+								}
+								if (api.systemType == "ios") {
+									api.installApp({
+										appUri: result.source
+									});
+								}
+							}
+						});
+					} else {
+
+					}
+				}
+
+			} else {
+
+			}
+		});
+	}
+</script>

@@ -1,0 +1,142 @@
+/**公共样式表**/
+body{ background:#fff; color:#333;}
+img{ display: inline-block !important;}
+[v-cloak] {display: none;}
+.list-enter-active, .list-leave-active {transition: all 1s;}
+.list-enter, .list-leave-active {
+    opacity: 0;
+    transform: translateY(30px);
+}
+.aui-grid [class*=aui-col-xs-]:active {
+	background:transparent;
+}
+/*header 线条*/
+.aui-bar-light{
+	border-bottom: none !important;
+	background-image:none !important;
+}
+.aui-bar-nav .aui-btn .aui-iconfont{
+	font-weight: bold !important;
+}
+/*边框样式*/
+.aui-border-t{
+	border-top: 0.5px solid #e2e8e9 !important;
+}
+.aui-border-b{
+	border-bottom: 0.5px solid #e2e8e9 !important;
+}
+.aui-border-l{
+	border-left: 0.5px solid #e2e8e9 !important;
+}
+.aui-border-r{
+	border-right: 0.5px solid #e2e8e9 !important;
+}
+.aui-border{
+    border: 0.5px solid #e2e8e9 !important;
+}
+
+.aui-border-bg{border: 0.5rem solid #f1f6f7 !important;}
+.aui-border-bgT{ border-top: 0.5rem solid #f1f6f7 !important;}
+.aui-border-bgB{ border-bottom: 0.5rem solid #f1f6f7 !important;}
+
+.aui-list .aui-list-item{ background-image:none; border-color:#eee; }
+.aui-list .aui-list-item:active {background:transparent;}
+
+.aui-font-size-10 {font-size: 0.5rem !important;}
+.aui-font-size-11 {font-size: 0.55rem !important;}
+.aui-font-size-13 {font-size: 0.65rem !important;}
+.aui-font-size-14 {font-size: 0.7rem !important;}
+.aui-font-size-15 {font-size: 0.75rem !important;}
+.aui-font-size-17 {font-size: 0.85rem !important;}
+.aui-font-size-19 {font-size: 0.95rem !important;}
+
+.aui-bg-blue {background-color: #35adbe !important;}
+.aui-bg-white {background-color: #FFFFFF !important;}
+.aui-bg-grayer {background-color: #f1f6f7 !important;}
+.aui-bg-black{background-color: #222222 !important;}
+.aui-bg-danger{background-color: #ff2742 !important;}
+.aui-bg-success{background-color: #34d594 !important;}
+
+
+.aui-text-black{color: #222 !important;}
+.aui-text-blacker{color: #45494a !important;}
+.aui-text-green{color: #0bcaab !important;}
+.aui-text-danger{color: #ff2742 !important;}
+.aui-text-light-gray{color: #f4f4f4 !important;}
+.aui-text-gray{color: #666 !important;}
+.aui-text-grayer{color: #999 !important;}
+.aui-text-grayBlue{color: #676b6c !important;} /*深灰蓝色*/
+.aui-text-grayerBlue{color: #a4adae !important;} /*浅灰蓝色*/
+.aui-text-success{color: #34d594 !important;}
+.aui-text-brown{ color: #b38c4f !important}/*棕黄色*/
+.aui-text-blue{ color: #35adbe !important;}
+
+
+.aui-btn-danger.aui-btn-outlined {background: transparent !important;}
+.aui-btn-success.aui-btn-outlined {background: transparent !important;color: #22d559 !important;border: 1px solid #22d559 !important;}
+
+.aui-btn-danger {background-color: #ff2742 !important;color: #ffffff !important;}
+.aui-btn-blue {background-color: #35adbe !important;color: #ffffff !important;}
+.aui-btn-green{ background-color: #0bcaab !important;color: #FFFFFF !important;}
+.aui-btn-block { height: 2.25rem;line-height: 2.25rem; font-size:0.8rem;}
+.aui-font-weight{ font-weight: bold !important;}
+
+.aui-label-info{background-color:#3296fa;}
+.aui-label-warning{background-color: #ffae00 !important;}
+
+.aui-label-outlined {
+    background-color: transparent;
+    position: relative;
+}
+.fweight-5{
+	font-weight: 500;
+}
+.aui-text-decoration{text-decoration: underline;}
+
+/*定义选框大小*/
+input[type=radio],input[type=checkbox]{ width: 1rem;height: 1rem;}
+input[type=radio]:checked{ background-color: #35adbe !important;border: 1px solid #35adbe !important;}
+
+
+.aui-shadow{box-shadow: 0 1px 6px rgba(150,10,204,.3);}
+
+
+/**AUI重写css**/
+.aui-bar-light {color: #4A4A4A;}
+
+/*分类*/
+.aui-list-view {position: relative;padding-left: 0;margin-top: 0;margin-bottom: 15px;list-style: none;}
+.aui-list-view:after {
+	display: block;
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	-webkit-transform-origin: 0 0;
+	-webkit-transform: scale(1);
+	pointer-events: none;
+}
+.aui-list-view-cell {position: relative;padding:1rem 10px; text-align:center;overflow: hidden;-webkit-transform-style: preserve-3d;transform-style: preserve-3d;-webkit-touch-callout: none;border-left:2px solid transparent;}
+.aui-list-view-cell.aui-active{color: #29c773; border-left:2px solid #29c773}
+.aui-list-view-cell-block{position: relative;padding:10px 10px 10px 1.5rem; text-align:left;overflow: hidden;}
+.aui-list-view-cell-block.aui-active{ background: #fff;color: #ff574a;}
+
+
+i{ font-style: normal;}
+/*下划线*/
+.delline{ text-decoration: line-through;}
+/*左右箭头 icon 加粗*/
+.aui-icon-left,
+.aui-icon-right{font-weight: bold !important;}
+.aui-icon-right{font-size: 12px !important; color: #666;}
+
+.aui-list-item-arrow:before{ border-color:#666;}
+
+.animated {
+  -webkit-animation-duration: 0.4s;
+  animation-duration: 0.4s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}

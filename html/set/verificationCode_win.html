@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>输入验证码</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav aui-bar-light">
+		    <a class="aui-pull-left aui-btn" onclick="closeWin()">
+		        <span class="aui-iconfont aui-icon-left"></span>
+		    </a>
+		    <div class="aui-title">输入验证码</div>
+		    <a class="aui-pull-right" onclick="find()">
+		    	<span class="aui-text-success">确定</span>
+		    </a>
+		</header>
+
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	apiready = function(){
+		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+	        api.openFrame({
+	            name: 'verificationCode_frm',
+	            url: 'widget://html/set/verificationCode_frm.html',
+	            rect: {
+	                x: 0,
+	                y: $api.dom('header').offsetHeight,
+	                w: 'auto',
+	                h: api.winHeight - $api.dom('header').offsetHeight
+	            },
+	            bounces: true,
+	            pageParam: {
+	                id: api.pageParam.id,
+									phone:api.pageParam.phone
+	            }
+	        });
+	};
+	function find(){
+		api.sendEvent({
+		    name: 'sub_find',
+		});
+
+	}
+</script>

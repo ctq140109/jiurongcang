@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>设置</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+	</style>
+
+
+	<body class="aui-bg-grayer">
+	<div id="app" v-cloak>
+		<div class="aui-content aui-border-bgT ">
+		    <ul class="aui-list">
+		        <li class="aui-list-item aui-border-b aui-padded-t-5 aui-padded-b-5 aui-padded-l-12" onclick="open_window('set','data_win')">
+		            <div class="aui-list-item-inner aui-list-item-arrow aui-text-grayer">
+		            	<div class="aui-list-item-title aui-font-size-15 aui-text-blacker">个人资料</div>
+		            	<div class="aui-list-item-right aui-text-grayerBlue aui-font-size-13"></div>
+		            </div>
+		        </li>
+		        <li class="aui-list-item aui-padded-t-5 aui-padded-b-5 aui-padded-l-12" onclick="open_window('set','account_win')">
+		            <div class="aui-list-item-inner aui-list-item-arrow">
+		                <div class="aui-list-item-title aui-font-size-15 aui-text-blacker">账号安全</div>
+		                <div class="aui-list-item-right aui-text-grayerBlue aui-font-size-13"></div>
+		            </div>
+		        </li>
+		    </ul>
+		</div>
+
+		<div class="aui-content aui-border-bgT ">
+		    <ul class="aui-list">
+		        <li class="aui-list-item aui-border-b aui-padded-t-5 aui-padded-b-5 aui-padded-l-12" @click="clear()">
+		            <div class="aui-list-item-inner aui-padded-r-12 aui-text-grayer">
+		            	<div class="aui-list-item-title aui-font-size-15 aui-text-blacker">清除缓存</div>
+		            	<div class="aui-list-item-right aui-text-grayerBlue aui-font-size-13">{{size}}M</div>
+		            </div>
+		        </li>
+		        <!-- <li class="aui-list-item aui-border-b aui-padded-t-5 aui-padded-b-5 aui-padded-l-12">
+		            <div class="aui-list-item-inner aui-list-item-arrow">
+		                <div class="aui-list-item-title aui-font-size-15 aui-text-blacker">消息通知</div>
+		                <div class="aui-list-item-right aui-text-grayerBlue aui-font-size-13">已开启</div>
+		            </div>
+		        </li> -->
+		        <li class="aui-list-item aui-border-b aui-padded-t-5 aui-padded-b-5 aui-padded-l-12"  onclick="open_window('set','aboutUs_win')">
+		            <div class="aui-list-item-inner aui-list-item-arrow">
+		                <div class="aui-list-item-title aui-font-size-15 aui-text-blacker">关于我们</div>
+		                <div class="aui-list-item-right aui-text-grayerBlue aui-font-size-13"></div>
+		            </div>
+		        </li>
+		        <li class="aui-list-item aui-padded-t-5 aui-padded-b-5 aui-padded-l-12"  @click="share()">
+		            <div class="aui-list-item-inner aui-list-item-arrow">
+		                <div class="aui-list-item-title aui-font-size-15 aui-text-blacker">分享APP</div>
+		                <div class="aui-list-item-right aui-text-grayerBlue aui-font-size-13"></div>
+		            </div>
+		        </li>
+		    </ul>
+		</div>
+
+		<div class="aui-padded-15 aui-text-center aui-text-blacker aui-border-bgT aui-bg-white aui-font-size-15"  onclick="exit_account()"><span style="text-decoration: underline;" >退出登录</span> </div>
+	</div>
+</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+		var vm = new Vue({
+			el:"#app",
+			data:{
+				token:'',
+				size:0,
+			},
+			methods:{
+				share:function() {
+					if(!vm.token){
+						is_login();
+						return;
+					}
+					api.openFrame({
+						name: 'app_share',
+						url: 'widget://html/pageone/app_share.html',
+						rect: {
+							x:0,
+							y:0,
+							w:'auto',
+							h:api.winHeight
+						},
+						pageParam:{
+						},
+					});
+				},
+        changeName:function(){
+          api.openWin({
+              name: 'bindphone_win',
+              url: 'widget://html/member/bindphone_win.html',
+            });
+        },
+				help:function(){
+          api.openWin({
+              name: 'help_win',
+              url: 'widget://html/set/help_win.html',
+							pageParam:{
+								type:1
+							}
+            });
+        },
+				about:function(){
+          api.openWin({
+              name: 'aboutUs_win',
+              url: 'widget://html/set/aboutUs_win.html',
+							pageParam:{
+								type:2
+							}
+            });
+        },
+	      clear:function () {
+          api.clearCache(function() {
+              vm.size = 0;
+              api.toast({
+                  msg: '清除完成'
+              });
+          });
+        }
+			}
+		})
+
+		apiready = function(){
+			 vm.token = $api.getStorage("token");
+			 api.getCacheSize(function(ret) {
+          var size = (ret.size/1024)/1024;
+          vm.size = size.toFixed(2);
+      });
+		}
+		function exit_account(){
+			api.confirm({
+				msg:'是否退出当前账号？',
+				buttons:["取消","确定"]
+				},function(ret,err){
+					if(ret.buttonIndex==2){
+						$api.rmStorage("token");
+						$api.rmStorage("area_id");
+						console.log(vm.area_id);
+						api.closeWin();
+						api.sendEvent({
+							name:'login_init'
+						});
+					}
+				});
+		}
+</script>

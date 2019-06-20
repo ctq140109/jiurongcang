@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>我的积分</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css" />
+	</head>
+	<style>
+	</style>
+
+	<body>
+
+		<header class="aui-bar aui-bar-nav aui-bar-light aui-border-b" >
+		    <a class="aui-pull-left aui-btn" onclick="closeWin()">
+		        <span class="aui-iconfont aui-icon-left"></span>
+		    </a>
+		    <div class="aui-title">我的积分</div>
+		</header>
+
+
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	apiready = function(){
+		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+      api.openFrame({
+          name: 'jifens_frm',
+          url: 'widget://html/personal/jifens_frm.html',
+          rect: {
+              x: 0,
+              y: $api.dom('header').offsetHeight,
+              w: 'auto',
+              h: api.winHeight - $api.dom('header').offsetHeight
+          },
+          bounces: true,
+          pageParam: {
+              id: api.pageParam.id
+          }
+      });
+	};
+
+</script>

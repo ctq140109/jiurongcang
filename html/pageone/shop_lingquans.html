@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>可领优惠券</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/animate.css" />
+	</head>
+	<style>
+		.aui-content{ position:fixed;bottom: 0;width: 100%;border-radius: 0.5rem 0.5rem 0 0;}
+		/*.hide{ width:100%;height:22rem;}*/
+		.aui-list{background-color:inherit  !important;}
+		.aui-list-item{height: 4.5rem; background-image: url(../../image/quan-bg.png) !important;background-repeat: no-repeat; background-size: 100% 100% !important;}
+		.aui-list-item-title{ display: flex;display: -webkit-flex;width: 80%;align-items: center;}
+		.num{width:5rem;text-align: center; }
+		.money{font-size: 1.5rem;}
+
+		.aui-btn-danger{width:3rem !important;height: 1rem;line-height: 1rem;}
+		.yishiyong{background-color: #ced0d0 !important;}
+	</style>
+
+	<body  style="background-color: rgba(0,0,0,0.3)">
+		<div class="hide" onclick="hide()"></div>
+		<div class="aui-content  animated slideInUp" id="app">
+			<div class="aui-bg-grayer">
+				<div class="aui-text-center aui-font-size-15 aui-font-weight aui-padded-r-12" style="padding-top: 1rem;padding-bottom:0.7rem;">
+					可使用优惠券
+					<div style="position: absolute;top: 0.5rem;right: 0.6rem;" onclick="hide()">
+						<img style="width: 0.9rem;" src="../../image/close2.png"/>
+					</div>
+				</div>
+				<div class="aui-padded-12" style="padding-bottom: 1rem !important;">
+					<div class="aui-padded-t-15 aui-font-size-14 aui-padded-b-10 aui-border-b">不使用优惠卷<div class="aui-pull-right aui-margin-r-15 aui-font-size-15">
+						<input type="checkbox" name="checkbox"  class="aui-radio" @click="coupon(0)">
+					</div></div>
+				</div>
+
+				<div class="aui-padded-12 aui-padded-t-15">
+					<ul class="aui-list">
+
+						<template v-for="(v,index) in list">
+							<li class="aui-list-item  aui-padded-t-12 aui-padded-b-12 aui-padded-l-0 aui-margin-b-15">
+								<div class="aui-list-item-inner aui-padded-r-0">
+										<div class="aui-list-item-title">
+											<div class="aui-text-danger aui-font-weight aui-font-size-19 num">
+												￥ <span class="aui-font-weight money">{{v.reduce_price}}</span>
+											</div>
+												<div class="aui-padded-l-10">
+													<div class="aui-font-size-15 fweight-5  aui-margin-b-5">{{v.name}}</div>
+													<div class="aui-font-size-12 aui-margin-b-5 aui-ellipsis-2" v-if="v.good_name">{{v.good_name}}</div>
+													  <div class="aui-font-size-12 aui-text-grayerBlue" v-if="v.is_get==1">{{v.time}}</div>
+												</div>
+										</div>
+										<div class="aui-list-item-right aui-text-center" style="width: 4rem;">
+											<img src="../../image/lingqu.png" style="width: 2.5rem;">
+											<div class="aui-btn aui-btn-danger aui-margin-t-5 aui-padded-0" @click="coupon(v.id,v.name,v.reduce_price)" style="border-radius:1rem;">去使用</div>
+											<!-- <div class="aui-btn aui-btn-danger aui-margin-t-5 aui-padded-0 yishiyong" style="border-radius:1rem;">{{v.state}}</div> -->
+										</div>
+										<!-- <div class="aui-list-item-right aui-text-danger fweight-5 aui-text-center" style="font-size: 1rem;width: 2rem;margin-right: 0.5rem !important;" @click="get_cou(index,v.id)" v-else>{{v.state}}</div> -->
+								</div>
+							</li>
+						</template>
+				   </ul>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			id:'',
+			area_id:'',
+			token:'',
+			list:[]
+		},
+		methods:{
+				coupon:function(id,name,price) {
+
+					$api.removeCls($api.dom('.aui-content'),'slideInUp');
+					$api.addCls($api.dom('.aui-content'),'slideOutDown');
+					api.sendEvent({
+					    name: 'cart_shop_yhj',
+					    extra: {
+					        id: id,
+									name:name,
+									price:price
+					    }
+					});
+					setTimeout(function(){
+						api.closeFrame();
+					},300)
+				}
+		}
+	})
+
+	apiready = function(){
+		vm.id=api.pageParam.id,
+		vm.list=api.pageParam.list
+	}
+
+	function hide(){
+		$api.removeCls($api.dom('.aui-content'),'slideInUp');
+		$api.addCls($api.dom('.aui-content'),'slideOutDown');
+
+		setTimeout(function(){
+
+			api.closeFrame();
+
+		},300)
+	}
+</script>

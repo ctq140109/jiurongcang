@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>我的优惠券</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.aui-list{background-color:inherit  !important;}
+		.aui-list-item{height: 4.5rem; background-image: url(../../image/quan-bg.png) !important;background-repeat: no-repeat; background-size: 100% 100% !important;}
+		.aui-list-item-title{ display: flex;display: -webkit-flex;width: 80%;align-items: center;}
+		.num{width:4rem;text-align: center; }
+		.money{font-size: 2rem;}
+
+		.aui-btn-danger{width:3rem !important;height: 1rem;line-height: 1rem;}
+		.yishiyong{background-color: #ced0d0 !important;}
+		.disnone{display: none;}
+	</style>
+	<body  class="aui-bg-grayer">
+		<div class="aui-content aui-padded-12 aui-padded-t-15" id="app" v-cloak v-if="is_load">
+			<!--未使用-->
+			<div>
+				<ul class="aui-list">
+			        <template v-for="(vo,index) in list">
+			        <li class="aui-list-item  aui-padded-t-12 aui-padded-b-12 aui-padded-l-0 aui-margin-b-15">
+		                <div class="aui-list-item-inner aui-padded-r-0">
+		                    <div class="aui-list-item-title">
+		                    	<div class="aui-text-danger aui-font-weight aui-font-size-19 num">
+		                    		{{vo.reduce_price}}
+		                    	</div>
+		                        <div class="aui-padded-l-10">
+		                        	<div class="aui-font-size-15 fweight-5  aui-margin-b-5">{{vo.name}}</div>
+			                        <!-- <div class="aui-font-size-12 aui-margin-b-5">限购买红酒类使用</div> -->
+			                        <div class="aui-font-size-12 aui-text-grayerBlue">{{vo.time}}</div>
+		                        </div>
+		                    </div>
+		                    <div class="aui-list-item-right aui-text-center" style="width: 4rem;" v-if="status==1">
+		                    	<img src="../../image/lingqu.png"/ style="width: 2.5rem;">
+		                    	<div class="aui-btn aui-btn-danger aui-margin-t-5 aui-padded-0" style="border-radius:1rem;" @click="openShop()">去使用</div>
+		                    </div>
+												<div class="aui-list-item-right aui-text-center" style="width: 4rem;" v-else-if="status==2">
+		                    	<img src="../../image/shiyong.png"/ style="width: 2.5rem;">
+		                    </div>
+												<div class="aui-list-item-right aui-text-center" style="width: 4rem;" v-else>
+		                    	<img src="../../image/invlide.png"/ style="width: 2.5rem;">
+		                    </div>
+		                </div>
+			        </li>
+							</template>
+			   </ul>
+			</div>
+			<div class="aui-col-xs-12 aui-text-center" id="bot" v-if="list.length>10">
+					 <span class="aui-font-size-12 aui-text-gray">正在加载</span>
+					 <img src="../../image/uploading.gif" style="width:0.7rem;height:0.7rem;vertical-align:middle"/>
+			</div>
+			<div class="nodata aui-bg-grayer" v-show="list.length==0&&is_load==1">
+				<img src="../../icon/nodata.png" style="width: 12.5rem;height: 12.5rem;margin: 5rem auto 0;display: block !important;"/>
+			</div>
+			<div class="nodata aui-bg-grayer" v-show="list.length==0&&is_load==2">
+				<img src="../../icon/nodata.png" style="width: 12.5rem;height: 12.5rem;margin: 5rem auto 0;display: block !important;"/>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+
+		var vm = new Vue({
+			el:'#app',
+			data:{
+				status:1,
+				token:'',
+				totalRow:0,
+				list:[],
+				pageNumber:1,
+				pageSize:10,
+				is_load:''
+			},
+			methods:{
+					init:function(){
+							if(!vm.is_load){
+									api.showProgress({
+									    style: 'default',
+									    animationType: 'fade',
+									    title: '加载中...'
+									});
+							}
+							api.ajax({
+							    url: my_coupon_url,
+							    method: 'get',
+									timeout:30,
+									dataType:'json',
+									returnAll:false,
+							    data: {
+							        values: {
+							            token:vm.token,
+													status:vm.status,
+													pageNo:vm.pageNumber,
+													pageSize:vm.pageSize
+							        }
+							    }
+							},function(ret, err){
+							    if (ret) {
+											api.hideProgress();
+							        vm.is_load = 1;
+											if(ret.status==1){
+												vm.list = vm.list.concat(ret.data.page.list);
+												vm.totalRow = ret.data.page.totalRow;
+											}else{
+													api.toast({
+													    msg: ret.msg,
+													    duration: 2000,
+													    location: 'middle'
+													});
+													vm.list = [];
+
+											}
+
+
+							    } else {
+										api.hideProgress();
+										vm.is_load = 2;
+											if(err.statusCode==500){
+													api.toast({
+													    msg: '服务端请求错误！',
+													    duration: 2000,
+													    location: 'middle'
+													});
+
+											}else{
+													api.toast({
+													    msg: '加载失败，请检查网络连接',
+													    duration: 2000,
+													    location: 'middle'
+													});
+
+											}
+							    }
+							});
+
+					},
+					openShop:function(){
+						api.sendEvent({
+								name: 'on_indexs',
+								extra: {
+										on_indexs: 0
+								}
+						});
+						setTimeout(function() {
+							api.closeToWin({
+									name: 'root'
+							});
+						},300)
+					}
+			}
+		})
+
+		apiready = function(){
+				vm.token = $api.getStorage('token');
+				vm.init();
+
+				api.addEventListener({
+				    name: 'mycoupon_init'
+				}, function(ret, err){
+				  	vm.status = ret.value.state;
+						vm.is_load = '';
+						vm.pageNumber = 1;
+						vm.list = [];
+						vm.init();
+				});
+
+
+				//上啦加载
+				api.addEventListener({
+					 name:'scrolltobottom',
+					 extra:{
+						 threshold:300
+					 }
+				},function(ret,err){
+					if(vm.totalRow == vm.list.length){
+							if(vm.totalRow>10){
+										$api.html($api.byId('bot'),"<div style='background-color:#f5f5f5;color:#666;' class='aui-font-size-12 aui-padded-t-10 aui-padded-b-10'>到底了~</div>")
+									}
+							return;
+						}
+					vm.pageNumber++
+					vm.init();
+				 });
+
+		}
+
+</script>

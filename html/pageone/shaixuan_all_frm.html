@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>筛选</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+	</head>
+	<style type="text/css">
+		.slide{position: absolute;right: 0;top: 0;width: 80%;padding-bottom: 3rem; min-height: 100%;}
+		.btn-out{ position: fixed;bottom: 0;left: 20%;width: 80%; display: flex;}
+		.btn-out .btn{flex: 1;line-height: 2.2rem;text-align: center;}
+		.aui-btn{border-radius: 0 !important;}
+		.aui-list-header {padding:0 0 0.75rem 0 !important;}
+		.history{ display: flex;flex-wrap: wrap;justify-content: flex-start;}
+    	.history div{line-height: 1.5rem;width: 32%;border-radius: 0.25rem; text-align: center; background-color: #eef4f5;color:#4f5556;font-size: 0.65rem; margin: 0 2% .3rem 0;}
+    	.history div.active{background-color: #35adbe;color: #fff; }
+    	.history div:nth-child(3n){margin-right: 0;}
+    	.history p{color: #000;line-height: initial;}
+    	.aui-iconfont{font-size: 12px;font-weight: bold;}
+			.inpt{display: flex;align-items: center;}
+    	.inpt input{width:32%; line-height: 1.5rem; background-color:#eef4f5; border-radius: .25rem;text-align: center;}
+    	.inpt span{width: 15%;height: 1px;background-color: #e2e8e9; display: inline-block; margin-bottom: .2rem;margin-left: 5%;margin-right: 5%}
+
+    	input::-webkit-input-placeholder { color: #bcc5c6;font-size: 0.65rem;}
+		input:-moz-placeholder { color: #bcc5c6;font-size: 0.65rem;}
+		input::-moz-placeholder { color: #bcc5c6;font-size: 0.65rem;}
+		input:-ms-input-placeholder{ color: #bcc5c6;font-size: 0.65rem;}
+	</style>
+
+	<body style="background: rgba(0,0,0,.4);">
+		<div class="hide" onclick="hide()"></div>
+		<div class="slide aui-bg-white" id="app" v-cloak>
+			<div class="aui-border-b aui-padded-15">
+				<div class="aui-list">
+					<div class="aui-list-header aui-bg-white" >
+						<span class="aui-text-grayerBlue aui-font-size-15">国家</span>
+						<!-- <img src="../../image/down.png"/ style="width: 1rem;"> -->
+					</div>
+					<div class="history ">
+						<template v-for="(v,index) in country_list">
+							<div :class="{'active':country_id==v.id}" @click="det_gj(index,v.id)">{{v.name}}</div>
+						</template>
+					</div>
+				</div>
+			</div>
+			<div class="aui-border-b aui-padded-15">
+				<div class="aui-list">
+					<div class="aui-list-header aui-bg-white" >
+						<span class="aui-text-grayerBlue aui-font-size-15">类型</span>
+						<!-- <img src="../../image/down.png"/ style="width: 1rem;"> -->
+					</div>
+					<div class="history ">
+						<template v-for="(v,index) in category_list">
+							<div :class="{'active':classify_id==v.id}" @click="det_lx(index,v.id)">{{v.name}}</div>
+						</template>
+					</div>
+				</div>
+			</div>
+			<div class="aui-border-b aui-padded-12">
+				<div class="aui-list">
+					<div class="aui-list-header aui-bg-white" >
+						<span class="aui-text-grayerBlue aui-font-size-15">品牌</span>
+						<!-- <img src="../../image/down.png" style="width: 1rem;"> -->
+					</div>
+					<div class="history ">
+						<template v-for="(v,index) in brand_list">
+							<div :class="{'active':brand_id==v.id}" @click="det_brand(index,v.id)">{{v.name}}</div>
+						</template>
+					</div>
+				</div>
+			</div>
+			<div class="aui-padded-15">
+				<div class="aui-list">
+					<div class="aui-list-header aui-bg-white" >
+						<span class="aui-text-grayerBlue aui-font-size-15">价格</span>
+						<!-- <img src="../../image/down.png" style="width: 1rem;"> -->
+					</div>
+
+					<div class="inpt"  style="margin-bottom: 0.3rem;">
+						<input class="aui-font-size-11" placeholder="最低价" onclick="floor_prices()" type="number"  v-model="floor_price" name="floor_price" id="floor_price" />
+						<span></span>
+						<input class="aui-font-size-11" placeholder="最高价" onclick="top_prices()" type="number" v-model="top_price" name="top_price" id="top_price" />
+					</div>
+
+				</div>
+			</div>
+
+
+
+
+
+			<footer class="btn-out">
+				<div class="aui-btn aui-btn-block aui-text-grayBlue" style="background-color: #eef4f5;"  @click="ret()"> 重置</div>
+				<div class="aui-btn aui-btn-block aui-btn-blue" @click="sub()">确定</div>
+			</footer>
+		</div>
+
+
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/jq.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+		var vm = new Vue({
+				el:'#app',
+				data:{
+					token:'',
+					id:'',
+					category_list:[],
+					country_list:[],
+					brand_list:[],
+					floor_price:'',
+					top_price:'',
+					classify:0,
+					classify_id:'',
+					country_id:'',
+					brand_id:'',
+					brand:'0',
+					state:0
+				},
+				methods:{
+						det_gj:function(index,id) {
+							vm.state=index;
+							vm.country_id=id
+						},
+						det_brand:function(idx,id) {
+							vm.brand=idx;
+							vm.brand_id=id
+						},
+						det_lx:function(idx,id) {
+							vm.classify=idx;
+							vm.classify_id=id
+						},
+						ret:function(){
+							vm.classify_id='';
+							vm.country_id='';
+							vm.classify='';
+							vm.state='';
+							vm.brand_id='',
+							vm.floor_price='';
+							vm.top_price=''
+						},
+						init:function(){
+							api.showProgress();
+
+							api.ajax({
+							    url: country_url,
+									returnAll:false,
+									dataType:'json',
+									timeout:30,
+							    method: 'post',
+							    data: {
+							        values: {
+							            token: vm.token
+							        }
+							    }
+							},function(ret, err){
+							    if (ret) {
+							      	console.log(JSON.stringify(ret))
+											api.hideProgress();
+											if(ret.status==1){
+												vm.country_list=ret.data.country_list;
+											}
+							    }
+							});
+							api.ajax({
+							    url: select_brand_more_url,
+									returnAll:false,
+									dataType:'json',
+									timeout:30,
+							    method: 'post',
+							    data: {
+							        values: {
+							            token: vm.token,
+													pageSize:100,
+							        }
+							    }
+							},function(ret, err){
+							    if (ret) {
+							      	console.log(JSON.stringify(ret))
+											api.hideProgress();
+											if(ret.status==1){
+												vm.brand_list=ret.data.page.list;
+											}
+							    }
+							});
+							api.ajax({
+							    url: goods_one_classify_url,
+									returnAll:false,
+									dataType:'json',
+									timeout:30,
+							    method: 'post',
+							    data: {
+							        values: {
+							            token: vm.token
+							        }
+							    }
+							},function(ret, err){
+							    if (ret) {
+							      	console.log(JSON.stringify(ret))
+											if(ret.status==1){
+												vm.category_list=ret.data.category_list;
+											}
+							    }
+							});
+						},
+						sub:function() {
+							if(vm.floor_price!=''){
+								if(vm.top_price!=''){
+									if(vm.floor_price>vm.top_price){
+										api.toast({
+										    msg: '最低价格不能大于最高价格',
+										    duration: 2000,
+										    location: 'bottom'
+										});
+										return;
+									}
+								}
+							}
+							api.sendEvent({
+							    name: 'shaixuan',
+							    extra: {
+							        country_id: vm.country_id,
+											floor_price:vm.floor_price,
+											top_price:vm.top_price,
+											brand_id:vm.brand_id,
+											classify_id:vm.classify_id
+							    }
+							});
+							setTimeout(function(){
+								api.closeFrame();
+							},300)
+						}
+				}
+		})
+		apiready = function(){
+			vm.id=api.pageParam.id;
+			vm.token = $api.getStorage('token');
+			console.log(JSON.stringify(api.pageParam));
+			vm.country_id=api.pageParam.country_id,
+			vm.classify_id=api.pageParam.classify_id,
+			vm.brand_id=api.pageParam.brand_id,
+			vm.floor_price=api.pageParam.floor_price,
+			vm.top_price=api.pageParam.top_price
+			vm.init();
+			resize();
+			var width = api.frameWidth- $api.dom('.slide').offsetWidth;
+
+		 $api.css($api.dom('.hide'),'width:20%')
+		 $api.css($api.dom('.hide'),'height:'+api.frameHeight+'px')
+		}
+		function hide(){
+				// $api.addCls($api.dom('.slide'),'slideOutDown')
+				// $api.removeCls($api.dom('.slide'),'slideInUp')
+
+				setTimeout(function(){
+
+						api.closeFrame();
+
+				},300)
+		}
+		function floor_prices(){
+			if(api.systemType=='ios'){
+		    // 使用模块弹出键盘
+		    var softInput = api.require('softInputMgr');
+		    softInput.toggleKeyboard();
+		    // 将相应的输入框获取焦点
+		    document.getElementById("floor_price").focus()
+		  }
+		}
+		function top_prices(){
+			if(api.systemType=='ios'){
+		    // 使用模块弹出键盘
+		    var softInput = api.require('softInputMgr');
+		    softInput.toggleKeyboard();
+		    // 将相应的输入框获取焦点
+		    document.getElementById("top_price").focus()
+		  }
+		}
+</script>

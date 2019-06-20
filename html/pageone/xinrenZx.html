@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>新人专享</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/animate.css" />
+	</head>
+	<style>
+		.aui-content{position: fixed;top: 50%;width: 100%;margin-top: -8rem;}
+		.sm{width: 12rem;margin: auto;position: relative;}
+		.close{position: absolute;top:1rem;right:-3px;width: 1rem;}
+
+		.inner{position: absolute;width: 100%;margin: auto;top: 62%;}
+		.aui-btn{background-color: #fde000 !important;width: 65%;background-color: #ffde00;height: 1.5rem;line-height: 1.5rem;border-radius: 1rem;}
+	</style>
+
+	<body  style="background-color: rgba(0,0,0,0.3)">
+		<div class="aui-content animated slideInUp" id="app" v-cloak>
+			<div class="sm aui-text-center">
+				<img src="../../image/xrzx.png" />
+				<img class="close" src="../../image/close1.png" onclick="hide()"/>
+				<div class="inner">
+					<div class="aui-text-white aui-margin-b-15 aui-font-size-20" style=" font-style:italic">
+						新人立减<span class="aui-font-weight" style="font-size: 1.5rem; font-style:italic">{{price}}</span>元
+					</div>
+					<div class="aui-btn aui-text-danger" @click="init()">立即领取</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			token:'',
+			price:''
+		},
+		methods:{
+			init:function(){
+				api.openWin({
+						name: 'lingquanZx_win',
+						url: 'widget://html/shop/lingquanZx_win.html',
+						pageParam: {
+						}
+				});
+				setTimeout(function(){
+					api.closeFrame();
+				},300)
+			}
+		}
+	})
+
+	apiready = function(){
+
+		vm.token = $api.getStorage("token");
+
+		vm.price = api.pageParam.price;
+	}
+	function hide(){
+		$api.removeCls($api.dom('.aui-content'),'slideInUp');
+		$api.addCls($api.dom('.aui-content'),'slideOutDown');
+
+		setTimeout(function(){
+
+			api.closeFrame();
+
+		},300)
+	}
+</script>

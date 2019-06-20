@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>优惠</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/animate.css" />
+	</head>
+	<style>
+		.aui-content{ position:fixed;bottom: 0;width: 100%;border-radius: 0.5rem 0.5rem 0 0;}
+		.hide{ width:100%;height:22rem;}
+		.aui-btn{border-radius: 1.2rem;}
+	</style>
+
+	<body  style="background-color: rgba(0,0,0,0.3)">
+		<div class="hide" onclick="hide()"></div>
+		<div class="aui-content  animated slideInUp" id="app" v-cloak>
+			<div class="aui-bg-white">
+				<div class="aui-text-center aui-font-size-15 aui-font-weight aui-padded-r-12" style="padding-top: 1rem;padding-bottom:0.7rem;">
+					优惠项
+					<div style="position: absolute;top: 0.5rem;right: 0.6rem;" >
+						<img style="width: 0.9rem;" src="../../image/close2.png" onclick="hide()"/>
+					</div>
+				</div>
+				<div class="aui-padded-12" style="padding-bottom: 1rem !important;">
+					<template v-for="(vo,index) in list">
+						<div class="aui-padded-t-15 aui-font-size-14">{{vo.name}}</div>
+					</template>
+				</div>
+
+
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			id:'',
+			list:[]
+		},
+		methods:{
+
+		}
+	})
+
+	apiready = function(){
+		vm.id=api.pageParam.id,
+		vm.list=api.pageParam.list;
+	}
+
+	function hide(){
+		$api.removeCls($api.dom('.aui-content'),'slideInUp');
+		$api.addCls($api.dom('.aui-content'),'slideOutDown');
+
+		setTimeout(function(){
+
+			api.closeFrame();
+
+		},300)
+	}
+</script>

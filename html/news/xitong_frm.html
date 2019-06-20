@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>系统消息</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.aui-dot{position: inherit !important;}
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content" id="app" v-cloak v-if="is_load">
+			<div class="aui-padded-t-0">
+					<template v-for="(v,index) in list">
+		        <div class="aui-list-item aui-list-item-middle aui-padded-12 aui-border-bgT aui-bg-white " >
+		        	<div class="aui-padded-b-12 aui-padded-t-5">
+								<span class="fweight-5 aui-text-blacker">{{v.title}}</span>
+								<div class="aui-pull-right">
+									<span class="aui-text-grayerBlue aui-font-size-13">{{v.create_time}}</span>
+									<!-- <span div class="aui-dot aui-bg-danger"></span> -->
+								</div>
+							</div>
+							<div class="aui-padded-b-12 aui-ellipsis-1 aui-font-size-14 aui-text-grayerBlue">{{v.content}}</div>
+				      <!-- <div class="aui-padded-t-12 aui-border-t">
+								<span class="fweight-5 aui-text-grayerBlue aui-font-size-14">点击详情 </span>
+								<div class="aui-pull-right">
+									<div class="aui-iconfont aui-icon-right aui-text-gray"></div>
+								</div>
+							</div> -->
+	        </div>
+				</template>
+			</div>
+			<div class="nodata aui-text-center" v-if="list.length==0">
+        	<img src="../../image/nodata.png" style=""/>
+        </div>
+			<div class="aui-col-xs-12 aui-text-center aui-margin-t-5" id="bot" v-if="totalRow>10">
+				<img src="../../image/uploading.gif" style="width: 1rem;height: 1rem;display: inline-block"/>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			token:'',
+			list:[],
+			is_load:'',
+			pageNumber:1,
+			pageSize:10,
+			totalRow:0
+		},
+		methods:{
+			init:function(){
+				api.ajax({
+          url:message_list_url,
+          method:'get',
+          timeout:30,
+          dataType:'json',
+          returnAll:false,
+          data:{
+          	values:{
+          		token:vm.token,
+          		page_number:vm.pageNumber,
+          		page_size:vm.pageSize,
+							type:1
+          	}
+          }
+        },function(ret,err){
+        	if(ret){
+							console.log(JSON.stringify(ret));
+							if(ret.status){
+								vm.is_load=1;
+								if(ret.data.page.list.length>0){
+									vm.list = vm.list.concat(ret.data.page.list)
+
+									vm.totalRow = ret.data.page.totalRow;
+
+			        		api.sendEvent({
+			              name:'is_read_init'
+			            });
+								}else{
+
+								}
+
+							}else{
+								api.toast({
+								    msg: ret.msg,
+								    duration: 2000,
+								    location: 'bottom'
+								});
+
+							}
+
+        	}else{
+						api.hideProgress();
+						vm.is_load=2;
+						if(err.statusCode==500){
+							api.toast({
+									msg: '服务器请求错误！',
+									duration: 2000,
+									location: 'middle'
+							});
+						}else{
+								if(err.statusCode==404){
+									api.toast({
+											msg: '请求失败',
+											duration: 2000,
+											location: 'middle'
+									});
+								}else{
+									api.toast({
+											msg: '请求超时，请检查网络',
+											duration: 2000,
+											location: 'middle'
+									});
+								}
+
+						}
+        	}
+        });
+			}
+		}
+	})
+
+	apiready = function(){
+
+		vm.token = $api.getStorage('token')
+
+		vm.init();
+
+		 api.addEventListener({
+	        name:'scrolltobottom',
+	        extra:{
+        		threshold:300
+        	}
+        },function(ret,err){
+
+      	if(vm.totalRow == vm.list.length){
+					if(vm.totalRow>10){
+      			$api.byId('bot').style.display='block'
+      			$api.byId('bot').innerHTML = "<div style='background-color:#f5f5f5;color:#666;' class='aui-font-size-12 aui-padded-10'>到底啦！</div>";
+
+      		}
+				 return;
+			}
+			vm.pageNumber++
+      	vm.init();
+      });
+	}
+</script>

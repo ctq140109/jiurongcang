@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>验证码</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.aui-row{ padding-top: 3rem;padding-bottom: 3rem;}
+		.aui-list-item{position: relative;}
+    	.valid{ position: absolute;right: 0.75rem;top: 50%;margin-top: -11px;}
+	</style>
+	<body class="aui-bg-grayer">
+		<div id="app" v-cloak onclick="closeKeyborder()">
+		<div class="aui-bg-grayer aui-padded-15 aui-text-grayer aui-font-size-13 tel">
+			短信验证码已发送至+{{account}} ，请填写验证码
+		</div>
+
+		<div class="aui-content aui-bg-white aui-padded-l-15 aui-padded-r-15" >
+        <li class="aui-list-item aui-padded-l-0 aui-padded-t-5 aui-padded-b-5 aui-padded-l-0" >
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-input">
+                    <input type="text" placeholder="" readonly="">
+                </div>
+            </div>
+            <div class="aui-font-size-15 valid aui-text-danger zhpassword" @click="getValidCode()">重新发送</div>
+        </li>
+		</div>
+</div>
+</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var UIInput = null;
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			account:'',
+			token:'',
+			countDown:60,
+			validCode:'',
+			code:'',
+			mobile_res:/^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/,
+			is_login:''
+		},
+		methods:{
+			getValidCode:function(){//获取手机验证码
+				if(vm.account==''){
+					api.toast({
+							msg:'请输入手机号',
+							duration:2000,
+							location:'middle'
+						});
+						return;
+				}
+				if(!vm.mobile_res.test(vm.account)){
+						api.toast({
+								msg:'请输入正确的手机号',
+								duration:2000,
+								location:'middle'
+							});
+						return;
+				}
+				api.showProgress();
+				api.ajax({
+						url:information_change_getMobileCode_url,
+						method:'post',
+						timeout:30,
+						dataType:'json',
+						returnAll:false,
+						data:{
+							values:{
+								phone:vm.account
+							}
+						}
+					},function(ret,err){
+						if(ret){
+							api.hideProgress();
+							api.toast({
+									msg:ret.msg,
+									duration:2000,
+									location:'middle'
+								});
+						}else{
+							console.log(JSON.stringify(err));
+							return;
+						}
+					});
+					var validText = $api.text($api.dom('.zhpassword'));
+					var timer = null;
+					if(validText=='重新发送'){
+						timer = setInterval(function(){
+							if(vm.countDown>1){
+								vm.countDown--;
+								$api.text($api.dom('.zhpassword'),vm.countDown+"s");
+							}else{
+								$api.text($api.dom('.zhpassword'),"重新发送");
+								vm.countDown = 60;
+								clearInterval(timer);
+							}
+						},1000)
+				}
+			},
+
+			sub_find:function(){
+				UIInput = api.require('UIInput');
+					UIInput.closeKeyboard({
+							id:0
+					});
+					UIInput.closeKeyboard({
+							id:1
+					});
+				 if(vm.code==""){
+				 	api.toast({
+				 		msg:'请输入验证码',
+				 		duration:2000,
+				 		location:'middle'
+				 	});
+				 	return;
+				 }
+				 api.ajax({
+				 	url:new_phone_save_url,
+				 	method:'post',
+				 	timeout:30,
+				 	dataType:'json',
+				 	returnAll:false,
+				 	data:{
+				 		values:{
+							token:vm.token,
+				 			phone:vm.account,
+				 			code:vm.code
+				 		}
+				 	}
+				 },function(ret,err){
+				 	if(ret){
+				 		if(ret.code==1){
+				 				api.toast({
+				 					msg:ret.msg,
+				 					duration:2000,
+				 					location:'middle'
+				 				});
+								api.sendEvent({
+								    name: 'reshuf',
+								});
+								setTimeout(function(){
+									api.closeToWin({
+									    name: 'root'
+									});
+								},300)
+				 		}else{
+				 			api.toast({
+				 					msg:ret.msg,
+				 					duration:2000,
+				 					location:'middle'
+				 				});
+				 		}
+				 	}else{
+				 		console.log(JSON.stringify(err))
+				 	}
+				 });
+			},
+
+		}
+	})
+
+	apiready = function(){
+		vm.token=$api.getStorage('token');
+		vm.account=api.pageParam.phone;
+		$api.css($api.dom('body'),'padding-top:20px;background: rgba(0,0,0,0.5);')
+		setTimeout(function(){
+			var validText = $api.text($api.dom('.zhpassword'));
+			var timer = null;
+			if(validText=='重新发送'){
+				timer = setInterval(function(){
+					if(vm.countDown>1){
+						vm.countDown--;
+						$api.text($api.dom('.zhpassword'),vm.countDown+"s");
+					}else{
+						$api.text($api.dom('.zhpassword'),"重新发送");
+						vm.countDown = 60;
+						clearInterval(timer);
+					}
+				},1000)
+			}
+		},100);
+		api.addEventListener({
+		    name: 'sub_find'
+		}, function(ret, err){
+		    if( ret ){
+		         vm.sub_find();
+		    }
+		});
+
+		UIInput = api.require('UIInput');
+		account();
+	}
+	//获取输入框距离顶部的距离；
+	var y = $api.dom('.tel').offsetHeight+25
+	//登录框
+	function account(){
+			UIInput.open({
+					rect: {
+							x: 20,
+							y: y,
+							w: api.winWidth-100,
+							h: 40
+					},
+					styles: {
+							bgColor: "rgba(0,0,0,0)",
+							size: 16,
+							color: '#000',
+							placeholder: {
+									color: '#ccc'
+							}
+					},
+					isCenterVertical:true,
+					autoFocus: false,
+					maxRows: 1,
+					placeholder: '请输入验证码',
+
+					keyboardType: 'number',
+					fixedOn: api.frameName,
+					fixed:false,
+			}, function(ret) {
+					if (ret.eventType == 'change') {
+						UIInput.value({
+							id:ret.id,
+						},function(ret) {
+							if (ret) {
+									vm.code = ret.msg
+							}
+					});
+					}
+			});
+	}
+
+	function closeKeyborder(){
+			UIInput = api.require('UIInput');
+				UIInput.closeKeyboard({
+						id:0
+				});
+				UIInput.closeKeyboard({
+						id:1
+				});
+		}
+</script>

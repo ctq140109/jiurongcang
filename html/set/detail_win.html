@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	    <title>详情</title>
+	    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+	    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav aui-bar-light aui-bg-white" id="aui-header" style="background: transparent;">
+	        <a class="aui-btn aui-btn-warning aui-pull-left" onclick="closeWin()">
+	            <span class="aui-iconfont aui-icon-left aui-text-black"></span>
+	        </a>
+	        <div class="aui-title aui-font-size-17 aui-text-black title">{{title}}</div>
+	    </header>
+	</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:'#aui-header',
+		data:{
+			title:''
+		}
+	})
+	apiready = function(){
+			vm.title=api.pageParam.title
+		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+		 		api.openFrame({
+          name: 'detail_frm',
+          url: 'widget://html/set/detail_frm.html',
+          rect: {
+              x: 0,
+              y: $api.dom('header').offsetHeight,
+              w: 'auto',
+              h: api.winHeight - $api.dom('header').offsetHeight
+          },
+          bounces: true,
+          pageParam: {
+              content: api.pageParam.content
+          }
+      });
+	};
+
+
+</script>
+</html>

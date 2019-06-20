@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>商家入驻申请</title>
+	<link rel="stylesheet" href="../../css/aui.css" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/global.css" />
+</head>
+<style type="text/css">
+	.aui-list-item-label {
+		color: #333 !important;
+		width: 4.7rem !important;
+	}
+
+	.inpt {
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: flex;
+		-webkit-align-items: center;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.zizhi {
+		padding: 1rem 5%;
+	}
+
+	.aui-col-xs-6 .pic {
+		width: 6.5rem;
+		height: 6.5rem;
+		margin: auto;
+	}
+
+	.aui-col-xs-6 .pic img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.shuoming {
+		text-align: justify;
+		text-justify: newspaper;
+		word-break: break-all;
+	}
+
+	.guanbi {
+		position: absolute;
+		right: 0.2rem;
+		top: 0rem;
+		width: 1rem !important;
+		height: 1rem !important;
+	}
+</style>
+
+<body style="padding-bottom:5rem">
+	<div class="aui-content" id="app" v-cloak onclick="closeKeyborder()">
+		<div class="aui-bg-white">
+			<ul class="aui-list aui-form-list aui-padded-l-12">
+				<li class="aui-list-item aui-padded-l-0 aui-border-b">
+					<div class="aui-list-item-inner aui-padded-t-5 aui-padded-b-5">
+						<div class="aui-list-item-label aui-font-size-15"><span style="color:red">*</span>真实姓名：</div>
+						<div class="aui-list-item-input aui-font-size-14">
+							<input type="text" placeholder="" readonly="" name="" id="" value="">
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item aui-padded-l-0 aui-border-b">
+					<div class="aui-list-item-inner aui-padded-t-5 aui-padded-b-5">
+						<div class="aui-list-item-label aui-font-size-15"><span style="color:red">*</span>门店名称：</div>
+						<div class="aui-list-item-input aui-font-size-14">
+							<input type="text" placeholder="" readonly="" name="" id="" value="">
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item aui-padded-l-0 aui-border-b">
+					<div class="aui-list-item-inner aui-padded-t-5 aui-padded-b-5">
+						<div class="aui-list-item-label aui-font-size-15"><span style="color:red">*</span>门店地址：</div>
+						<div class="aui-list-item-input aui-font-size-14 aui-padded-l-15">
+							<input type="text" :placeholder="store_address" readonly="" name="" id="" @click="pick_area()">
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item aui-padded-l-0 aui-border-b">
+					<div class="aui-list-item-inner aui-padded-t-5 aui-padded-b-5">
+						<div class="aui-list-item-label aui-font-size-15"><span style="color:red">*</span>详细地址：</div>
+						<div class="aui-list-item-input aui-font-size-14">
+							<input type="text" placeholder="" readonly="" name="" id="">
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item aui-padded-l-0">
+					<div class="aui-list-item-inner aui-padded-t-5 aui-padded-b-5">
+						<div class="aui-list-item-label aui-font-size-15"><span style="color:red">*</span>联系电话：</div>
+						<div class="aui-list-item-input aui-font-size-14">
+							<input type="text" placeholder="" readonly="" name="" id="" value="">
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="aui-padded-15 aui-padded-l-12 aui-text-gray aui-bg-grayer aui-font-size-15">相关资质</div>
+		<div class="aui-bg-white zizhi">
+			<div class="aui-row">
+				<div class="aui-col-xs-6">
+					<div class="pic" v-if="business_qualification">
+						<img :src="business_qualification" onclick="openShopPic(this)" />
+						<img class="guanbi" src="../../image/guanbi.png" @click="del_one()" />
+					</div>
+					<div class="pic" v-else @click="zz()">
+						<img src="../../image/yyzz.jpg" />
+					</div>
+				</div>
+				<div class="aui-col-xs-6">
+					<div class="pic" v-if="licence">
+						<img :src="licence" onclick="openShopPic(this)" />
+						<img class="guanbi" src="../../image/guanbi.png" @click="del_two()" />
+					</div>
+					<div class="pic" v-else @click="xkz()">
+						<img src="../../image/sqzs.png" />
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="aui-padded-12 aui-font-size-12 aui-text-grayerBlue">
+			<div class="aui-margin-b-10">温馨提示：</div>
+			<div class="aui-margin-b-5 shuoming">1.为保证您的申请门店代理顺利，请保证信息清晰可见；</div>
+			<div class="shuoming">2.此证件信息只作为申请门店代理，请放心上传.</div>
+		</div>
+
+	</div>
+	<footer class="aui-bar aui-bar-tab aui-bg-grayer" id="footer" style="padding: 1.15rem 0.6rem;position: fixed;">
+		<div class="aui-btn aui-btn-block aui-btn-blue" onclick="sub()">提交申请</div>
+	</footer>
+</body>
+
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/jq.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var UIInput = null;
+	var base_url = '';
+	var vm = new Vue({
+		el: '#app',
+		data: {
+			mobile: '', //手机号
+			name: '',
+			store_address: '请填写门店的正确地址',
+			specific_address: '',
+			store_name: '', // 	门店名称
+			mobile_res: /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[0-9])\d{8}$/,
+			business_qualification: '',
+			business_qualification_url: '',
+			licence_url: '',
+			licence: '',
+			area_id: '',
+			token: ''
+		},
+		methods: {
+			pick_area: function() { //地区选择
+				closeKeyborder();
+				var UIActionSelector = api.require('UIActionSelector');
+				UIActionSelector.open({
+					datas: 'widget://res/city.json',
+					layout: {
+						row: 5,
+						col: 3,
+						height: 30,
+						size: 12,
+						sizeActive: 14,
+						rowSpacing: 5,
+						colSpacing: 10,
+						maskBg: 'rgba(0,0,0,0.2)',
+						bg: '#fff',
+						color: '#888',
+						colorActive: '#f00',
+						colorSelected: '#f00'
+					},
+					animation: true,
+					cancel: {
+						text: '取消',
+						size: 12,
+						w: 90,
+						h: 35,
+						bg: '#fff',
+						bgActive: '#ccc',
+						color: '#888',
+						colorActive: '#fff'
+					},
+					ok: {
+						text: '确定',
+						size: 12,
+						w: 90,
+						h: 35,
+						bg: '#fff',
+						bgActive: '#ccc',
+						color: '#888',
+						colorActive: '#fff'
+					},
+					title: {
+						text: '请选择',
+						size: 12,
+						h: 44,
+						bg: '#eee',
+						color: '#888'
+					},
+					fixedOn: api.frameName
+				}, function(ret) {
+					console.log(JSON.stringify(ret));
+					if (ret.eventType == 'ok') {
+						vm.store_address = ret.level1 + " " + ret.level2 + " " + ret.level3;
+					}
+				});
+			},
+			del_one: function() {
+				vm.business_qualification = ''
+			},
+			del_two: function() {
+				vm.licence = ''
+			},
+
+			zz: function() {
+				var maxNum = 1;
+				if (vm.business_qualification) {
+					api.toast({
+						msg: '最多上传1张照片',
+						duration: 2000,
+						location: 'middle'
+					});
+					return;
+				}
+				var selectPic = api.require('selectPic');
+				var param = {
+					maxNum: maxNum //用户选择的最多图片张数
+				};
+				selectPic.showPics(param, function(ret, err) {
+					console.log(JSON.stringify(ret.data));
+					if (api.systemType == 'ios') {
+						vm.business_qualification = JSON.parse(ret.data);
+					} else {
+						vm.business_qualification = ret.data;
+					}
+				});
+			},
+			xkz: function() {
+				var maxNum = 1;
+				if (vm.licence) {
+					api.toast({
+						msg: '最多上传1张照片',
+						duration: 2000,
+						location: 'middle'
+					});
+					return;
+				}
+				var selectPic = api.require('selectPic');
+				var param = {
+					maxNum: maxNum //用户选择的最多图片张数
+				};
+				selectPic.showPics(param, function(ret, err) {
+					console.log(JSON.stringify(ret));
+					if (api.systemType == 'ios') {
+						vm.licence = JSON.parse(ret.data);
+					} else {
+						vm.licence = ret.data;
+					}
+				});
+			},
+			upload: function() { //视频上传
+				var base_url = "http://9rc.yunxiaochengxu.top";
+				var obj = api.require('qiniuUpfile');
+				var date = new Date().getTime();
+				for (var i = 0; i < vm.business_qualification.length; i++) {
+					obj.upfile({
+						file: vm.business_qualification[i],
+						name: date
+					}, function(ret, err) {
+						console.log(JSON.stringify(ret));
+						if (ret.status) {
+							if (ret.oper == "complete") {
+								vm.business_qualification_url = base_url + '/' + ret.info.key;
+							}
+							if (ret.oper == 'progress') {
+								if (ret.percent == 100.00) {
+									api.hideProgress()
+									if (vm.licence) {
+										vm.uploads();
+									} else {
+										vm.sub_info();
+									}
+								}
+							}
+						}
+					});
+				}
+
+
+			},
+			uploads: function() { //视频上传
+				var base_url = "http://9rc.yunxiaochengxu.top";
+				var obj = api.require('qiniuUpfile');
+				var date = new Date().getTime();
+				for (var i = 0; i < vm.licence.length; i++) {
+					obj.upfile({
+						file: vm.licence[i],
+						name: date
+					}, function(ret, err) {
+						if (ret.status) {
+							console.log(JSON.stringify(ret));
+							if (ret.oper == "complete") {
+								vm.licence_url = base_url + '/' + ret.info.key;
+								api.hideProgress()
+								vm.sub_info();
+							}
+						}
+					});
+				}
+			},
+			sub: function() {
+				if (vm.name == "") {
+					api.toast({
+						msg: '请输入真实姓名',
+						duration: 2000,
+						location: 'middle'
+					});
+					return;
+				}
+				if (vm.mobile == "") {
+					api.toast({
+						msg: '请输入手机号',
+						duration: 2000,
+						location: 'middle'
+					});
+					return;
+				}
+				if (vm.store_name == "") {
+					api.toast({
+						msg: '请输入真实门店名称',
+						duration: 2000,
+						location: 'middle'
+					});
+					return;
+				}
+				if (vm.store_address == "") {
+					api.toast({
+						msg: '请输入正确的门店地址',
+						duration: 2000,
+						location: 'middle'
+					});
+					return;
+				}
+				if (vm.mobile == "") {
+					if (!vm.mobile_res.test(vm.mobile)) {
+						api.toast({
+							msg: '请输入正确的手机号',
+							duration: 2000,
+							location: 'middle'
+						});
+						return;
+					}
+				}
+
+				if (vm.business_qualification == "") {
+					api.toast({
+						msg: '请选择营业执照',
+						duration: 2000,
+						location: 'middle'
+					});
+					return;
+				}
+				// if(vm.licence==""){
+				// 	api.toast({
+				//     msg:'请选择食品流通许可证',
+				//     duration:2000,
+				//     location:'middle'
+				//   });
+				//   return;
+				// }
+				api.showProgress();
+				vm.upload();
+
+
+			},
+			sub_info: function() {
+				api.ajax({
+					url: store_audit_url,
+					method: 'post',
+					timeout: 30,
+					dataType: 'json',
+					returnAll: false,
+					data: {
+						values: {
+							token: vm.token,
+							recommender: vm.name,
+							store_name: vm.store_name,
+							store_address: vm.store_address,
+							mobile: vm.mobile,
+							specific_address: vm.specific_address,
+							business_qualification: vm.business_qualification_url,
+							licence: vm.licence_url,
+							agency_id: vm.area_id
+						}
+					}
+				}, function(ret, err) {
+					if (ret) {
+						console.log(JSON.stringify(ret));
+						if (ret.status == 1) {
+							api.toast({
+								msg: ret.msg,
+								duration: 2000,
+								location: 'middle'
+							});
+							$api.setStorage('tag', 2);
+							api.sendEvent({
+								name: 'sx',
+
+							});
+							api.sendEvent({
+								name: 'select_city_init',
+							});
+
+							setTimeout(function() {
+								api.closeWin();
+
+							}, 500)
+
+						} else {
+							api.toast({
+								msg: ret.msg,
+								duration: 2000,
+								location: 'middle'
+							});
+						}
+					} else {
+						console.log(JSON.stringify(err))
+					}
+				});
+			}
+
+		}
+	})
+
+	apiready = function() {
+		vm.token = $api.getStorage('token');
+		vm.area_id = $api.getStorage('area_id');
+
+		resize();
+		UIInput = api.require('UIInput');
+		names();
+		sort_name();
+		address();
+		phone();
+		api.addEventListener({
+			name: 'sub_info'
+		}, function(ret, err) {
+			if (ret) {
+				vm.sub();
+			}
+		});
+
+
+	}
+
+	//获取输入框距离顶部的距离；
+	var y = $api.dom('li').offsetHeight + 10;
+	var ys = $api.dom('li').offsetHeight * 3 + 10;
+	var yss = $api.dom('li').offsetHeight * 4 + 10;
+	//获取li-input的高度
+	//登录框
+	function sub() {
+		vm.sub();
+	}
+
+	function names() {
+		UIInput.open({
+			rect: {
+				x: 95,
+				y: 10,
+				w: api.winWidth - 50,
+				h: 35
+			},
+			styles: {
+				bgColor: "rgba(0,0,0,0)",
+				size: 16,
+				color: '#000',
+				placeholder: {
+					color: '#ccc'
+				}
+			},
+			isCenterVertical: true,
+			autoFocus: false,
+			maxRows: 1,
+			placeholder: '请输入真实姓名',
+			keyboardType: 'default',
+			fixedOn: api.frameName,
+			fixed: false,
+		}, function(ret) {
+			console.log(JSON.stringify(ret));
+			UIInput.addEventListener({
+				id: ret.id,
+				name: 'becomeFirstResponder'
+			}, function(ret) {
+				var UIActionSelector = api.require('UIActionSelector');
+				UIActionSelector.hide();
+			});
+			if (ret.eventType == 'change') {
+
+				UIInput.value({
+					id: ret.id,
+				}, function(ret) {
+					if (ret) {
+						vm.name = ret.msg
+					}
+				});
+			}
+
+		});
+	}
+	//密码框
+	function sort_name() {
+		UIInput.open({
+			rect: {
+				x: 95,
+				y: y,
+				w: api.winWidth - 100,
+				h: 35
+			},
+			styles: {
+				bgColor: "rgba(0,0,0,0)",
+				size: 16,
+				color: '#000',
+				placeholder: {
+					color: '#ccc'
+				}
+			},
+			isCenterVertical: true,
+			autoFocus: false,
+			maxRows: 1,
+			placeholder: '请填写真实门店名称',
+			keyboardType: 'default',
+			fixedOn: api.frameName,
+			fixed: false,
+		}, function(ret) {
+			UIInput.addEventListener({
+				id: ret.id,
+				name: 'becomeFirstResponder'
+			}, function(ret) {
+				var UIActionSelector = api.require('UIActionSelector');
+				UIActionSelector.hide();
+			});
+			if (ret.eventType == 'change') {
+
+				UIInput.value({
+					id: ret.id,
+				}, function(ret) {
+					if (ret) {
+						vm.store_name = ret.msg
+					}
+				});
+			}
+		});
+	}
+
+	function address() {
+		UIInput.open({
+			rect: {
+				x: 95,
+				y: ys,
+				w: api.winWidth - 50,
+				h: 35
+			},
+			styles: {
+				bgColor: "rgba(0,0,0,0)",
+				size: 16,
+				color: '#000',
+				placeholder: {
+					color: '#ccc'
+				}
+			},
+			isCenterVertical: true,
+			autoFocus: false,
+			maxRows: 1,
+			placeholder: '请输入门店详细地址',
+			keyboardType: 'default',
+			fixedOn: api.frameName,
+			fixed: false,
+		}, function(ret) {
+			UIInput.addEventListener({
+				id: ret.id,
+				name: 'becomeFirstResponder'
+			}, function(ret) {
+				var UIActionSelector = api.require('UIActionSelector');
+				UIActionSelector.hide();
+			});
+			if (ret.eventType == 'change') {
+
+				UIInput.value({
+					id: ret.id,
+				}, function(ret) {
+					if (ret) {
+						vm.specific_address = ret.msg
+					}
+				});
+			}
+		});
+	}
+
+	function phone() {
+		UIInput.open({
+			rect: {
+				x: 95,
+				y: yss,
+				w: api.winWidth - 50,
+				h: 35
+			},
+			styles: {
+				bgColor: "rgba(0,0,0,0)",
+				size: 16,
+				color: '#000',
+				placeholder: {
+					color: '#ccc'
+				}
+			},
+			isCenterVertical: true,
+			autoFocus: false,
+			maxRows: 1,
+			placeholder: '请填写有效联系方式',
+			keyboardType: 'number',
+			fixedOn: api.frameName,
+			fixed: false,
+		}, function(ret) {
+			UIInput.addEventListener({
+				id: ret.id,
+				name: 'becomeFirstResponder'
+			}, function(ret) {
+				var UIActionSelector = api.require('UIActionSelector');
+				UIActionSelector.hide();
+			});
+			if (ret.eventType == 'change') {
+
+				UIInput.value({
+					id: ret.id,
+				}, function(ret) {
+					if (ret) {
+						vm.mobile = ret.msg
+					}
+				});
+			}
+		});
+	}
+
+	function closeKeyborder() {
+
+		UIInput = api.require('UIInput');
+		UIInput.closeKeyboard({
+			id: 0
+		});
+		UIInput.closeKeyboard({
+			id: 1
+		});
+		UIInput.closeKeyboard({
+			id: 2
+		});
+		UIInput.closeKeyboard({
+			id: 3
+		});
+		UIInput.closeKeyboard({
+			id: 4
+		});
+	}
+
+	function openShopPic(that) {
+		var pic = $(that).attr('src');
+		console.log(pic);
+		var photoBrowser = api.require('photoBrowser');
+		photoBrowser.open({
+			images: [pic],
+			placeholderImg: 'widget://res/img/apicloud.png',
+			bgColor: '#000'
+		}, function(ret, err) {
+
+			if (ret.eventType == 'click') {
+				photoBrowser.close();
+
+			}
+		});
+	}
+</script>

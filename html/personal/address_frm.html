@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	    <title>收货地址</title>
+			<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
+	    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+	    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+	    <link rel="stylesheet" type="text/css" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.aui-list-item-title{display: flex;display: -webkit-flex;}
+		.bianji{height: 1.8rem;line-height: 1.8rem;width: 2.5rem;text-align: center;text-decoration: underline;}
+		.dizhi{line-height: 22px;}
+		.aui-label-danger{color: #35adbe !important;border-color: #35adbe !important;}
+		.aui-label-danger:after{color: #35adbe !important;border-color: #35adbe !important;}
+		.mui-table-view:before{ height:0}
+		 .mui-table-view:after{ height:0}
+		 .mui-table-view-cell:after{ height: 0 !important}
+
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content aui-border-bgT" id="app" v-cloak>
+			<div class="aui-list  aui-padded-0 ">
+				<ul class="mui-table-view">
+					<template v-for="(vo,index) in list">
+					<li class="mui-table-view-cell aui-padded-l-0 aui-padded-b-0">
+						<div class="mui-slider-right mui-disabled" @click="del_address(vo.id)">
+							<a class="mui-btn mui-btn-red aui-bg-danger aui-font-size-16">删除</a>
+						</div>
+						<div class="mui-slider-handle">
+							<div class="aui-list-item aui-padded-l-12 aui-padded-t-15 aui-padded-b-15 aui-border-b">
+								<div class="aui-pull-left aui-margin-r-15 aui-font-size-15">
+									<input type="radio" name="is_default" :checked="vo.is_default==0" class="aui-radio" @click="set_default(vo.id)"/>
+								</div>
+								<div class="aui-list-item-inner aui-padded-r-12">
+									<div class="aui-list-item-title aui-padded-r-12">
+										<div class="">
+											<div class="aui-list-item-text aui-font-size-15 fweight-5">
+												<div class="aui-text-blacker">{{vo.name}}  <span class="aui-text-grayer">{{vo.mobile}}</span></div>
+											</div>
+											<div class="aui-list-item-text aui-text-blacker aui-font-size-13 aui-margin-t-10">
+												<div class="dizhi">
+													<span class="aui-label aui-label-danger aui-label-outlined aui-font-size-10" v-if="vo.is_default==0">默认</span>
+													{{vo.full_address}} {{vo.address_info}}
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="aui-list-item-text aui-text-black">
+										<span class="aui-border-l bianji" @click="edit_address(index)">编辑</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+					</template>
+			</div>
+			<div class="nodata" v-if="status==0">
+        	<img src="../../image/nodata.png" style=""/>
+      </div>
+
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+
+var vm = new  Vue({
+	el:"#app",
+	data:{
+		token:'',
+		status:1,
+		list:[],
+		is_change:''
+	},
+	methods:{
+
+		init:function(){
+			api.ajax({
+					url:address_list_url,
+					method:'get',
+					timeout:30,
+					dataType:'json',
+					returnAll:false,
+					data:{
+						values:{
+							token:vm.token
+						}
+					}
+				},function(ret,err){
+					if(ret){
+						console.log(JSON.stringify(ret))
+						if(ret.status==1){
+							vm.status = ret.status;
+							vm.list = ret.data.address_list;
+						}else{
+							vm.list = [];
+							vm.status = ret.status;
+						}
+
+					}else{
+						console.log(JSON.stringify(err))
+					}
+				});
+		},
+
+		set_default:function(id){
+			api.ajax({
+				url:is_default_url,
+				method:'get',
+				timeout:30,
+				dataType:"json",
+				returnAll:false,
+				data:{
+					values:{
+						id:id
+					}
+				}
+			},function(ret,err){
+				if(ret){
+						console.log(JSON.stringify(ret));
+					if(ret.status==1){
+						vm.init();
+						if(vm.is_change){
+							api.sendEvent({
+							    name: 'add_address_init',
+							});
+
+							api.closeWin();
+						}
+
+					}else{
+						api.toast({
+							msg:ret.msg,
+							duration:2000,
+							location:'middle'
+						});
+					}
+				}
+			});
+		},
+
+		del_address:function(id){
+
+			api.confirm({
+					title: '提示',
+					msg: '是否删除该地址？',
+					buttons: ['确定', '取消']
+			}, function(ret, err) {
+					if(ret.buttonIndex==1){
+						api.ajax({
+							url:address_del_url,
+							method:'get',
+							timeout:30,
+							dataType:"json",
+							returnAll:false,
+							data:{
+								values:{
+									id:id
+								}
+							}
+						},function(ret,err){
+							if(ret){
+								if(ret.status==1){
+										vm.init();
+								}else{
+									api.toast({
+											msg:ret.msg,
+											duration:2000,
+											location:'middle'
+										});
+								}
+							}
+						});
+					}
+			});
+
+		},
+
+		edit_address:function(idx){
+
+			api.openWin({
+				name: 'addressAdd_win',
+				url: 'widget://html/personal/addressAdd_win.html',
+				pageParam:{
+					list:vm.list[idx],
+					is_edit:1
+				}
+			});
+
+		}
+
+	}
+})
+
+apiready = function(){
+
+	vm.token = $api.getStorage("token");
+
+	vm.is_change = api.pageParam.is_change;
+
+	vm.init();
+
+	api.addEventListener({
+				name:'add_address_init'
+			},function(ret,err){
+
+				vm.token = $api.getStorage("token");
+
+				vm.init();
+
+	});
+	api.addEventListener({
+	    name: 'addressManager_init'
+	}, function(ret, err){
+	    if( ret ){
+				vm.token = $api.getStorage("token");
+
+				vm.init();
+	    }
+	});
+
+
+}
+
+</script>

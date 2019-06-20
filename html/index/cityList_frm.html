@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	    <title>点赞</title>
+	    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+	    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+  </head>
+  <body>
+      <div class="aui-content"  id="app">
+
+      </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/vue.js"></script>
+  <script type="text/javascript" src="../../script/common.js"></script>
+  <script>
+    var vm =new Vue({
+      el:'#app',
+      data:{
+        url:''
+      },
+      methods:{
+        init:function() {
+          api.showProgress();
+
+          api.ajax({   //品牌
+              url: index_url,
+              dataType:'json',
+              returnAll:false,
+              timeout:30,
+              method: 'post',
+              data: {
+                  values: {
+
+                  }
+              }
+            },function(ret, err){
+              if (ret) {
+                  if(ret.status==1){
+                    api.hideProgress();
+                    console.log(JSON.stringify(ret));
+                    vm.url=ret.data.city_path;
+                    setTimeout(function(){
+                      vm.city()
+                    },200)
+                  }
+              }
+          });
+        },
+        city:function(){
+          var UICityList = api.require('UICityList');
+          console.log(base_url + vm.url);
+              UICityList.open({
+                rect: {
+                    x: 0,
+                    y: 0,
+                    w: api.frameWidth,
+                    h: api.frameHeight
+                },
+                resource: base_url + vm.url,
+                styles: {
+                    sectionTitle: {
+                        bgColor: '#eee',
+                        color: '#000',
+                        size: 12
+                    },
+                    searchBar: {
+
+                        hidden:true
+                    },
+                    item: {
+                        bgColor: '#fff',
+                        activeBgColor: '#696969',
+                        color: '#000',
+                        size: 14,
+                        height: 40
+                    },
+                    indicator: {
+                        bgColor: '#fff',
+                        color: '#696969'
+                    }
+                },
+                fixedOn: api.frameName,
+            }, function(ret, err) {
+                if (ret) {
+                    console.log(JSON.stringify(ret));
+                    if(ret.eventType=="selected"){
+                        $api.setStorage('area_id', ret.cityInfo.id);
+                        api.sendEvent({
+                            name: 'select_city_init',
+                            extra: {
+                                city:ret.cityInfo.city,
+                                id:ret.cityInfo.id
+                            }
+                        });
+                        api.closeWin()
+                    }
+
+                } else {
+                    alert(JSON.stringify(err));
+                }
+            });
+        }
+      }
+    })
+    apiready = function(){
+      vm.init();
+    }
+</script>
+</html>

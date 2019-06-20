@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>商家入驻申请</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		 .aui-list-item-label{color: #333 !important;width: 4.7rem !important;}
+		 .inpt{
+		 	-webkit-box-sizing: border-box;
+		     box-sizing: border-box;
+		    display: -webkit-box;
+		    display: -webkit-flex;
+		    display: flex;
+		    -webkit-align-items: center;
+		    align-items: center;
+		    justify-content: space-between;
+		    }
+
+		.zizhi{padding: 1rem 5%;}
+		.aui-col-xs-6 .pic{width: 6.5rem;height: 6.5rem;margin: auto;}
+		.aui-col-xs-6 .pic img{width: 100%;height:100%;object-fit: cover;}
+		.shuoming{text-align: justify;text-justify: newspaper;word-break: break-all;}
+		.guanbi{position: absolute;right: 0.2rem;top: 0rem;width: 1rem !important;height: 1rem !important;}
+	</style>
+	<body>
+		<div class="aui-content" id="app" v-cloak onclick="closeKeyborder()">
+			<div class="aui-bg-white">
+				<ul class="aui-list aui-form-list aui-padded-l-12">
+			        <li class="aui-list-item aui-padded-l-0 aui-border-b">
+			            <div class="aui-list-item-inner aui-padded-t-5 aui-padded-b-5">
+			                <div class="aui-list-item-label aui-font-size-15">真实姓名：</div>
+			                <div class="aui-list-item-input aui-font-size-14">
+			                    <input type="text" placeholder="" readonly="" name="" id="" :value="recommender">
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item aui-padded-l-0 aui-border-b">
+			            <div class="aui-list-item-inner aui-padded-t-5 aui-padded-b-5">
+			                <div class="aui-list-item-label aui-font-size-15">门店名称：</div>
+			                <div class="aui-list-item-input aui-font-size-14">
+			                    <input type="text" placeholder="" readonly="" name="" id="" :value="store_name">
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item aui-padded-l-0 aui-border-b">
+								<div class="aui-list-item-inner aui-padded-t-5 aui-padded-b-5">
+										<div class="aui-list-item-label aui-font-size-15">门店地址：</div>
+										<div class="aui-list-item-input aui-font-size-14">
+												<input type="text" placeholder="" readonly="" name="" id="" :value="store_address">
+										</div>
+								</div>
+			        </li>
+							<li class="aui-list-item aui-padded-l-0 aui-border-b">
+								<div class="aui-list-item-inner aui-padded-t-5 aui-padded-b-5">
+										<div class="aui-list-item-label aui-font-size-15">详细地址：</div>
+										<div class="aui-list-item-input aui-font-size-14">
+												<input type="text" placeholder="" readonly="" name="" id="" :value="specific_address">
+										</div>
+								</div>
+			        </li>
+			        <li class="aui-list-item aui-padded-l-0">
+			            <div class="aui-list-item-inner aui-padded-t-5 aui-padded-b-5">
+			                <div class="aui-list-item-label aui-font-size-15">联系电话：</div>
+			                <div class="aui-list-item-input aui-font-size-14">
+			                    <input type="text" placeholder="" readonly="" name="" id="" :value="mobile">
+			                </div>
+			            </div>
+			        </li>
+			    </ul>
+			</div>
+			<div class="aui-padded-15 aui-padded-l-12 aui-text-gray aui-bg-grayer aui-font-size-15">相关资质</div>
+			<div class="aui-bg-white zizhi">
+				<div class="aui-row">
+					<div class="aui-col-xs-6">
+						<div class="pic" v-if="business_qualification">
+							<img :src="business_qualification" onclick="openShopPic(this)"/>
+						</div>
+						<div class="pic" v-else @click="zz()">
+							<img src="../../image/yyzz.jpg" />
+						</div>
+					</div>
+					<div class="aui-col-xs-6">
+						<div class="pic"  v-if="licence">
+							<img :src="licence"  onclick="openShopPic(this)"/>
+						</div>
+						<div class="pic"  v-else @click="xkz()">
+							<img src="../../image/sqzs.jpg" />
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="aui-padded-12 aui-font-size-12 aui-text-grayerBlue">
+				<div class="aui-margin-b-10">温馨提示：</div>
+				<div class="aui-margin-b-5 shuoming">1.为保证您的申请门店代理顺利，请保证信息清晰可见；</div>
+				<div class="shuoming">2.此证件信息只作为申请门店代理，请放心上传.</div>
+			</div>
+
+		</div>
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/jq.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var UIInput = null;
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			mobile:'',	//手机号
+			recommender:'',
+			store_address:'',
+			specific_address:'',
+			store_name:'', // 	门店名称
+			business_qualification:'',
+			licence_url:'',
+			licence:'',
+			area_id:'',
+			token:''
+		},
+		methods:{
+			init:function() {
+				api.ajax({
+						url: check_douglas_detail_url,
+						returnAll:false,
+						dataType:'json',
+						timeout:30,
+						method: 'post',
+						data: {
+								values: {
+										token: vm.token
+								}
+						}
+				},function(ret, err){
+						if (ret) {
+								console.log(JSON.stringify(ret))
+								api.hideProgress();
+								if(ret.status==1){
+									vm.business_qualification=ret.data.store_audit.business_qualification;
+									vm.licence=ret.data.store_audit.licence;
+									vm.recommender=ret.data.store_audit.recommender;
+									vm.store_name=ret.data.store_audit.store_name;
+									vm.store_address=ret.data.store_audit.store_address;
+									vm.mobile=ret.data.store_audit.mobile;
+									vm.specific_address=ret.data.store_audit.specific_address
+									//UIInput = api.require('UIInput');
+									//names();sort_name();address();phone();
+									//set_names();set_sort_name();set_address();set_phone();
+
+								}
+						}
+				});
+			}
+
+		}
+	})
+
+	apiready = function(){
+		vm.token=$api.getStorage('token');
+		vm.area_id=$api.getStorage('area_id');
+
+		resize();
+		vm.init();
+
+
+	}
+
+	//获取输入框距离顶部的距离；
+	var y = $api.dom('li').offsetHeight+10;
+	var ys = $api.dom('li').offsetHeight*2+10;
+	var yss = $api.dom('li').offsetHeight*3+10;
+	//获取li-input的高度
+	//登录框
+	function names(){
+			UIInput.open({
+			    rect: {
+			        x: 100,
+			        y: 10,
+			        w: api.winWidth-50,
+			        h: 35
+			    },
+			    styles: {
+			        bgColor: "rgba(0,0,0,0)",
+			        size: 16,
+			        color: '#000',
+			        placeholder: {
+			            color: '#ccc'
+			        }
+			    },
+			    isCenterVertical:true,
+			    autoFocus: false,
+			    maxRows: 1,
+			    placeholder: '请输入真实姓名',
+			    keyboardType: 'default',
+			    fixedOn: api.frameName,
+			    fixed:false,
+			}, function(ret) {
+				UIInput.value({
+					id:ret.id,
+					msg: vm.store_name
+				});
+			    if (ret.eventType == 'change') {
+		    		UIInput.value({
+			    		id:ret.id,
+			    	},function(ret) {
+					    if (ret) {
+					        vm.store_name = ret.msg
+					    }
+						});
+			    }
+			});
+	}
+	function set_names(){
+			var id = '';
+			if(api.systemType=="ios"){
+				id = 1;
+			}else{
+				id = 0;
+			}
+			UIInput.value({
+				id:id,
+				msg: vm.recommender
+			});
+	}
+	//密码框
+	function sort_name(){
+			UIInput.open({
+			    rect: {
+			        x: 100,
+			        y: y,
+			        w: api.winWidth-100,
+			        h: 35
+			    },
+			    styles: {
+			        bgColor: "rgba(0,0,0,0)",
+			        size: 16,
+			        color: '#000',
+			        placeholder: {
+			            color: '#ccc'
+			        }
+			    },
+			    isCenterVertical:true,
+			    autoFocus: false,
+			    maxRows: 1,
+			    placeholder: '请填写真实门店名称',
+			    keyboardType: 'default',
+			    fixedOn: api.frameName,
+			    fixed:false,
+			}, function(ret) {
+				UIInput.value({
+					id:ret.id,
+					msg: vm.store_name
+				});
+			    if (ret.eventType == 'change') {
+			    		UIInput.value({
+				    		id:ret.id,
+				    	},function(ret) {
+						    if (ret) {
+						        vm.store_name = ret.msg
+						    }
+						});
+			    }
+			});
+	}
+	function set_sort_name(){
+			var id = '';
+			if(api.systemType=="ios"){
+				id = 2;
+			}else{
+				id = 1;
+			}
+			UIInput.value({
+				id:id,
+				msg: vm.store_name
+			});
+	}
+	function address(){
+			UIInput.open({
+			    rect: {
+			        x: 100,
+			        y: ys,
+			        w: api.winWidth-50,
+			        h: 35
+			    },
+			    styles: {
+			        bgColor: "rgba(0,0,0,0)",
+			        size: 16,
+			        color: '#000',
+			        placeholder: {
+			            color: '#ccc'
+			        }
+			    },
+			    isCenterVertical:true,
+			    autoFocus: false,
+			    maxRows: 1,
+			    placeholder: '请填写门店的正确地址',
+			    keyboardType: 'default',
+			    fixedOn: api.frameName,
+			    fixed:false,
+			}, function(ret) {
+				UIInput.value({
+					id:ret.id,
+					msg: vm.store_address
+				});
+			    if (ret.eventType == 'change') {
+		    		UIInput.value({
+			    		id:ret.id,
+			    	},function(ret) {
+					    if (ret) {
+					        vm.store_address = ret.msg
+					    }
+					});
+			    }
+			});
+	}
+	function set_address(){
+			var id = '';
+			if(api.systemType=="ios"){
+				id = 3;
+			}else{
+				id = 2;
+			}
+			UIInput.value({
+				id:id,
+				msg: vm.store_address
+			});
+	}
+	function phone(){
+			UIInput.open({
+			    rect: {
+			        x: 100,
+			        y: yss,
+			        w: api.winWidth-50,
+			        h: 35
+			    },
+			    styles: {
+			        bgColor: "rgba(0,0,0,0)",
+			        size: 16,
+			        color: '#000',
+			        placeholder: {
+			            color: '#ccc'
+			        }
+			    },
+			    isCenterVertical:true,
+			    autoFocus: false,
+			    maxRows: 1,
+			    placeholder: '请填写有效联系方式',
+			    keyboardType: 'number',
+			    fixedOn: api.frameName,
+			    fixed:false,
+			}, function(ret) {
+					UIInput.value({
+						id:ret.id,
+						msg: vm.mobile
+					});
+			    if (ret.eventType == 'change') {
+			    		UIInput.value({
+				    		id:ret.id,
+				    	},function(ret) {
+						    if (ret) {
+						        vm.mobile = ret.msg
+						    }
+						});
+			    }
+			});
+	}
+	function set_phone(){
+			var id = '';
+			if(api.systemType=="ios"){
+				id = 4;
+			}else{
+				id = 3;
+			}
+			UIInput.value({
+				id:id,
+				msg: vm.mobile
+			});
+	}
+	function closeKeyborder(){
+			UIInput = api.require('UIInput');
+				UIInput.closeKeyboard({
+						id:0
+				});
+				UIInput.closeKeyboard({
+						id:1
+				});
+				UIInput.closeKeyboard({
+						id:2
+				});
+				UIInput.closeKeyboard({
+						id:3
+				});
+				UIInput.closeKeyboard({
+						id:4
+				});
+		}
+	function openShopPic(that) {
+		var pic=$(that).attr('src');
+		console.log(pic);
+		var photoBrowser = api.require('photoBrowser');
+		photoBrowser.open({
+				images: [pic],
+				placeholderImg: 'widget://res/img/apicloud.png',
+				bgColor: '#000'
+		}, function(ret, err) {
+
+				if(ret.eventType == 'click'){
+						photoBrowser.close();
+
+				}
+		});
+	}
+</script>

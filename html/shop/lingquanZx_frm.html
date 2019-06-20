@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>领券中心</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.big-pic{height: 7rem;width: 100%;overflow: hidden;}
+		.big-pic img{width: 100%;height: 100%;object-fit: cover;}
+
+		.aui-list{background-color:inherit  !important;}
+		.aui-list-item{height: 4.5rem; background-image: url(../../image/quan-bg.png) !important;background-repeat: no-repeat; background-size: 100% 100% !important;}
+		.aui-list-item-title{ display: flex;display: -webkit-flex;width: 80%;align-items: center;}
+		.num{width:5rem;text-align: center; }
+		.money{font-size: 1.5rem;}
+
+		.aui-btn-danger{width:3rem !important;height: 1rem;line-height: 1rem;}
+		.yishiyong{background-color: #ced0d0 !important;}
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content" id="app" v-cloak>
+			<div class="big-pic">
+				<img src="../../image/quan.jpg"/>
+			</div>
+			<div class="aui-padded-12 aui-padded-t-15">
+				<ul class="aui-list">
+						<template v-for="(v,index) in list">
+			        <li class="aui-list-item  aui-padded-t-12 aui-padded-b-12 aui-padded-l-0 aui-margin-b-15">
+                <div class="aui-list-item-inner aui-padded-r-12">
+                    <div class="aui-list-item-title">
+                    	<div class="aui-text-danger num">
+												￥ <span class="aui-font-weight money">{{v.reduce_price}}</span>
+                    	</div>
+                        <div class="aui-padded-l-10">
+                        	<div class="aui-font-size-15 fweight-5 aui-margin-b-5">{{v.name}}</div>
+	                        <div class="aui-font-size-12 aui-margin-b-5" v-if="v.good_name">{{v.good_name}}</div>
+	                        <div class="aui-font-size-12 aui-text-grayerBlue" v-if="v.is_get==1">{{v.time}}</div>
+                        </div>
+                    </div>
+
+										<div class="aui-list-item-right aui-text-center" style="width: 3.5rem;padding-left:15px" v-if="v.is_get==1">
+											<img src="../../image/lingqu.png" style="width: 2.5rem;">
+										</div>
+										<div class="aui-list-item-right aui-text-danger fweight-5 aui-text-center" style="font-size: 1rem;width: 2rem;" v-else @click="lq(v.id)">立即领取</div>
+                </div>
+			        </li>
+						</template>
+			        <!-- <li class="aui-list-item  aui-padded-t-12 aui-padded-b-12 aui-padded-l-0 aui-margin-b-15">
+                <div class="aui-list-item-inner aui-padded-r-0">
+                    <div class="aui-list-item-title">
+                    	<div class="aui-text-danger aui-font-weight aui-font-size-19 num">
+                    		满就送
+                    	</div>
+                        <div class="aui-padded-l-10">
+                        	<div class="aui-font-size-15 fweight-5  aui-margin-b-5">满500减50</div>
+	                        <div class="aui-font-size-12 aui-margin-b-5">限购买红酒类使用</div>
+	                        <div class="aui-font-size-12 aui-text-grayerBlue">有效期至2018.05.15</div>
+                        </div>
+                    </div>
+                    <div class="aui-list-item-right aui-text-center" style="width: 4rem;">
+                    	<img src="../../image/lingqu.png" style="width: 2.5rem;">
+
+                    	<div class="aui-btn aui-btn-danger aui-margin-t-5 aui-padded-0 yishiyong" style="border-radius:1rem;">已使用</div>
+                    </div>
+                </div>
+			        </li> --><!--<div class="aui-btn aui-btn-danger aui-margin-t-5 aui-padded-0" style="border-radius:1rem;">去使用</div>-->
+			   </ul>
+			</div>
+			<div id="bot">
+			</div>
+			<div class="nodata" v-show="list.length==0&&is_load==1">
+				<img src="../../icon/nodata.png" style="width: 12.5rem;height: 12.5rem;margin: 5rem auto 0;display: block !important;"/>
+			</div>
+		</div>
+
+
+
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			idx:'1',
+			id:'',
+			token:'',
+			area_id:'',
+			pageNo:'',
+			is_load:'',
+			pageSize:10,
+			totalRow:0,
+		  list:[],
+			banners_lists:[]
+		},
+		methods:{
+			lq:function(id) {
+				if(!vm.token){
+					is_login();
+					return;
+				}
+				api.ajax({   //积分  热门兑换
+				    url: get_coupon_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+				    method: 'post',
+				    data: {
+				        values: {
+				            token: vm.token,
+										agency_manage_id:vm.area_id,
+										id:id
+				        }
+				    }
+					},function(ret, err){
+				    if (ret) {
+								if(ret.status==1){
+									api.toast({
+									    msg: ret.msg,
+									    duration: 2000,
+									    location: 'bottom'
+									});
+									setTimeout(function() {
+										vm.list = [];
+										vm.init();
+									},300)
+								}else{
+									api.toast({
+									    msg: ret.msg,
+									    duration: 2000,
+									    location: 'bottom'
+									});
+									setTimeout(function() {
+										vm.list = [];
+										vm.init();
+									},300)
+
+								}
+				    }else{
+							api.hideProgress();
+							if(err.statusCode==500){
+								api.toast({
+										msg: '服务器请求错误！',
+										duration: 2000,
+										location: 'middle'
+								});
+							}else{
+									api.toast({
+											msg: '请求超时，请检查网络',
+											duration: 2000,
+											location: 'middle'
+									});
+							}
+						}
+				});
+			},
+			init:function () {
+				api.showProgress();
+				api.ajax({   //积分  热门兑换
+				    url: get_coupon_app_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+				    method: 'post',
+				    data: {
+				        values: {
+				            token: vm.token,
+										agency_manage_id:vm.area_id,
+										pageNo:vm.pageNo,
+										pageSize:vm.pageSize
+				        }
+				    }
+					},function(ret, err){
+				    if (ret) {
+								api.hideProgress();
+								console.log(JSON.stringify(ret));
+								if(ret.status==1){
+									vm.is_load=1;
+									vm.list=vm.list.concat(ret.data.page.list);
+									vm.totalRow=ret.data.page.totalRow;
+								}else{
+									api.toast({
+									    msg: ret.msg,
+									    duration: 2000,
+									    location: 'bottom'
+									});
+
+								}
+				    }else{
+							api.hideProgress();
+							if(err.statusCode==500){
+								api.toast({
+										msg: '服务器请求错误！',
+										duration: 2000,
+										location: 'middle'
+								});
+							}else{
+									api.toast({
+											msg: '请求超时，请检查网络',
+											duration: 2000,
+											location: 'middle'
+									});
+							}
+						}
+				});
+			},
+			banner:function(){
+				api.ajax({   //banner
+						url: banners_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+						method: 'post',
+						data: {
+								values: {
+										token: vm.token,
+										type:12
+								}
+						}
+					},function(ret, err){
+						if (ret) {
+							if(ret.status){
+								console.log(JSON.stringify(ret));
+								vm.banner_list=ret.data.banner_list;
+								var banners_lists=[];
+								if(ret.data.banner_list.length>0){
+									if(ret.data.banner_list[0].pic.length>0){
+										for (var i = 0; i < ret.data.banner_list[0].pic.length; i++) {
+											 banners_lists.push($api.trimAll(ret.data.banner_list[0].pic[i]));
+										}
+										vm.banns(banners_lists);
+									}
+								}
+
+							}else{
+								api.toast({
+										msg: ret.msg,
+										duration: 2000,
+										location: 'bottom'
+								});
+
+							}
+
+						}
+				});
+			},
+			banns:function(banners_list){
+					var UIScrollPicture = api.require('UIScrollPicture');
+					UIScrollPicture.open({
+						 rect: {
+									x: 0,
+									y: 0,
+									w: api.winWidth,
+									h: 140
+							},
+							data: {
+									paths:banners_list,
+							},
+							styles: {
+									caption: {
+											height: 35,
+											color: '#E0FFFF',
+											size: 13,
+											bgColor: '#696969',
+											position: 'bottom'
+									},
+									indicator: {
+										 dot:{
+											 w:4,
+											 h:5,
+											 r:2,
+											 margin:5
+										},
+											align: 'center',
+											color: '#FFFFFF',
+											activeColor: '#34d594'
+									}
+							},
+							placeholderImg: 'widget://image/s_banner.png',
+							contentMode: 'scaleToFill',
+							interval: 3,
+							fixedOn: api.frameName,
+							loop: true,
+							fixed: false
+					}, function(ret, err) {
+							if(ret){
+								if(ret.eventType=='click'){
+										vm.openShopPic(ret.index);
+								}
+							}
+					});
+			},
+			sub:function() {
+				api.openWin({
+						name: 'jifenOrder_win',
+						url: 'widget://html/order/jifenOrder_win.html',
+						pageParam: {
+								id:vm.id,
+						}
+				});
+			}
+		}
+	})
+	apiready = function(){
+		vm.token=$api.getStorage('token');
+		vm.area_id=$api.getStorage('area_id');
+		vm.id=api.pageParam.id
+		vm.init();
+		vm.banner();
+		api.setRefreshHeaderInfo({
+			 visible: true,
+			 loadingImg: 'widget://image/refresh.png',
+				bgColor: '#f6f6f6',
+			 textColor: '#999',
+			 textDown: '下拉刷新...',
+			 textUp: '松开刷新...',
+			 showTime: true
+		 }, function (ret, err) {
+			 if(ret){
+				 vm.is_load = '';
+				 vm.pageNo = 1;
+				 vm.list = [];
+				 vm.init();
+				 setTimeout("api.refreshHeaderLoadDone()", '500');
+			 }
+		 });
+
+
+		//上啦加载
+		api.addEventListener({
+			 name:'scrolltobottom',
+			 extra:{
+				 threshold:300
+			 }
+		},function(ret,err){
+			if(vm.totalRow == vm.list.length){
+
+					return;
+				}
+			vm.pageNo++
+			vm.init();
+		 });
+	};
+
+</script>

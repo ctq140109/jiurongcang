@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>意见反馈</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style>
+		textarea{height: 7rem;}
+		/*.pic{width: 3.1rem;height: 3.1rem; display: flex;align-items: center; overflow: hidden;margin-right: .3rem;}
+		.pic:last-child{margin-right: 0;}
+		.pic img{min-height: 100%;}*/
+
+		input::-webkit-input-placeholder { color: #999;font-size: 0.7rem;}
+		input:-moz-placeholder { color: #999;font-size: 0.7rem;}
+		input::-moz-placeholder { color: #999;font-size: 0.7rem;}
+		input:-ms-input-placeholder{ color: #999;font-size: 0.7rem;}
+
+		.item{float:left;width: 3.1rem;height: 3.1rem; margin-right: .5rem;margin-bottom: 0.5rem; position: relative;}
+		.item .nr{width: 3.1rem;height: 3.1rem;overflow: hidden;}
+		.item .nr img{height: 100%;width: 100%;object-fit: cover;}
+		.item:last-child{margin-right: 0;}
+
+
+		.btn-del {
+			position: absolute;
+			top: 0px;
+			right: 0px;
+			width: 19px;
+			height: 19px;
+			margin-bottom: 15px;
+			border-radius:50%;
+		}
+	</style>
+	<body style="background-color: #f4f4f4;">
+		<div class="aui-padded-15 aui-bg-white" id="app" v-cloak>
+			<textarea class="aui-font-size-15" readOnly ></textarea>
+			<!-- <div class="pic aui-margin-t-15">
+				<img src="../../image/add1.png" />
+			</div> -->
+			<div class="pic clearfix aui-margin-b-10">
+				<template v-for="(vo,index) in cover">
+				<div class="item">
+					<div class="nr">
+						<img :src="vo" class="img" >
+					</div>
+					<span class="btn-del"><img src="../../image/btn-del.png"  class="btn-del" @click="del(index)"></span>
+				</div>
+
+				</template>
+
+				<div class="item aui-margin-b-10" @click="select_pics()"><img src="../../image/add1.png"/></div>
+
+
+			</div>
+		</div>
+
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+
+		var vm = new Vue({
+			el:'#app',
+			data:{
+					token:'',
+					cover:[],
+					cover_url:[],
+					content:''
+			},
+			methods:{
+					sub:function(){
+						console.log(JSON.stringify(vm.cover_url));
+							api.ajax({
+							    url: user_feedback_save_url,
+							    method: 'post',
+							    data: {
+							        values: {
+							            token:vm.token,
+													content:vm.content,
+													pic:vm.cover_url.join(',')
+							        }
+							    }
+							},function(ret, err){
+							    if (ret) {
+							        if(ret.status){
+													api.toast({
+													    msg: ret.msg,
+													    duration: 2000,
+													    location: 'middle'
+													});
+
+													api.hideProgress();
+
+													setTimeout(function(){
+															api.closeWin();
+
+													},300)
+
+											}else{
+												api.toast({
+														msg: ret.msg,
+														duration: 2000,
+														location: 'middle'
+												});
+											}
+							    } else {
+							        console.log( JSON.stringify( err ) );
+							    }
+							});
+
+					},
+					select_pics:function(){//选择商铺照片
+
+						var maxNum = 3;
+
+						if( 3 - vm.cover.length == 0 ){
+							api.toast({
+										msg:'最多上传3张照片',
+										duration:2000,
+										location:'middle'
+									});
+							return;
+						}else{
+							maxNum = 3 - vm.cover.length;
+						}
+
+						var selectPic = api.require('selectPic');
+
+							var param = {
+								maxNum: maxNum //用户选择的最多图片张数
+							};
+							selectPic.showPics(param, function(ret, err) {
+
+								if (api.systemType == 'ios') {
+									vm.cover = vm.cover.concat(JSON.parse(ret.data));
+
+								} else {
+
+									for(var i=0;i<ret.data.length;i++){
+										vm.cover.push(ret.data[i]);
+									}
+
+
+								}
+
+
+							});
+					},
+					upload:function(){
+
+						if(vm.content==""){
+								api.toast({
+								    msg: '请输入要提交的内容',
+								    duration: 2000,
+								    location: 'middle'
+								});
+								return;
+						}
+						var date = new Date().getTime();
+						var obj = api.require('qiniuUpfile');
+						var qiniu = 'http://9rc.yunxiaochengxu.top';
+						if(vm.cover.length!=0){
+							for(var i=0;i<vm.cover.length;i++){
+									obj.upfile({
+										file: vm.cover[i],
+										name: date+i
+									}, function(ret, err) {
+										if (ret.status) {
+											console.log(JSON.stringify(ret));
+												if (ret.oper == "complete") {
+														//上传成功后组装访问路径，或直接访问文档
+													vm.cover_url.push(qiniu + '/' + ret.info.key);
+
+													if(vm.cover_url.length==vm.cover.length){
+																vm.sub();
+													}
+												}
+										 }
+									});
+							}
+						}else{
+								vm.sub();
+						}
+					},
+					del:function(idx){
+						vm.cover.splice(idx,1);
+						vm.cover_url.splice(idx,1);
+					},
+			}
+		})
+
+		apiready  = function(){
+			vm.token = $api.getStorage("token");
+				contents();
+
+
+			api.addEventListener({
+			    name: 'sub_skerinit'
+			}, function(ret, err){
+			    vm.upload();
+			});
+
+		}
+
+
+		function contents(){
+				var UIInput = api.require('UIInput');
+				UIInput.open({
+				    rect: {
+				        x: 15,
+				        y: 15,
+				        w: api.winWidth-30,
+				        h:140
+				    },
+				    styles: {
+				        bgColor: "rgba(0,0,0,0)",
+				        size: 14,
+				        color: '#000',
+				        placeholder: {
+				            color: '#999'
+				        }
+				    },
+				    isCenterVertical:false,
+				    autoFocus: false,
+				    maxRows: 20,
+				    keyboardType:'default',
+				    placeholder: '请输入意见反馈、侵权投诉、我们将不断改进',
+				    inputType:'text',
+				    fixedOn: api.frameName,
+				    fixed:false,
+				}, function(ret) {
+
+					if(ret.eventType=="change"){
+
+						UIInput.value({
+				    		id:ret.id,
+				    	},function(ret) {
+
+						    if (ret) {
+
+						       vm.content = ret.msg
+
+
+						    }
+						});
+					}
+
+				});
+
+
+			}
+		function closeKeybord(){
+				var UIInput = api.require('UIInput');
+				UIInput.closeKeyboard();
+
+
+		}
+
+</script>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>个人资料</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+    <style type="text/css">
+        .aui-list-item:last-child{ border-bottom:none !important;}
+        .aui-list .aui-list-item-inner {min-height: 2.5rem;}
+        .head-pic{width:3.5rem;height:3.5rem; border-radius: 50%;overflow: hidden;display: inline-block;}
+		.head-pic img{height: 100%;width: 100%;object-fit: cover;}
+
+		.aui-list-item-title{color: #4d4d4d !important;}
+    </style>
+</head>
+
+<body class="aui-bg-grayer">
+	<div class="aui-content aui-border-bgT" id="app" v-cloak onclick="closeKeyborder()">
+		<div class="aui-list aui-padded-l-12 head">
+			<div class="aui-list-item aui-border-b aui-padded-l-0" @click="select_pic()">
+	            <div class="aui-list-item-inner aui-padded-t-10 aui-padded-b-10 aui-padded-r-12">
+	                <div class="aui-list-item-title aui-font-size-15">头像</div>
+	                <div class="aui-list-item-right" style="display: flex;justify-content: space-between;">
+	                	<span class="head-pic">
+	                		<img :src="cover">
+	                	</span>
+	                	<i class="aui-iconfont aui-icon-right aui-margin-l-10"></i>
+					</div>
+	            </div>
+	        </div>
+	    </div>
+	   	<div class="aui-content aui-border-bgT">
+	   		<div class="aui-list">
+		        <div class="aui-list-item aui-border-b aui-padded-l-12 content">
+		            <div class="aui-list-item-inner aui-padded-r-12">
+		                <div class="aui-list-item-title aui-font-size-15">昵称</div>
+		                <div class="aui-list-item-right">
+				        	<span class="aui-text-grayer aui-font-size-14">
+			                </span>
+			                <i class="aui-iconfont aui-icon-right aui-margin-l-10"></i>
+				        </div>
+		            </div>
+		        </div>
+		      	<div class="aui-list-item aui-border-b aui-padded-l-12 content">
+			        <div class="aui-list-item-inner aui-padded-r-12">
+				        <div class="aui-list-item-title aui-font-size-15">手机号码</div>
+				        <div class="aui-list-item-right">
+				        	<span class="aui-text-grayerBlue aui-font-size-13"></span>
+				        	<i class="aui-iconfont aui-icon-right aui-margin-l-10"></i>
+				        </div>
+			        </div>
+		      	</div>
+		      	<div class="aui-list-item aui-border-b aui-padded-l-12" @click="selectSex()">
+			        <div class="aui-list-item-inner aui-padded-r-12">
+				        <div class="aui-list-item-title aui-font-size-15">性别</div>
+				        <div class="aui-list-item-right">
+				        	<span class="aui-text-gray aui-font-size-14">{{sex==1?'男':'女'}}</span>
+				        	<i class="aui-iconfont aui-icon-right aui-margin-l-10"></i>
+				        </div>
+			        </div>
+		      	</div>
+		      	<div class="aui-list-item aui-border-b aui-padded-l-12" @click="selectDate()">
+			        <div class="aui-list-item-inner aui-padded-r-12">
+				        <div class="aui-list-item-title aui-font-size-15">出生日期</div>
+				        <div class="aui-list-item-right">
+				        	<span class="aui-text-gray aui-font-size-13">{{birthday}}</span>
+				        	<i class="aui-iconfont aui-icon-right aui-margin-l-10"></i>
+				        </div>
+			        </div>
+		      	</div>
+		    </div>
+	   		<div class="aui-list aui-border-bgT">
+		       	<div class="aui-list-item aui-border-b aui-padded-l-12">
+			        <div class="aui-list-item-inner aui-padded-r-12">
+				        <div class="aui-list-item-title aui-font-size-15">门店等级</div>
+				        <div class="aui-list-item-right">
+				        	<span class="aui-text-gray aui-font-size-14">{{level}}</span>
+				        </div>
+			        </div>
+		      	</div>
+		      	<div class="aui-list-item aui-border-b aui-padded-l-12">
+			        <div class="aui-list-item-inner aui-padded-r-12">
+				        <div class="aui-list-item-title aui-font-size-15">门店信息</div>
+				        <div class="aui-list-item-right">
+				        	<span class="aui-text-grayerBlue aui-font-size-13" v-if="audit_tag==0" onclick="check_login('index','shenqingDli_win')">暂无门店，去添加</span>
+                  <span class="aui-text-grayerBlue aui-font-size-13" v-if="audit_tag==1">审核中</span>
+                  <span class="aui-text-grayerBlue aui-font-size-13" v-if="audit_tag==2"  @click="look()">查看门店信息</span>
+				        	<i class="aui-iconfont aui-icon-right aui-margin-l-10"></i>
+				        </div>
+			        </div>
+		      	</div>
+		    </div>
+	    </div>
+	</div>
+</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+    var UIInput;
+    var vm = new Vue({
+        el:'#app',
+        data:{
+            token:'',
+            cover:'',
+            cover_url:'',
+            username:'',
+            mobile:'',
+            sex:'',
+            birthday:'',
+            audit_tag:'',
+            level:''
+        },
+        methods:{
+            look:function () {
+              if(vm.audit_tag==0){
+                alert_shop();
+              }else if(vm.audit_tag==1){
+                api.toast({
+                    msg: '您的门店正在审核中，请耐心等待',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+              }else{
+                api.openWin({
+        						name: 'md_win',
+        						url: 'widget://html/set/md_win.html',
+        						pageParam: {
+        						}
+        				});
+              }
+            },
+            init:function(){
+                api.ajax({
+                    url: my_index_url,
+                    dataType:'json',
+                    returnAll:false,
+                    timeout:30,
+                    method: 'post',
+                    data: {
+                        values: {
+                            token: vm.token
+                        }
+                    }
+                },function(ret, err){
+                    if (ret) {
+                        console.log(JSON.stringify(ret))
+                      if(ret.status==1){
+                          var account = ret.data.account;
+                          vm.cover = account.head_portrait;
+                          vm.username = account.nick_name;
+                          vm.mobile = account.phone;
+                          vm.sex = account.sex;
+                          vm.birthday = account.birthday;
+                          vm.level = account.store_grade_name;
+                          vm.audit_tag =account.audit_tag
+                          //设置默认值
+                          set_user();set_mobile();
+                      }
+                    }else{
+                        console.log(JSON.stringify(err))
+                    }
+                });
+            },
+            select_pic:function(){
+                api.showProgress();
+                api.getPicture({
+                    sourceType: 'library',
+                    encodingType: 'jpg',
+                    mediaValue: 'pic',
+                    destinationType: 'url',
+                    allowEdit: true,
+                    quality: 100,
+                    targetWidth: 200,
+                    preview:true,
+                    targetHeight: 200,
+                    saveToPhotoAlbum: false
+                }, function(ret, err) {
+                api.hideProgress();
+                    if (ret) {
+
+                        vm.cover = ret.data;
+                        vm.upload()
+
+                    } else {
+                        console.log(JSON.stringify(err));
+                    }
+                });
+            },
+            upload:function(){
+
+						  var date = new Date().getTime();
+						  var obj = api.require('qiniuUpfile');
+									obj.upfile({
+										file: vm.cover,
+										name: date
+									}, function(ret, err) {
+										if (ret.status) {
+												if (ret.oper == "complete") {
+														//上传成功后组装访问路径，或直接访问文档
+													vm.cover_url = qiniu + '/' + ret.info.key;
+
+                          api.hideProgress();
+												}
+										 }
+									});
+
+						},
+            selectSex:function(){
+							api.openFrame({
+									name: 'selectSex_frm',
+									url: 'widget://html/pageone/selectSex_frm.html',
+									rect: {
+											x: 0,
+											y: 0,
+											w: 'auto',
+											h: api.winHeight
+									}
+							});
+						},
+            selectDate:function(){
+  						var UIDatePicker = api.require('UIDatePicker');
+  								UIDatePicker.open({
+  								 type: 'date',
+  								 rowHeight:40,
+  								 maxDate:'2034-12-31',
+  								 minDate:'1960-01-01',
+  									styles: {
+  													bg: 'rgba(0,0,0,0)',
+  												 headerViewBackgroundColor:'rgba(0,0,0,0)',
+  												 lineBackgroundColor: 'rgba(0,0,0,0)',
+  									item:{
+  											 normal: '#666',
+  											 normalFont: 14,
+  											 selected: '#ff4444',
+  											 selectedFont: 17,
+  											 cancelBtn:{
+  													 cancelButtonTextColor: '#1E1E1E',
+  													 cancelButtonText: '取消' ,
+  													 cancelButtonFont:17
+  											 },
+  											 confirmBtn:{
+  													 confirmButtonTextColor: '#1E1E1E',
+  													 confirmButtonText: '确定' ,
+  													 confirmButtonFont:17
+  													},
+  									}
+  									},
+  								}, function(ret, err) {
+  									if (ret) {
+  											if(ret.eventType=='submit'){
+  													vm.birthday = ret.year + '-' + ret.month + '-' + ret.day
+  											}
+
+  									}
+  								});
+  					},
+            save:function(){
+                if(vm.username==''){
+                    api.toast({
+                        msg: '昵称还未填写',
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                    return;
+                }
+
+                if(vm.mobile==""){
+                  api.toast({
+                      msg: '请输入手机号码',
+                      duration: 2000,
+                      location: 'middle'
+                  });
+                  return;
+                }
+                api.ajax({
+                    url: my_save_url,
+                    method: 'post',
+                    timeout:30,
+                    dataType:'json',
+                    returnAll:false,
+                    data: {
+                        values: {
+                            token: vm.token,
+                            head_portrait:vm.cover_url,
+                            nick_name:vm.username,
+                            sex:vm.sex,
+                            address:'木有',
+                            remark:'木有',
+                            birthday:vm.birthday
+                        }
+                    }
+                },function(ret, err){
+                    if (ret) {
+                        if(ret.status==1){
+                            api.toast({
+                                msg: '保存成功',
+                                duration: 2000,
+                                location: 'middle'
+                            });
+
+                            api.sendEvent({
+                                name: 'reshuf',
+                            });
+
+                        }else{
+                            api.toast({
+                                msg: ret.msg,
+                                duration: 2000,
+                                location: 'middle'
+                            });
+
+                        }
+                    } else {
+                        api.toast({
+                            msg: ret.msg,
+                            duration: 2000,
+                            location: 'middle'
+                        });
+
+                    }
+                });
+
+            },
+
+        }
+    })
+
+    apiready = function(){
+        vm.token = $api.getStorage('token');
+        vm.init();
+        //输入框
+        UIInput = api.require('UIInput');
+
+        username();mobile();
+
+        api.addEventListener({
+            name: 'save_data_init'
+        }, function(ret, err){
+            vm.save();
+        });
+
+        //监听性别选择
+        api.addEventListener({
+            name: 'select_sex_init'
+        }, function(ret, err){
+            vm.sex = ret.value.sex;
+        });
+
+
+
+    }
+    y = $api.dom('.head').offsetHeight+20;
+
+    function username(){
+        var iHeight =  y+($api.dom('.content').offsetHeight-40)/2
+        UIInput.open({
+            rect: {
+                x: 100,
+                y: iHeight,
+                w: api.winWidth-130,
+                h: 45
+            },
+            styles: {
+                bgColor: "rgba(0,0,0,0)",
+                size: 14,
+                color: '#666',
+                placeholder: {
+                    color: '#999'
+                }
+            },
+            isCenterVertical:true,
+            autoFocus: false,
+            alignment:'right',
+            maxRows: 1,
+            placeholder: '昵称',
+            inputType:'default',
+            fixedOn: api.frameName,
+            fixed:false,
+        }, function(ret) {
+
+            UIInput.value({
+                id:ret.id,
+              },function(ret) {
+
+                if (ret) {
+                    vm.username = ret.msg
+                }
+            });
+            if (ret.eventType == 'change') {
+
+              UIInput.value({
+                id:ret.id,
+              },function(ret) {
+
+                if (ret) {
+                    vm.username = ret.msg
+                }
+            });
+            }
+        });
+    }
+
+    function set_user(){
+    		var id = '';
+    		if(api.systemType=="ios"){
+    			id = 1;
+    		}else{
+    			id = 0;
+    		}
+
+
+    			UIInput.value({
+    				id:id,
+    			  msg: vm.username
+    			});
+    }
+
+    function mobile(){
+      var iHeight =  y+($api.dom('.content').offsetHeight-40)/2+$api.dom('.content').offsetHeight
+        UIInput.open({
+            rect: {
+                x: 100,
+                y: iHeight,
+                w: api.winWidth-130,
+                h: 45
+            },
+            styles: {
+                bgColor: "rgba(0,0,0,0)",
+                size: 14,
+                color: '#666',
+                placeholder: {
+                    color: '#999'
+                }
+            },
+            isCenterVertical:true,
+            autoFocus: false,
+            alignment:'right',
+            maxRows: 1,
+            placeholder: '手机号码',
+            inputType:'default',
+            fixedOn: api.frameName,
+            fixed:false,
+        }, function(ret) {
+
+            UIInput.value({
+                id:ret.id,
+              },function(ret) {
+
+                if (ret) {
+                    vm.mobile = ret.msg
+                }
+            });
+            if (ret.eventType == 'change') {
+
+              UIInput.value({
+                id:ret.id,
+              },function(ret) {
+
+                if (ret) {
+                    vm.username = ret.msg
+                }
+            });
+            }
+        });
+    }
+
+    function set_mobile(){
+
+    	var id = '';
+    		if(api.systemType=="ios"){
+    			id = 2;
+    		}else{
+    			id = 1;
+    		}
+
+    			UIInput.value({
+    				id:id,
+    			  msg: vm.mobile
+    			});
+
+    }
+    function closeKeyborder(){
+  			UIInput = api.require('UIInput');
+  				UIInput.closeKeyboard({
+  						id:0
+  				});
+  				UIInput.closeKeyboard({
+  						id:1
+  				});
+  				UIInput.closeKeyboard({
+  						id:2
+  				});
+  				UIInput.closeKeyboard({
+  						id:3
+  				});
+  		}
+
+</script>

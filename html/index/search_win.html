@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>搜索</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+	.shanchu{border-bottom: solid 1px #666;}
+
+	.aui-searchbar-input{height: 1.5rem;line-height: 1.5rem;}
+	.aui-searchbar-input input{height: 1.5rem;line-height: 1.5rem;}
+	.serch-icon{width: 0.7rem;vertical-align:text-top;margin-right: 0.5rem}
+
+	.td{width: 0.5rem; vertical-align: middle; }
+	.sx{width: 0.8rem; vertical-align: middle;}
+	.aui-tab span{display: inline-block;height: 99%;}
+	.aui-active{border-bottom: none !important;}
+	.aui-active span{border-bottom:solid 2px #35adbe;color:#35adbe; font-weight: bold;}
+
+
+	</style>
+
+	<body class="aui-bg-grayer">
+			<div id="app" v-cloak>
+		<header class="aui-bar aui-bar-nav aui-bar-light  aui-padded-l-12 aui-padded-r-12" id="search" style="display:flex;justify-content:flex-start">
+		    <a class="aui-pull-left" onclick="closeWin()">
+		        <span class="aui-iconfont aui-icon-left"></span>
+		    </a>
+				<div class="aui-searchbar" id="search" style="background-color: #fff;width:100%">
+						<div class="aui-searchbar-input aui-border-radius aui-bg-grayer" tapmode style="border-radius: 2.25rem;width:100%">
+								<img class='serch-icon' src="../../image/sousuo.png">
+								<form action="javascript:search();">
+										<input type="search" readonly  value="" id="search-input" style="width:100%">
+								</form>
+						</div>
+				</div>
+
+		</header>
+		<!--筛选-->
+		<div class="aui-tab" id="tab" style="visibility: hidden;">
+		    <div class="aui-tab-item aui-text-grayBlue" :class="{' aui-active':idx==1}">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5" @click="rec()">
+		    		综合
+						<!-- <img class="td aui-margin-l-5" src="../../image/4.png"/> -->
+		    	</span>
+		    </div>
+		    <div class="aui-tab-item aui-text-grayBlue" :class="{' aui-active':idx==2}">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5" @click="sx()">
+		    		价格<img class="td aui-margin-l-10" src="../../image/0.png" v-if="price==0"/>
+								<img class="td aui-margin-l-10" src="../../image/1.png" v-if="price==2"/>
+								<img class="td aui-margin-l-10" src="../../image/2.png" v-if="price==1"/>
+		    	</span>
+		   	</div>
+		    <div class="aui-tab-item aui-text-grayBlue" :class="{' aui-active':idx==3}">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5" @click="sxs()">
+						销量
+		    		<!--  <img class="td aui-margin-l-10" src="../../image/0.png" v-if="sales==0"/>
+								<img class="td aui-margin-l-10" src="../../image/1.png" v-if="sales==1"/>
+								<img class="td aui-margin-l-10" src="../../image/2.png" v-if="sales==2"/> -->
+		    	</span>
+		    </div>
+		    <div class="aui-tab-item aui-text-grayBlue" @click="left()">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5">
+		    		筛选 <img class="sx aui-margin-l-5" src="../../image/shaixuan.png"/>
+		    	</span>
+		    </div>
+		</div>
+</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			idx:'1',
+			token:'',
+			area_id:'',
+			state:'',
+			sales:'',
+			price:'',
+			brand_id:'',
+			prefecture_id:'',//专区id
+			country_id: '',	//国家id
+			classify_id: '',		//	商品一级分类id
+			agency_manage_id:'',  //区域id
+			floor_price:'',
+			tag:'',
+			top_price:''
+		},
+		methods:{
+			left:function() {
+				api.sendEvent({
+				    name: 'left',
+				});
+
+			},
+			rec:function () {
+				vm.idx=1;
+				vm.is_rec=1;
+				vm.floor_price='',
+				vm.top_price='',
+				vm.brand_id='',
+				vm.country_id='',
+				vm.classify_id='',
+				api.sendEvent({
+				    name: 'rec',
+				    extra: {
+				        is_rec: 1,
+								sales:0,
+								price:0
+				    }
+				});
+			},
+			sx:function(){
+				vm.idx=2;
+				vm.sales=0;
+				vm.is_rec=0;
+				if(vm.price==0){
+					vm.price=1;
+				}else if(vm.price==1){
+					vm.price=2;
+				}else if(vm.price==2){
+					vm.price=1;
+				}
+				vm.floor_price='',
+				vm.top_price='',
+				vm.country_id='',
+				vm.brand_id='',
+				vm.classify_id='',
+				api.sendEvent({
+				    name: 'rec',
+				    extra: {
+				        is_rec: 0,
+								sales:0,
+								price:vm.price
+				    }
+				});
+
+			},
+			sxs:function(){
+				vm.idx=3;
+				vm.price=0;
+				vm.is_rec=0;
+				if(vm.sales==0){
+					vm.sales=1;
+				}else if(vm.sales==1){
+					vm.sales=2;
+				}else if(vm.sales==2){
+					vm.sales=1;
+				}
+				vm.floor_price='',
+				vm.top_price='',
+				vm.brand_id='',
+				vm.country_id='',
+				vm.classify_id='',
+				api.sendEvent({
+				    name: 'rec',
+				    extra: {
+				        is_rec: 0,
+								sales:vm.sales,
+								price:0
+				    }
+				});
+			},
+
+			init:function(){
+				vm.history = $api.getStorage('history');
+				if(!vm.history){
+					vm.history = [];
+				}
+				vm.height=api.winHeight;
+			},
+			tabchange:function(idx){
+				api.sendEvent({
+					name:'search_init',
+					extra:{
+						state:idx,
+						sort:vm.sort
+					}
+				});
+				if(vm.tag==1){   //判断是否  认证过  	是否绑定区域 0：否 1：是
+	 			 var tab= $api.dom('#tab').offsetHeight
+	 		 }else{
+	 			 var tab=0
+	 		 }
+				api.openFrame({
+					name: 'searchResult_frm',
+					url: 'widget://html/index/searchResult_frm.html',
+					rect: {
+						x:0,
+						y:$api.dom('header').offsetHeight + tab,
+						w:'auto',
+						h:vm.height -$api.dom('header').offsetHeight - tab
+					},
+					animation:{
+						type:'none',
+						duration:300
+					},
+					bounces: true,
+					pageParam:{
+						search_name:vm.keywords
+					}
+				});
+
+			},
+			//开始搜索
+			get_keywords:function(){
+				var obj = {};
+				if(vm.keywords==''){
+					api.toast({
+						msg:'请输入搜索的名称',
+						duration:2000,
+						location:'middle'
+					});
+					return;
+				}
+
+				//关闭历史记录页
+				api.closeFrame({
+					name:'search_frm'
+				});
+				//设置元素隐藏显示
+
+				var obj = {
+						search_name:vm.keywords
+				}
+				if(vm.tag==1){   //判断是否  认证过  	是否绑定区域 0：否 1：是
+	 			 var tab= $api.dom('#tab').offsetHeight
+	 		 }else{
+	 			 var tab=0
+	 		 }
+				//打开搜索结果页
+				api.openFrame({
+					name: 'searchResult_frm',
+					url: 'widget://html/index/searchResult_frm.html',
+					rect: {
+						x:0,
+						y:$api.dom('header').offsetHeight +tab,
+						w:'auto',
+						h:vm.height - $api.dom('header').offsetHeight - tab
+					},
+					bounces: true,
+					pageParam:obj
+				});
+
+				//存入历史缓存
+				for(var i=0;i<vm.history.length;i++){
+					if(vm.history[i].name == vm.keywords){
+						return;
+					}
+				}
+				obj.name = vm.keywords;
+				vm.history.push(obj);
+				$api.setStorage('history',vm.history);
+
+			}
+
+
+		}
+	})
+
+	apiready = function(){
+		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+		 vm.tag=$api.getStorage('tag');
+
+		 vm.header=$api.dom('header').offsetHeight
+		 UIInput = api.require('UIInput');
+ 	    	vm.init();keywords();
+ 	      api.addEventListener({
+ 	          name:'history_search_init'
+           },function(ret,err){
+           		vm.keywords = ret.value.keywords;
+							if(vm.tag==1){
+								$api.css($api.byId("tab"),'visibility: visible');
+							}else{
+								$api.css($api.byId("tab"),'visibility: hidden');
+							}
+
+ 							console.log(JSON.stringify(ret));
+           		if(api.systemType=="ios"){
+           			UIInput.closeKeyboard({
+ 					    			id:1
+ 								});
+ 								UIInput.value({
+ 									 id:1,
+ 								   msg: vm.keywords
+ 								});
+ 		          }else{
+ 		          	UIInput.closeKeyboard({
+ 							  	id:0
+ 								});
+ 								UIInput.value({
+ 								  id:0,
+ 							    msg: vm.keywords
+ 						 		});
+         			}
+ 							api.closeFrame({
+ 								name:'search_frm'
+ 		          });
+ 							vm.get_keywords();
+       	});
+ 	    	UIInput.addEventListener({
+ 			  	name: 'becomeFirstResponder'
+ 				}, function() {
+ 	     	api.openFrame({
+             name: 'search_frm',
+             url: 'widget://html/index/search_frm.html',
+             rect: {
+                 x: 0,
+                 y: $api.dom('header').offsetHeight,
+                 w: 'auto',
+                 h: api.winHeight-$api.dom('header').offsetHeight
+             },
+ 						pageParam:{
+ 							hei:api.winHeight
+ 						},
+             bounces: false
+         });
+ 				api.closeFrame({
+ 					name:'searchResult_frm'
+ 				});
+ 		});
+	};
+	function keywords(){
+				var y = '';
+				if(api.systemType=='ios'){
+						if(vm.header>80){
+									y = 53;
+						}else{
+								y = 28;
+						}
+
+				}else{
+						y = ($api.dom('header').offsetHeight/2)-4;
+				}
+
+
+				UIInput.open({
+				    rect: {
+				        x: 100,
+				        y: y,
+				        w: api.winWidth-100,
+				        h: 30
+				    },
+				    styles: {
+				        bgColor: "rgba(0,0,0,0)",
+				        size: 14,
+				        color: '#000',
+				        placeholder: {
+				            color: '#ccc'
+				        }
+				    },
+				    isCenterVertical:true,
+				    autoFocus: false,
+				    maxRows: 1,
+				    keyboardType:'search',
+				    placeholder: '请输入搜索名称',
+				    inputType:'text',
+				    fixedOn: api.frameName,
+				    fixed:false,
+				}, function(ret) {
+				    if (ret.eventType == 'search'){
+							UIInput.value({
+							    msg: ret.msg
+							});
+				    	UIInput.value({
+				    		id:ret.id,
+				    	},function(ret) {
+						    if (ret) {
+					        vm.keywords = ret.msg;
+									if(vm.tag==1){
+										$api.css($api.byId("tab"),'visibility: visible');
+									}else{
+										$api.css($api.byId("tab"),'visibility: hidden');
+									}
+
+
+					        vm.get_keywords();
+
+						  }
+						});
+						UIInput.closeKeyboard({
+						    id:ret.id
+						});
+				  }
+			    if(ret.eventType == "show"){
+				    	api.closeFrame({
+								name:'searchResult_frm'
+			        });
+					     api.openFrame({
+			            name: 'search_frm',
+			            url: 'widget://html/index/search_frm.html',
+			            rect: {
+			                x: 0,
+			                y: $api.dom('header').offsetHeight,
+			                w: 'auto',
+			                h: api.winHeight - $api.dom('header').offsetHeight
+			            },
+			            bounces: true
+			        });
+				    }
+				});
+	}
+	function closeKeyborder(){
+				UIInput.closeKeyboard({
+						id:0
+				});
+				UIInput.closeKeyboard({
+						id:1
+				});
+				UIInput.closeKeyboard({
+						id:2
+				});
+				UIInput.closeKeyboard({
+						id:3
+				});
+
+		}
+
+</script>

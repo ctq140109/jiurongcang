@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>积分商品详情</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.shop-pic{height: 18rem;}
+		.shop-pic img{width: 100%;height: 100%;object-fit: cover;}
+
+	</style>
+	<body>
+		<div class="aui-content" id="app" v-cloak>
+			<div class="shop-pic">
+				<!-- <img src="../../image/lizi3.jpg"/> -->
+			</div>
+			<div class="aui-padded-15 aui-padded-l-12">
+				<span class="aui-text-danger fweight-5 aui-font-size-20">{{info.exchange_score}}积分</span>
+				<!-- <span class="aui-text-grayerBlue aui-font-size-12 aui-margin-l-5" style="text-decoration: line-through;">￥360.00</span> -->
+			</div>
+			<div class="aui-text-blacker aui-font-size-16 aui-padded-15 aui-padded-t-0 aui-ellipsis-2 aui-padded-l-12 aui-border-bgB" style="line-height: 24px;">
+				{{info.name}}
+			</div>
+			<!-- <div class="aui-list aui-border-bgB">
+				<div class="aui-list-item">
+          <div class="aui-list-item-inner aui-list-item-arrow">
+          	<div class="aui-font-size-14"><span class="aui-text-grayerBlue">选择 </span><span class="aui-margin-l-5 aui-text-blacker">请选择 规格</span></div>
+          </div>
+      </div>
+			</div> -->
+			<div class="">
+				<div class="aui-padded-12"><img src="../../image/title1.jpg"/></div>
+				<div class="" v-html="info.content">
+
+				</div>
+			</div>
+
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			idx:'1',
+			id:'',
+			token:'',
+			area_id:'',
+			info:[],
+			banners_lists:[]
+		},
+		methods:{
+			init:function () {
+				api.ajax({   //积分  热门兑换
+				    url: score_good_detail_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+				    method: 'post',
+				    data: {
+				        values: {
+				            token: vm.token,
+										id:vm.id,
+										agency_manage_id:vm.area_id
+				        }
+				    }
+					},function(ret, err){
+				    if (ret) {
+								console.log(JSON.stringify(ret));
+								if(ret.status==1){
+										var banners_lists=[];
+										vm.info=ret.data.score_goods;
+										api.sendEvent({
+										    name: 'scroe',
+										    extra: {
+										        name: ret.data.score_goods.name
+										    }
+										});
+
+										var pictures = ret.data.score_goods.goods_pictures.split(',')
+										if(pictures.length>0){
+	 	 									for (var i = 0; i < pictures.length; i++) {
+	 	 										 banners_lists.push($api.trimAll(pictures[i]));
+	 	 									}
+											vm.banners_lists=banners_lists
+	 	 									setTimeout(function(){
+	 	 										vm.banns(banners_lists);
+	 	 									},500)
+ 	 									}
+								}
+				    }
+				});
+			},
+			banns:function(banners_list){
+					var UIScrollPicture = api.require('UIScrollPicture');
+					UIScrollPicture.open({
+						 rect: {
+									x: 0,
+									y: 0,
+									w: api.winWidth,
+									h: $api.dom('.shop-pic').offsetHeight
+							},
+							data: {
+									paths:banners_list,
+							},
+							styles: {
+									caption: {
+											height: 35,
+											color: '#E0FFFF',
+											size: 13,
+											bgColor: '#696969',
+											position: 'bottom'
+									},
+									indicator: {
+										 dot:{
+											 w:4,
+											 h:5,
+											 r:2,
+											 margin:5
+										},
+											align: 'center',
+											color: '#FFFFFF',
+											activeColor: '#34d594'
+									}
+							},
+							placeholderImg: 'widget://image/s_banner.png',
+							contentMode: 'scaleToFill',
+							interval: 3,
+							fixedOn: api.frameName,
+							loop: true,
+							fixed: false
+					}, function(ret, err) {
+							if(ret){
+								if(ret.eventType=='click'){
+										vm.openShopPic(ret.index);
+								}
+							}
+					});
+			},
+			openShopPic:function(idx){
+				var photoBrowser = api.require('photoBrowser');
+				photoBrowser.open({
+						images: vm.banners_lists,
+						activeIndex:idx,
+						placeholderImg: 'widget://res/img/apicloud.png',
+						bgColor: '#000'
+				}, function(ret, err) {
+
+						if(ret.eventType == 'click'){
+								photoBrowser.close();
+
+						}
+				});
+				photoBrowser.setIndex({
+						index: idx
+				});
+
+			},
+			sub:function() {
+				if(!vm.token){
+					is_login();
+					return;
+				}
+				api.openWin({
+						name: 'jifenOrder_win',
+						url: 'widget://html/shop/jifenOrder_win.html',
+						pageParam: {
+								id:vm.id,
+						}
+				});
+			}
+		}
+	})
+	apiready = function(){
+		vm.token=$api.getStorage('token');
+		vm.area_id=$api.getStorage('area_id');
+		vm.id=api.pageParam.id
+		vm.init();
+		api.addEventListener({
+		    name: 'sub_scro'
+		}, function(ret, err){
+		    if( ret ){
+		         vm.sub()
+		    }
+		});
+
+	};
+
+</script>

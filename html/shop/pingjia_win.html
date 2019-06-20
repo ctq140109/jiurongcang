@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>全部评价</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.icon{width: 1.4rem;}
+		.sc{width: 1.2rem; margin: auto;display: block !important;}
+		.btn{border-radius: 1rem;overflow: hidden;}
+		.btn span{width: 50%;height: 1.8rem;line-height: 1.8rem;color: #fff;}
+		.line{position: absolute;top: 0;right: .3rem;width:16px;height:16px;border-radius:50%;background-color:#f32c52;text-align:center;line-height:16px;font-size:0.5rem;color:#fff;border: 1px solid #fff;}
+	</style>
+	
+	<body>
+		<header class="aui-bar aui-bar-nav aui-bar-light">
+		    <a class="aui-pull-left aui-btn" onclick="closeWin()">
+		        <span class="aui-iconfont aui-icon-left"></span>
+		    </a>
+		    <div class="aui-title">全部评价</div>
+		</header>
+		
+		<footer class="aui-bar aui-bar-tab aui-border-t clearfix" id="footer" >
+	    	<div class="aui-row" >
+	    		<div class="aui-col-xs-2 aui-border-r" style="height: 45px;line-height: 45px;">
+	    			<img class="sc" src="../../image/kefu1.png" / style="vertical-align: middle;">
+	    		</div>
+	    		<div class="aui-col-xs-2 aui-border-r" style="height: 45px;line-height: 45px;">
+	    			<div class="line top-li">0</div>
+	    			<img class="sc" src="../../image/gwc1.png" / style="vertical-align: middle;">
+	    		</div>
+	    		<div class="aui-col-xs-4 aui-border-r aui-font-size-15 aui-text-decoration"  style="height: 45px;line-height: 45px;">
+	    			加入购物车
+	    		</div>
+	    		<div class="aui-col-xs-4 aui-btn-blue aui-font-size-15 aui-text-decoration" style="height: 45px;line-height: 45px;">
+	    			立即购买
+	    		</div>
+	    	</div>
+		</footer>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	apiready = function(){
+		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+	        api.openFrame({
+	            name: 'pingjia_frm',
+	            url: 'widget://html/shop/pingjia_frm.html',
+	            rect: {
+	                x: 0,
+	                y: $api.dom('header').offsetHeight+ $api.dom('footer').offsetHeight,
+	                w: 'auto',
+	                h: api.winHeight - $api.dom('header').offsetHeight - $api.dom('footer').offsetHeight
+	            },
+	            bounces: true,
+	            pageParam: {
+	                id: api.pageParam.id
+	            }
+	        });     
+	};
+	
+</script>

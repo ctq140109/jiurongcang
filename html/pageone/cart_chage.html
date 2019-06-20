@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>优惠</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/animate.css" />
+	</head>
+	<style>
+		.aui-content{ position:fixed;bottom: 0;width: 100%;border-radius: 0.5rem 0.5rem 0 0;}
+		.hide{ width:100%;height:22rem;}
+		.aui-btn{border-radius: 1.2rem;}
+	</style>
+
+	<body  style="background-color: rgba(0,0,0,0.3)">
+		<div class="hide" onclick="hide()"></div>
+		<div class="aui-content  animated slideInUp" id="app" v-cloak>
+			<div class="aui-bg-white">
+				<div class="aui-text-center aui-font-size-15 aui-font-weight aui-padded-r-12" style="padding-top: 1rem;padding-bottom:0.7rem;">
+					优惠项
+					<div style="position: absolute;top: 0.5rem;right: 0.6rem;" >
+						<img style="width: 0.9rem;" src="../../image/close2.png" onclick="hide()"/>
+					</div>
+				</div>
+				<div class="aui-padded-12" style="padding-bottom: 1rem !important;">
+					<div class="aui-padded-t-15 aui-font-size-14 aui-padded-b-10 aui-border-b">不使用优惠<div class="aui-pull-right aui-margin-r-15 aui-font-size-15">
+						<input type="checkbox" name="checkbox"  class="aui-radio" @click="select(-1,0)">
+					</div></div>
+					<template v-for="(v,index) in list">
+						<div class="aui-padded-t-15 aui-font-size-14 aui-padded-b-10">{{v.name}}<div class="aui-pull-right aui-margin-r-15 aui-font-size-15">
+							<input type="radio" name="checkbox"  class="aui-radio" @click="select(index,v.type,v.name,v.reduce)">
+						</div></div>
+
+					</template>
+				</div>
+
+
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			id:'',
+			list:[]
+		},
+		methods:{
+			select:function(idx,type,name,reduce) {
+				if(idx==-1){
+					$api.removeCls($api.dom('.aui-content'),'slideInUp');
+					$api.addCls($api.dom('.aui-content'),'slideOutDown');
+					api.sendEvent({
+					    name: 'yh_chage',
+					    extra: {
+					        type: 0,
+									id:vm.id,
+									name:0,
+									reduce:0
+					    }
+					});
+					setTimeout(function(){
+						api.closeFrame();
+					},300)
+				}else{
+					api.sendEvent({
+					    name: 'yh_chage',
+					    extra: {
+					        type: type,
+									id:vm.id,
+									name:name,
+									reduce:reduce
+					    }
+					});
+					$api.removeCls($api.dom('.aui-content'),'slideInUp');
+					$api.addCls($api.dom('.aui-content'),'slideOutDown');
+					setTimeout(function(){
+						api.closeFrame();
+					},300)
+
+				}
+			}
+		}
+	})
+
+	apiready = function(){
+		vm.id=api.pageParam.id,
+		vm.list=api.pageParam.list;
+		console.log(JSON.stringify(vm.list));
+	}
+
+	function hide(){
+		$api.removeCls($api.dom('.aui-content'),'slideInUp');
+		$api.addCls($api.dom('.aui-content'),'slideOutDown');
+
+		setTimeout(function(){
+
+			api.closeFrame();
+
+		},300)
+	}
+</script>

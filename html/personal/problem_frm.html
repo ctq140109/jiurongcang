@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>常见问题</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.inner{line-height: 22px;}
+		.title{position: relative;}
+		.title:after{content: '';position: absolute;top:1rem;left: 0;width: 3px;height: 15px;background-color:#35adbe;}
+	</style>
+	<body>
+		<div class="aui-content" id="app" v-cloak>
+			<ul>
+				<template v-for="(vo,index) in list">
+				<li class="aui-border-b aui-padded-l-12 aui-padded-r-12">
+					<div class="aui-padded-15 aui-padded-l-12 aui-padded-r-12 aui-font-size-17 aui-text-blacker aui-border-b title">
+						{{vo.problem}}
+					</div>
+					<div class="aui-padded-15 aui-padded-l-12 aui-padded-r-12 aui-font-size-14 aui-text-grayBlue inner">
+						{{vo.answer}}
+					</div>
+				</li>
+				</template>
+			</ul>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+		var vm = new Vue({
+				el:'#app',
+				data:{
+						list:[]
+				},
+				methods:{
+					init:function(){
+							api.ajax({
+							    url: common_problem_url,
+							    method: 'get',
+									timeout:30,
+									returnAll:false,
+									data:{
+										values:{
+
+										}
+									}
+							},function(ret, err){
+							    if (ret) {
+							        console.log( JSON.stringify( ret ) );
+											vm.list = ret.data.common_problem_list;
+							    } else {
+							        alert( JSON.stringify( err ) );
+							    }
+							});
+
+						},
+				}
+		})
+
+		apiready = function(){
+				vm.init()
+		}
+</script>

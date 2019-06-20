@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>积分明细</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css" />
+	</head>
+	<style type="text/css">
+		.bg{height: 5.75rem;background: url(../../image/jifen.jpg) no-repeat;background-size:cover;}
+		.aui-list-item-title{width: 80% !important;}
+		ul li:last-child{border-bottom: none !important;}
+		.shengyu{width: 100%;display: flex;justify-content: space-between;}
+		.aui-btn{width: 5rem;border-radius: 2rem;background-color: #fff !important;height: 1.7rem;line-height: 1.7rem;}
+		.jf{font-weight: bold;font-size: 1.5rem;}
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content" id="app" v-cloak v-if="is_load">
+
+			<div class="bg aui-padded-12" style="display: flex;display: -webkit-flex;align-items: center;">
+	        	<div class="shengyu aui-text-white">
+	        		<div class="aui-font-size-18" style="line-height: 1.7rem;">剩余积分 <span class="jf">{{score}}</span></div>
+					<div class="aui-text-brown aui-btn" onclick="open_window('shop','jifen_win')">去兑换</div>
+			    </div>
+			</div>
+			<!-- <div class="aui-padded-12 aui-text-grayerBlue aui-text-grayBlue">
+				本月
+				<span class="aui-pull-right">收入：+2152 支出：-2152 </span>
+			</div> -->
+			<div class="list">
+				<ul class="aui-list">
+	        	<template v-for="(vo,index) in list">
+		         <li class="aui-list-item aui-padded-l-12 aui-border-b">
+		            <div class="aui-list-item-inner aui-padded-t-15 aui-padded-b-15 aui-padded-r-12">
+		            	<div class="aui-list-item-title">
+		            		<div class="aui-list-item-text aui-text-black aui-font-size-15">
+		            			<div class="aui-ellipsis-1">{{vo.trans_name}}</div>
+		            		</div>
+		            		<div class="aui-margin-0 aui-padded-t-10 aui-text-grayerBlue aui-font-size-11">{{vo.trans_time}}</div>
+		            	</div>
+		            	<div class="aui-list-item-text aui-text-blacker" style="font-size: 1rem;">{{vo.trans_score}}</div>
+		            </div>
+		        </li>
+						</template>
+			   	</ul>
+			</div>
+
+			<div class="aui-col-xs-12 aui-text-center" id="bot" v-if="list.length>10">
+					 <span class="aui-font-size-12 aui-text-gray">正在加载</span>
+					 <img src="../../image/uploading.gif" style="width:0.7rem;height:0.7rem;vertical-align:middle"/>
+			</div>
+			<div class="nodata aui-bg-grayer" v-show="list.length==0&&is_load==1">
+				<img src="../../icon/nodata.png" style="width: 12.5rem;height: 12.5rem;margin: 5rem auto 0;display: block !important;"/>
+			</div>
+			<div class="nodata aui-bg-grayer" v-show="list.length==0&&is_load==2">
+				<img src="../../icon/nodata.png" style="width: 12.5rem;height: 12.5rem;margin: 5rem auto 0;display: block !important;"/>
+			</div>
+
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+		var vm = new Vue({
+				el:'#app',
+				data:{
+						token:'',
+						list:[],
+						totalRow:0,
+						score:'',
+						is_load:'',
+						pageNumber:1,
+						pageSize:10
+				},
+				methods:{
+						init:function(){
+								if(!vm.is_load){
+									api.showProgress({
+											style: 'default',
+											animationType: 'fade',
+											title: '加载中...'
+									});
+								}
+								api.ajax({
+								    url: my_integral_url,
+								    method: 'get',
+										timeout:30,
+										dataType:'json',
+										returnAll:false,
+								    data: {
+								        values: {
+								            token: vm.token,
+														pageNo:vm.pageNumber,
+														pageSize:vm.pageSize
+								        }
+								    }
+								},function(ret, err){
+								    if (ret) {
+												console.log(JSON.stringify(ret));
+												api.hideProgress();
+												vm.is_load = 1;
+												if(ret.status==1){
+														vm.score = ret.data.score;
+														vm.list = vm.list.concat(ret.data.page.list);
+														vm.totalRow = ret.data.page.totalRow;
+												}
+								    } else {
+											api.hideProgress();
+												vm.is_load = 2;
+								        if(err.statusCode==500){
+														api.toast({
+														    msg: '服务端请求错误！',
+														    duration: 2000,
+														    location: 'middle'
+														});
+
+												}else{
+														api.toast({
+														    msg: '加载失败，请检查网络连接',
+														    duration: 2000,
+														    location: 'middle'
+														});
+
+												}
+								    }
+								});
+
+						},
+				}
+		})
+
+		apiready = function(){
+				vm.token = $api.getStorage('token');
+				vm.init();
+
+				api.setRefreshHeaderInfo({
+					 visible: true,
+					 loadingImg: 'widget://image/refresh.png',
+						bgColor: '#f6f6f6',
+					 textColor: '#999',
+					 textDown: '下拉刷新...',
+					 textUp: '松开刷新...',
+					 showTime: true
+				 }, function (ret, err) {
+					 if(ret){
+						 vm.is_load = '';
+						 vm.list = [];
+						 vm.pageNumber = 1;
+						 vm.init();
+						 setTimeout("api.refreshHeaderLoadDone()", '500');
+					 }
+				 });
+
+				//上啦加载
+				api.addEventListener({
+					 name:'scrolltobottom',
+					 extra:{
+						 threshold:300
+					 }
+				},function(ret,err){
+					if(vm.totalRow == vm.list.length){
+							if(vm.totalRow>10){
+								$api.html($api.byId('bot'),"<div style='background-color:#f5f5f5;color:#666;' class='aui-font-size-12 aui-padded-t-10 aui-padded-b-10'>到底了~</div>")
+							}
+							return;
+						}
+					vm.pageNumber++
+					vm.init();
+				 });
+
+		}
+</script>

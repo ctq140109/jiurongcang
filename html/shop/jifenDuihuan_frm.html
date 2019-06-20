@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>兑换详情</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css" />
+	</head>
+	<style type="text/css">
+		.aui-list-item-media{width: 5.25rem !important;padding-right: 0.6rem !important;padding-top: 0 !important; padding-bottom: 0 !important;}
+	    .shop-pic{height: 4.5rem;width: 4.5rem;border-radius: 0.25rem;overflow: hidden;}
+	    .aui-list-item-media img{width: 100%;height: 100%;object-fit: cover;}
+	    .aui-list-item-inner{padding: 0 !important;}
+	    .aui-ellipsis-2{height: 44px; line-height: 22px;}
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content" id="app" v-cloak>
+			<div class="aui-list aui-media-list">
+				<div class="aui-list-item aui-padded-b-12 aui-padded-t-12 aui-padded-l-0">
+					<div class="aui-media-list-item-inner aui-padded-l-12 aui-padded-r-12">
+						<div class="aui-list-item-media">
+							<div class="shop-pic">
+								<img :src="list.good_thumb" />
+							</div>
+						</div>
+						<div class="aui-list-item-inner aui-padded-r-0">
+							<div class="aui-list-item-text aui-font-size-15">
+								<span class="aui-ellipsis-2  aui-text-blacker">{{list.good_name}}</span>
+							</div>
+							<div class="aui-list-item-text aui-font-size-15 aui-padded-t-10 aui-text-danger">{{list.score}}积分 </div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="aui-bg-white aui-padded-b-15 aui-border-bgT">
+				<div class="aui-padded-15 aui-padded-l-0 aui-margin-l-15  aui-font-size-15 fweight-5 aui-border-b">兑换详情</div>
+				<div class="aui-padded-l-15 aui-padded-t-15 aui-font-size-13 aui-text-grayer">联系电话：<span class="aui-text-black">{{list.phone}}</span></div>
+				<div class="aui-padded-l-15 aui-padded-t-15 aui-font-size-13 aui-text-grayer">联系地址：<span class="aui-text-black">{{list.address}}</span></div>
+				<div class="aui-padded-l-15 aui-padded-t-15 aui-font-size-13 aui-text-grayer">兑换时间：<span class="aui-text-black">{{list.exchange_time}}</span></div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			token:'',
+			id:'',
+			list:[]
+		},
+		methods:{
+			init:function(){
+				api.showProgress();
+				api.ajax({
+          url:exchange_record_detail_url,
+          method:'get',
+          timeout:30,
+          dataType:'json',
+          returnAll:false,
+          data:{
+          	values:{
+          		token:vm.token,
+							id:vm.id
+          	}
+          }
+        },function(ret,err){
+        	if(ret){
+						api.hideProgress();
+						console.log(JSON.stringify(ret));
+        		if(ret.status){
+							vm.list = ret.data.good
+						}else{
+							api.toast({
+							    msg: ret.msg,
+							    duration: 2000,
+							    location: 'bottom'
+							});
+
+						}
+        	}
+        });
+			}
+		}
+	})
+
+	apiready = function(){
+		vm.token = $api.getStorage("token");
+		vm.id=api.pageParam.id;
+		vm.init();
+	}
+</script>

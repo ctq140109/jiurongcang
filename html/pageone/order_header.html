@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>头部</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <style>
+    .aui-bg{ position: relative;}
+    .aui-bg img{ display: block !important;}
+    header{ position: fixed !important;width: 100%;top: 0;z-index: 100000;background-color: #fff !important;opacity: 0;background-position: inherit !important;}
+
+
+
+    .aui-bar-light{ border: 0 !important}
+    </style>
+  </head>
+  <body style="background-color:rgba(255,255,255,0)">
+      <div>
+        <header class="aui-bar aui-bar-nav aui-bar-light" id="aui-header" >
+          <a class="aui-btn aui-btn-warning aui-pull-left" onclick="closeWin()">
+              <span class="aui-iconfont aui-icon-left aui-text-bank"></span>
+          </a>
+              <div class="aui-title aui-font-size-17 aui-text-black">订单详情</div>
+
+          </header>
+      </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/vue.js"></script>
+	<script type="text/javascript" src="../../script/common.js"></script>
+  <script>
+      var vm = new Vue({
+          el:'#app',
+          data:{
+            count:'',
+            token:''
+          },
+          methods:{
+
+          }
+      })
+
+      apiready = function(){
+        $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+        $api.fixStatusBar($api.dom("header"));
+        api.addEventListener({
+            name: 'myindex_init'
+        }, function(ret, err){
+            $api.css($api.dom('header'),'opacity:'+ret.value.scrollTop/$api.dom('header').offsetHeight+'')
+        });
+
+
+
+      }
+  </script>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>关于我们</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+	</style>
+	<body class="aui-bg-grayer">
+
+		<div class="aui-content " id="app" v-cloak>
+			<div class="aui-row" style="padding: 1.5rem;">
+				<div class="aui-text-center">
+					<img src="../../image/logo.png" style="width: 3.5rem;" />
+					<div class="aui-font-weight  aui-margin-t-10">酒榕仓</div>
+				</div>
+			</div>
+			<div class="aui-list aui-padded-l-12">
+				<div class="aui-list-item aui-border-b aui-padded-b-5 aui-padded-t-5 aui-padded-l-0">
+					<div class="aui-list-item-inner aui-padded-r-12">
+						<div class="aui-list-item-text aui-text-blacker aui-font-size-15">
+						版本信息
+						</div>
+						<div class="aui-list-item-right aui-font-size-13 aui-text-grayerBlue">V{{version}}</div>
+					</div>
+				</div>
+				<template v-for="(vo,index) in common_problem_list">
+					<div class="aui-list-item aui-list-item-arrow aui-border-b aui-padded-b-5 aui-padded-t-5 aui-padded-l-0"  @click="detail(index)">
+						<div class="aui-list-item-inner">
+							<div class="aui-list-item-text aui-text-blacker aui-font-size-15">{{vo.problem}}</div>
+						</div>
+					</div>
+				</template>
+				<!-- <div class="aui-list-item aui-list-item-arrow aui-padded-b-5 aui-padded-t-5 aui-padded-l-0" >
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-text aui-text-blacker aui-font-size-15">隐私政策</div>
+					</div>
+				</div> -->
+			</div>
+
+			<!-- <div class="aui-list aui-padded-l-12 aui-border-bgT ">
+				<div class="aui-list-item aui-list-item-arrow aui-padded-b-5 aui-padded-t-5 aui-padded-l-0" >
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-text aui-text-blacker aui-font-size-15">品牌简介</div>
+					</div>
+				</div>
+			</div> -->
+
+		</div>
+
+
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			common_problem_list:[],
+			token:'',
+			version:'',
+			type:2
+		},
+		methods:{
+			init:function(){
+				api.ajax({
+          url:common_problem_url,
+          method:'get',
+          timeout:30,
+          dataType:'json',
+          returnAll:false,
+					data:{
+						values:{
+							type:vm.type
+						}
+					}
+        },function(ret,err){
+					console.log(JSON.stringify(ret));
+        	if(ret){
+        		vm.common_problem_list = ret.data.common_problem_list
+        	}
+        });
+			},
+			detail:function(index) {
+				api.openWin({
+				name: 'detail_win',
+				url: 'widget://html/set/detail_win.html',
+				pageParam:{
+					content:vm.common_problem_list[index].answer,
+					title:vm.common_problem_list[index].problem
+				}
+			});
+			}
+		}
+	})
+
+	apiready = function(){
+		vm.token=$api.getStorage('token');
+		vm.version = api.appVersion;
+		vm.init();
+	}
+</script>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>优惠</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/animate.css" />
+	</head>
+	<style>
+		.aui-content{ position:fixed;bottom: 0;width: 100%;border-radius: 0.5rem 0.5rem 0 0;}
+		.hide{ width:100%;height:22rem;}
+		.aui-btn{border-radius: 1.2rem;}
+	</style>
+
+	<body  style="background-color: rgba(0,0,0,0.3)">
+		<div class="hide" onclick="hide()"></div>
+		<div class="aui-content animated slideInUp">
+			<div class="aui-bg-white">
+				<div class="aui-text-center aui-font-size-15 aui-font-weight aui-padded-r-12" style="padding-top: 1rem;padding-bottom:0.7rem;">
+					优惠项
+					<div style="position: absolute;top: 0.5rem;right: 0.6rem;">
+						<img style="width: 0.9rem;" src="../../image/close2.png"/>
+					</div>
+				</div>
+				<div class="aui-border-b aui-padded-12 aui-font-size-14" style="padding-bottom:1rem !important;">
+					不适用优惠券
+					<div class="aui-pull-right aui-margin-r-5 aui-font-size-15">
+						<input type="radio" name="is_pay" class="aui-radio"/>
+					</div>
+				</div>
+				
+				<div class="aui-padded-12" style="padding-bottom: 1rem !important;">
+					<div class="aui-text-grayerBlue aui-font-size-12">可选优惠项</div>
+					<div class="aui-padded-t-15 aui-font-size-14">
+						满300元送长城一箱
+						<div class="aui-pull-right aui-margin-r-5 aui-font-size-15">
+							<input type="radio" name="is_pay" class="aui-radio"/>
+						</div>
+					</div>
+					<div class="aui-padded-t-15 aui-font-size-14">
+						满500元9折
+						<div class="aui-pull-right aui-margin-r-5 aui-font-size-15">
+							<input type="radio" name="is_pay" class="aui-radio"/>
+						</div>
+					</div>
+					<div class="aui-padded-t-15 aui-font-size-14">
+						买1送1
+						<div class="aui-pull-right aui-margin-r-5 aui-font-size-15">
+							<input type="radio" name="is_pay" class="aui-radio"/>
+						</div>
+					</div>
+					<div class="aui-padded-t-15 aui-font-size-14">
+						第二件9折，第三件8折
+						<div class="aui-pull-right aui-margin-r-5 aui-font-size-15">
+							<input type="radio" name="is_pay" class="aui-radio"/>
+						</div>
+					</div>
+					
+					<div class="aui-btn aui-btn-block aui-btn-blue" style="margin-top: 2.5rem;">完成</div>
+				</div>
+				
+				
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+

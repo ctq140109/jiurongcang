@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	    <title>编辑收货地址</title>
+	    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+	    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+	</head>
+	<style type="text/css">
+        .aui-list.aui-form-list .aui-list-item{ border-bottom:1px solid #eee;padding-left:0; margin-left:0.75rem;}
+        .aui-list.aui-form-list .aui-list-item:last-child{border-bottom:none;}
+        .aui-list .aui-list-item-inner {min-height: 2.35rem;}
+    	
+		input::-webkit-input-placeholder { color: #999;font-size: 0.7rem;}
+    	input:-moz-placeholder { color: #999;font-size: 0.7rem;}
+    	input::-moz-placeholder { color: #999;font-size: 0.7rem;}
+    	input:-ms-input-placeholder{ color: #999;font-size: 0.7rem;}
+    	
+    	.aui-btn{border-radius: 1.5rem;margin-top: 2rem;}
+    	
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content">
+			<div class="aui-list aui-form-list aui-padded-l-12  aui-border-bgT">
+		        <div class="aui-list-item aui-margin-l-0  aui-padded-l-0">
+		            <div class="aui-list-item-inner aui-list-item-arrow">
+		                <div class="aui-list-item-input" >
+		                	<input type="text" placeholder="省份、城市、县区" readonly="" value="" >
+		                </div>
+		            </div>
+		        </div>
+		        <div class="aui-list-item aui-margin-l-0">
+		            <div class="aui-list-item-inner aui-padded-l-0">
+		                <div class="aui-list-item-input">
+		                    <input type="tel" placeholder="详细地址，如街道、楼牌号等" readonly="" value="" id="mobile">
+		                </div>
+		            </div>
+		        </div>
+		        <div class="aui-list-item aui-margin-l-0">
+		            <div class="aui-list-item-inner aui-padded-l-0">
+		                <div class="aui-list-item-input">
+		                    <input type="text" placeholder="姓名" readonly="" value="" >
+		                </div>
+		            </div>
+		        </div>
+		        <div class="aui-list-item aui-margin-l-0">
+		            <div class="aui-list-item-inner aui-padded-l-0">
+		                <div class="aui-list-item-input">
+		                    <input type="text" placeholder="手机号码" readonly="" value="" >
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		    <div class="aui-border-bgT aui-bg-white aui-padded-12 aui-padded-t-15 aui-padded-b-15">
+		    	设为默认地址
+		    	<div class="aui-pull-right aui-margin-r-5 aui-font-size-15">
+					<input type="radio" name="is_pay" class="aui-radio"/>
+				</div>
+		    </div>
+		    <div class="aui-border-bgT aui-font-size-15 aui-bg-white aui-text-blue aui-padded-12 aui-padded-t-15 aui-padded-b-15">
+				删除收货地址
+		    </div>
+		    <div class="aui-padded-12">
+				<div class="aui-btn aui-btn-block aui-btn-blue">保存</div>
+			</div>
+		</div>
+		
+		
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>全部评价</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.tab{ display: flex;display: -webkit-flex;flex-wrap: wrap;justify-content: flex-start;}
+    	.tab span{ padding: 0.3rem 0.5rem;background-color: #eef4f5;border-radius: 1rem;}
+    	.active{ background-color: #35adbe !important;color: #fff !important;}
+
+    	.aui-list:last-child{border-bottom: none !important;}
+	    .aui-list-item-inner{min-height: auto !important;padding-right: 0.6rem !important; }
+		.aui-list-item-media{width: auto !important;}
+		.header{width: 1.5rem;height: 1.5rem;border-radius: 50%;overflow: hidden;}
+		.header img{width: 100%;height: 100%;object-fit: cover;}
+		.list .aui-col-xs-4{width: 32.3333%;height: 5rem; margin-right: 1.5%;border-radius: 0.25rem;overflow: hidden;}
+		.list .aui-col-xs-4:nth-of-type(3n){margin-right: 0 !important;}
+
+		.caozuo{ display: block;}
+		.left{display: inline-block;}
+		.plq{border-radius: 1.5rem; padding:.1rem 0.75rem;}
+		.plq img{width: .8rem;vertical-align: middle;}
+	</style>
+	<body>
+		<div class="aui-content aui-padded-t-12" id="app" v-cloak v-if="is_load">
+			<!-- <div class="aui-col-xs-12 aui-padded-12 aui-padded-b-0 aui-font-size-15 fweight-5">
+
+			</div> -->
+			<div class="aui-padded-15 aui-padded-t-0 aui-padded-b-0 tab">
+				<span class="aui-font-size-13 aui-margin-t-10 aui-margin-r-10 " :class="{'active':state==0}" @click="tabchange(0)">全部({{evaluate_total_size}})</span>
+				<span class="aui-font-size-13 aui-margin-t-10 aui-margin-r-10" :class="{'active':state==1}" @click="tabchange(1)">好评({{evaluate_one_total_size}})</span>
+				<span class="aui-font-size-13 aui-margin-t-10 aui-margin-r-10" :class="{'active':state==2}" @click="tabchange(2)">中评({{evaluate_two_total_size}})</span>
+				<span class="aui-font-size-13 aui-margin-t-10 aui-margin-r-10" :class="{'active':state==3}" @click="tabchange(3)">差评({{evaluate_three_total_size}})</span>
+				<span class="aui-font-size-13 aui-margin-t-10 aui-margin-r-10" :class="{'active':state==4}" @click="tabchange(4)">有图({{evaluate_four_total_size}})</span>
+			</div>
+
+			<div class="aui-row aui-bg-white aui-padded-t-15" v-if="list.length>0">
+				<!--评价内容-->
+				<div class="list">
+					<template v-for="(v,index) in list">
+					<div class="aui-list aui-padded-12 aui-padded-t-0 aui-border-b">
+						<div class="aui-list-item aui-list-item-middle aui-padded-l-0">
+	            	<div class="aui-media-list-item-inner">
+		              <div class="aui-list-item-media">
+		              	<div class="header">
+		                  	<img :src="v.head_portrait?v.head_portrait:'../../image/head.png'" @click="photo()">
+		                  </div>
+		              </div>
+		              <div class="aui-list-item-inner ">{{v.nick_name}}</div>
+	            	</div>
+			        </div>
+			        <div class="aui-font-size-11 aui-text-grayerBlue">{{v.create_time}}</div>
+	    				<div class="aui-padded-t-12 aui-padded-b-0 aui-font-size-15">{{v.content}}</div>
+	    				<div class="aui-row aui-padded-t-10" v-if="v.pic">
+								<template v-for="(vs,index) in v.pic">
+		    					<div class="aui-col-xs-4 aui-margin-t-5">
+		    						<img :src="vs" @click="photo()"/>
+		    					</div>
+								</template>
+	    				</div>
+	    			</div>
+					</template>
+
+    		</div>
+			</div>
+			<div class="not_data">
+
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/jq.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			id:'',
+			list:[],
+			totalRow:0,
+			pageNo:1,
+			pageSize:10,
+			state:0,
+      count:0,
+      singular:0,
+      commentary:0,
+      comment:0,
+      percent:'',
+      counts:'',
+      is_load:'',
+      photoBrowser:[],
+			evaluate_total_size:'',
+			evaluate_one_total_size:'',
+			evaluate_two_total_size:'',
+			evaluate_three_total_size:'',
+			evaluate_four_total_size:'',
+		},
+		methods:{
+
+			init:function(){
+				api.showProgress();
+				api.ajax({
+          url:goods_evaluate_url,
+          method:'get',
+          timeout:30,
+          dataType:'json',
+          returnAll:false,
+          data:{
+          	values:{
+          		id:vm.id,
+          		pageNo:vm.pageNo,
+          		pageSize:vm.pageSize,
+          		level:vm.state
+          	}
+          }
+        },function(ret,err){
+          vm.is_load=2
+        	if(ret){
+						api.hideProgress();
+						console.log(JSON.stringify(ret));
+        		api.hideProgress();
+        		vm.list = vm.list.concat(ret.data.page.list);
+            var banners_list=[];
+            if(ret.data.page.list.length>0){
+              for (var i = 0; i < ret.data.page.list.length; i++) {
+								if(ret.data.page.list[i].pic){
+									var imgs = ret.data.page.list[i].pic;
+									for(var j = 0; j < imgs.length; j++){
+										banners_list.push(imgs[j]);
+									}
+								}
+
+              }
+            }
+            vm.photoBrowser=banners_list;
+        		vm.totalRow = ret.data.page.totalRow;
+            vm.evaluate_total_size=ret.data.evalua_num.evaluate_total_size;
+            vm.evaluate_three_total_size=ret.data.evalua_num.evaluate_three_total_size;
+            vm.evaluate_one_total_size=ret.data.evalua_num.evaluate_one_total_size;
+            vm.evaluate_two_total_size=ret.data.evalua_num.evaluate_two_total_size;
+						vm.evaluate_four_total_size=ret.data.evalua_num.evaluate_four_total_size;
+     			if(vm.totalRow>0){
+     				$(".not_data").html('')
+     			}else{
+     				$(".not_data").html('<img src="../../image/nodata.png" style="width:100%;height:100%"/>')
+     			}
+
+        	}
+        });
+			},
+      photo:function(){
+        var photoBrowser = api.require('photoBrowser');
+          photoBrowser.show();
+          photoBrowser.open({
+              images:vm.photoBrowser,
+              placeholderImg: 'widget://image/uploading.gif',
+              bgColor: '#000'
+          }, function(ret, err) {
+              if (ret) {
+                if(ret.eventType=='click'){
+                  photoBrowser.hide();
+                }
+              } else {
+                  console.log(JSON.stringify(err));
+              }
+          });
+      },
+			tabchange:function(idx){
+				vm.state = idx;
+				vm.list = [];
+				vm.pageNo = 1;
+				vm.init();
+			}
+		}
+	})
+	apiready = function(){
+		vm.id = api.pageParam.id;
+		vm.init();
+		//下拉刷新
+		api.setRefreshHeaderInfo({
+        visible: true,
+        loadingImg: 'widget://image/refresh.png',
+        bgColor: '#f6f6f6',
+				textColor: '#999',
+        textDown: '下拉刷新...',
+        textUp: '松开刷新...',
+        showTime: true
+    }, function (ret, err) {
+    	  vm.list = [];
+    	  vm.pageNo = 1;
+        vm.init();
+        setTimeout("api.refreshHeaderLoadDone()", '500');
+    });
+
+		//上啦加载
+		api.addEventListener({
+        name:'scrolltobottom'
+    },function(ret,err){
+    	if(vm.totalRow==vm.list.length){
+    		return;
+    	}
+    	vm.pageNo++;
+    	vm.init();
+    });
+	}
+</script>

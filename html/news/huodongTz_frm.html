@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>活动通知</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.aui-bg-white{border-radius: 0.2rem;}
+		.pic{height: 8.25rem; }
+		.pic img{height: 100%;width: 100%;object-fit: cover;}
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content aui-padded-l-15 aui-padded-r-15" id="app" v-cloak v-if="is_load">
+			<template v-for="(v,index) in list">
+			<div class="aui-padded-t-15 aui-padded-b-15 aui-text-center aui-font-size-13 aui-text-grayer">{{v.create_time}}</div>
+			<div class="aui-bg-white aui-padded-l-10 aui-padded-r-10">
+				<div class="fweight-5 aui-padded-t-15 aui-padded-b-15" v-if="v.informations">{{v.informations.title}}</div>
+				<div class="pic"  v-if="v.informations">
+					<img :src="v.informations.thumb" />
+				</div>
+				<div class="aui-font-size-13 aui-text-grayerBlue aui-padded-t-15 aui-padded-b-15 "  v-if="v.informations">{{v.informations.intro}}</div>
+				<div class="aui-padded-t-15 aui-padded-b-15 aui-font-size-11 aui-text-grayerBlue aui-border-t" @click="det(index,v.id)">
+					查看详情<span class="aui-pull-right" ><i class="aui-iconfont aui-icon-right"></i></span>
+				</div>
+			</div>
+		 </template>
+			<div class="nodata aui-text-center" v-if="totalRow==0">
+				<img src="../../image/nodata.png" style=""/>
+			</div>
+		<div class="aui-col-xs-12 aui-text-center aui-margin-t-5" id="bot" v-if="totalRow>10">
+			<img src="../../image/uploading.gif" style="width: 1rem;height: 1rem;display: inline-block"/>
+		</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			token:'',
+			list:[],
+			pageNumber:1,
+			is_load:'',
+			pageSize:10,
+			totalRow:''
+		},
+		methods:{
+			det:function(index,id) {
+				api.openWin({
+					name: 'detail_win',
+					url: 'widget://html/news/detail_win.html',
+					pageParam:{
+						list:vm.list[index].informations
+					}
+				});
+			},
+			init:function(){
+				api.ajax({
+          url:message_list_url,
+          method:'get',
+          timeout:30,
+          dataType:'json',
+          returnAll:false,
+          data:{
+          	values:{
+          		token:vm.token,
+          		page_number:vm.pageNumber,
+          		page_size:vm.pageSize,
+							type:2
+          	}
+          }
+        },function(ret,err){
+        	if(ret){
+						console.log(JSON.stringify(ret));
+						vm.is_load=1;
+
+						vm.list = vm.list.concat(ret.data.page.list)
+
+						vm.totalRow = ret.data.page.totalRow;
+
+        		api.sendEvent({
+              name:'is_read_init'
+            });
+        	}else{
+        		console.log(JSON.stringify(err))
+        	}
+        });
+			}
+		}
+	})
+
+	apiready = function(){
+
+		vm.token = $api.getStorage('token')
+
+		vm.init();
+
+		 api.addEventListener({
+	        name:'scrolltobottom',
+	        extra:{
+        		threshold:300
+        	}
+        },function(ret,err){
+
+      	if(vm.totalRow == vm.list.length){
+					if(vm.totalRow>10){
+      			$api.byId('bot').style.display='block'
+      			$api.byId('bot').innerHTML = "<div style='background-color:#f5f5f5;color:#666;' class='aui-font-size-12 aui-padded-10'>到底啦！</div>";
+
+      		}
+				 return;
+			}
+			vm.pageNumber++
+      	vm.init();
+      });
+	}
+</script>

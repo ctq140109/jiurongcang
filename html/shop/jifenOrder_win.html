@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>积分商品-确认订单</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+
+	</style>
+
+	<body>
+		<header class="aui-bar aui-bar-nav aui-bar-light">
+		    <a class="aui-pull-left aui-btn" onclick="closeWin()">
+		        <span class="aui-iconfont   aui-icon-left"></span>
+		    </a>
+		    <div class="aui-title">确认订单</div>
+		</header>
+
+		<footer class="aui-bar aui-bar-tab aui-border-t" id="footer">
+			<div class="aui-row">
+				<div class="aui-col-xs-8 aui-text-left aui-padded-l-12 aui-font-size-15 aui-text-blacker" style="line-height: 45px;">
+			    	应付积分：<span class="aui-font-size-18 fweight-5  aui-text-danger">{{exchange_score}}积分</span>
+			    </div>
+			    <div class="aui-col-xs-4" @click="sub()">
+			    	<div class="aui-bg-blue aui-font-size-16 aui-btn-block aui-text-white" style="border-radius: 0;">立即结算</div>
+			    </div>
+			</div>
+		</footer>
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm  = new Vue({
+		el:'#footer',
+		data:{
+			exchange_score:""
+		},
+		methods:{
+			sub:function() {
+				api.sendEvent({
+				    name: 'sub'
+				});
+
+			}
+		}
+	})
+	apiready = function(){
+		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+      api.openFrame({
+          name: 'jifenOrder_frm',
+          url: 'widget://html/shop/jifenOrder_frm.html',
+          rect: {
+              x: 0,
+              y: $api.dom('header').offsetHeight,
+              w: 'auto',
+              h: api.winHeight - $api.dom('header').offsetHeight - $api.dom('footer').offsetHeight
+          },
+          bounces: true,
+          pageParam: {
+              id: api.pageParam.id
+          }
+      });
+			api.addEventListener({
+			    name: 'exchange_score'
+			}, function(ret, err){
+			    if( ret ){
+			         vm.exchange_score=ret.value.exchange_score
+			    }
+			});
+
+	};
+
+</script>

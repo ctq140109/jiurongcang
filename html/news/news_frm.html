@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>消息</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.aui-list-item-inner.aui-list-item-arrow{overflow: initial !important;}
+		.aui-list-item-title{display: flex;display: -webkit-flex;}
+		.pic{width: 2.5rem !important;height: 2.5rem; border-radius: 2rem; margin: auto; position: relative;}
+		.pic img{width: 100%;height: 100%;object-fit: cover;}
+        .line{width:20px;height:20px;border-radius:50%;background-color:#f32c52;text-align:center;line-height:20px;font-size:0.5rem;color:#fff;border: 1px solid #fff;}
+    	.yinying-lanse{box-shadow: 0 0 20px rgba(37,152,250,.3);}
+        .yinying-huangse{box-shadow: 0 0 20px rgba(179,101,0,.3);}
+        .yinying-hongse{box-shadow: 0 0 20px rgba(253,55,84,.3);}
+        .yinying-lvse{box-shadow: 0 0 20px rgba(0,153,175,.3);}
+
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content aui-bg-white" >
+			<div class="aui-content" id="app" v-cloak v-if="is_load">
+			    <ul class="aui-list aui-padded-l-12">
+			        <li class="aui-list-item  aui-padded-15 aui-padded-l-0 aui-padded-r-0 aui-border-b" onclick="check_login('news','xitong_win')">
+			        	<div class="aui-list-item-inner aui-list-item-arrow">
+				            <div class="aui-list-item-title">
+				                <div class="pic yinying-huangse">
+				                    <img class="aui-img-round" src="../../image/tongzhi.png" />
+				                </div>
+												<div class="aui-padded-l-12" style="display: flex;align-items: center;">
+														<div class="aui-text-gray">系统消息</div>
+												</div>
+				            </div>
+			                <div class="aui-list-item-right">
+			                	<div class="line" v-if="data.system_unread_num!=0">{{data.system_unread_num==undefined?'':data.system_unread_num}}</div>
+			                </div>
+				        </div>
+			        </li>
+			        <li class="aui-list-item  aui-padded-15 aui-padded-l-0 aui-padded-r-0 aui-border-b" onclick="check_login('news','huodongTz_win')">
+			        	<div class="aui-list-item-inner aui-list-item-arrow">
+				            <div class="aui-list-item-title">
+				                <div class="pic yinying-hongse">
+				                    <img class="aui-img-round" src="../../image/hudong.png" />
+				                </div>
+												<div class="aui-padded-l-12" style="display: flex;align-items: center;">
+														<div class="aui-text-gray">活动通知</div>
+												</div>
+				            </div>
+			                <div class="aui-list-item-right">
+			                	<div class="line" v-if="data.activity_unread_num!=0">{{data.activity_unread_num==undefined?'':data.activity_unread_num}}</div>
+			                </div>
+				        </div>
+			        </li>
+			        <li class="aui-list-item  aui-padded-15 aui-padded-l-0 aui-padded-r-0" onclick="check_login('news','wuliu_win')">
+			        	<div class="aui-list-item-inner aui-list-item-arrow">
+				            <div class="aui-list-item-title">
+				                <div class="pic yinying-lanse">
+				                    <img class="aui-img-round" src="../../image/wuliu.png" />
+				                </div>
+												<div class="aui-padded-l-12" style="display: flex;align-items: center;">
+														<div class="aui-text-gray">物流通知</div>
+												</div>
+				            </div>
+			                <div class="aui-list-item-right">
+			                	<div class="line" v-if="data.order_unread_num!=0">{{data.order_unread_num==undefined?'':data.order_unread_num}}</div>
+			                </div>
+				        </div>
+			        </li>
+			    </ul>
+			</div>
+
+
+			<div class="aui-list aui-padded-l-12 aui-border-bgT">
+	        <div class="aui-list-item  aui-padded-15 aui-padded-l-0 aui-padded-r-0"  onclick="server()">
+	        	<div class="aui-list-item-inner aui-list-item-arrow">
+		            <div class="aui-list-item-title">
+		                <div class="pic yinying-lvse">
+		                    <img class="aui-img-round" src="../../image/kefu2.png" />
+		                </div>
+		                <div class="aui-padded-l-12" style="display: flex;align-items: center;">
+		                    <div class="aui-text-gray">客服</div>
+		                </div>
+		            </div>
+		        </div>
+	        </div>
+	    </div>
+
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			token:'',
+			data:'',
+			is_load:''
+		},
+		methods:{
+			init:function(){
+				api.ajax({
+            url:news_list_url,
+            method:'get',
+            timeout:30,
+            dataType:'json',
+            returnAll:false,
+            data:{
+            	values:{
+            		token:vm.token
+            	}
+            }
+          },function(ret,err){
+          	if(ret){
+							vm.is_load=1;
+          		console.log(JSON.stringify(ret))
+          		if(ret.status==1){
+          			vm.data = ret.data;
+          		}else{
+          			 vm.data = '';
+          		}
+          	}else{
+          		console.log(JSON.stringify(err))
+          	}
+          });
+			}
+		}
+	})
+
+	apiready = function(){
+
+		vm.token = $api.getStorage("token");
+
+		vm.init();
+
+		 api.setRefreshHeaderInfo({
+        visible: true,
+        loadingImg: 'widget://image/refresh.png',
+        bgColor: '#ccc',
+        textColor: '#fff',
+        textDown: '下拉刷新...',
+        textUp: '松开刷新...',
+        showTime: true
+    }, function (ret, err) {
+    	vm.token = $api.getStorage("token");
+
+        vm.init();
+        setTimeout("api.refreshHeaderLoadDone()", '500');
+    });
+
+    api.addEventListener({
+      name:'is_read_init'
+    },function(ret,err){
+
+    	vm.token = $api.getStorage("token");
+
+				vm.init();
+    });
+	}
+</script>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>发表评价</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/new_file.css"/>
+	</head>
+	<style type="text/css">
+		.aui-list-item-media{height: 5rem; width:4.75rem !important;}
+		.aui-list-item-media img{width: 100%;height: 100%;object-fit: cover;}
+
+		.star_ul img{ width: 1rem;height: 1rem;}
+		.aui-col-xs-4{width: 4.2rem;height: 4.2rem;overflow: hidden;}
+		.aui-col-xs-4:last-child{margin-right: 0 !important;}
+		.aui-col-xs-4 img{width: 100%;height: 100%;object-fit: cover;}
+
+		.guanbi{position: absolute;height: .8rem;width: .8rem;top: 5px;right: 5px;}
+		.guanbi img{width: 100%;height: 100%;}
+		.inner{height: 5rem;}
+
+		.aui-ellipsis-2{height: 44px; line-height: 22px;}
+		.mydiv{
+			vertical-align: middle;
+			margin-top: -5px;
+		}
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content" id="app" v-cloak>
+			<div class="aui-list aui-media-list aui-padded-l-12 aui-border-bgT list" >
+				<div class="aui-media-list-item-inner">
+					<div class="aui-list-item-media">
+						<img :src="list.thumb"/>
+					</div>
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-text aui-font-size-14  aui-text-blacker">
+							<div class="aui-ellipsis-2">{{list.goods_name}}</div>
+						</div>
+						<div class="aui-list-item-text aui-font-size-10 aui-margin-t-10 aui-text-grayerBlue" v-if="list.spec_name">{{list.spec_name}}</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="aui-bg-white aui-font-size-14 aui-border-bgT clearfix pj">
+				<div class="aui-bg-white aui-padded-12 aui-padded-t-15 aui-padded-b-15 aui-border-b  clearfix">
+					<section class="main">
+						<div class="main-wrap">
+							<span class="revtit">商品评价:</span>
+							<div id="mydiv1" currentIndex="0" class="mydiv">
+				    			<ul class="star_ul">
+							        <li num="1"><img src="../../image/star_empty.png" class="xing_hui"/></li>
+							        <li num="2"><img src="../../image/star_empty.png"  class="xing_hui"/></li>
+							        <li num="3"><img src="../../image/star_empty.png"  class="xing_hui"/></li>
+							        <li num="4"><img src="../../image/star_empty.png"  class="xing_hui"/></li>
+							        <li num="5"><img src="../../image/star_empty.png"  class="xing_hui"/></li>
+						   		</ul>
+							</div>
+					</div>
+				</section>
+
+				</div>
+			</div>
+
+			<div class="aui-bg-white aui-border-bgT aui-padded-15 aui-padded-l-12 aui-padded-b-5 aui-padded-r-12 ">
+				<div class="aui-text-grayerBlue aui-padded-b-15  inner"></div>
+				<div class="aui-row">
+					<div class="aui-col-xs-4 aui-margin-r-10 aui-margin-b-10">
+						<img src="../../image/add-tu.jpg" @click="select_pic()">
+						<!-- <div class="guanbi">
+							<img src="../../image/clos.jpg"/>
+						</div> -->
+					</div>
+
+					<tempalte v-for="(vo,index) in cover">
+						<div class="aui-col-xs-4 aui-margin-r-10 aui-margin-b-10">
+							<img :src="vo" @click="openShopPic(index)">
+							<div class="guanbi">
+								<img src="../../image/close1.png"  @click="del_pic(index)"/>
+							</div>
+						</div>
+					</tempalte>
+
+				</div>
+			</div>
+
+		</div>
+
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/jq.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			goods_id:'',
+			id:'',
+			token:'',
+			content:'',
+			list:[],
+			num:'',
+			state:1,
+			cover:[],
+			cover_img:[],
+			module:'llsj'
+		},
+		methods:{
+			openShopPic:function(idx){
+				var photoBrowser = api.require('photoBrowser');
+				photoBrowser.open({
+						images: vm.cover,
+						activeIndex:idx,
+						placeholderImg: 'widget://res/img/apicloud.png',
+						bgColor: '#000'
+				}, function(ret, err) {
+
+						if(ret.eventType == 'click'){
+								photoBrowser.close();
+
+						}
+				});
+				photoBrowser.setIndex({
+						index: idx
+				});
+
+			},
+			save:function(){
+
+				if(vm.content==''){
+					api.toast({
+            msg:'你还没有填写评价内容',
+            duration:2000,
+            location:'middle'
+          });
+
+          return;
+				}
+
+				if(vm.content.length<10){
+					api.toast({
+            msg:'评论内容不能少于10个字',
+            duration:2000,
+            location:'middle'
+          });
+
+          return;
+				}
+				vm.sub_pic();
+
+
+			},
+			sub_pic:function() {
+				api.showProgress({
+						style: 'default',
+						animationType: 'fade',
+						title: '正在提交...',
+						text: '',
+						modal: true
+				});
+				var base_url = "http://9rc.yunxiaochengxu.top";
+				var obj = api.require('qiniuUpfile');
+				var date = new Date().getTime();
+				for (var i = 0; i < vm.cover.length; i++) {
+					obj.upfile({
+						file: vm.cover[i],
+						name: date+i
+					}, function(ret, err) {
+							console.log(JSON.stringify(ret));
+						if (ret.status) {
+								if (ret.oper == "complete") {
+									vm.cover_img.push(base_url + '/' + ret.info.key);
+								}
+								if(vm.cover.length==vm.cover_img.length){
+										vm.subData();
+								}
+
+						 }
+					});
+				}
+			},
+			subData:function() {
+				api.ajax({
+          url:get_evaluate_url,
+          method:"post",
+          timeout:30,
+          dataType:'json',
+          returnAll:false,
+          data:{
+          	values:{
+          		token:vm.token,
+          		level:vm.num,
+							id:vm.list.id,
+          		goods_id:vm.goods_id,
+          		order_id:vm.id,
+          		pic:vm.cover_img.join(','),
+          		content:vm.content
+          	}
+          }
+        },function(ret,err){
+        	if(ret){
+        		console.log(JSON.stringify(ret))
+        		if(ret.status==1){
+
+        			api.toast({
+                  msg:'发表成功',
+                  duration:2000,
+                  location:'middl'
+                });
+
+        			api.sendEvent({
+                name:'pingjia_save_init'
+              });
+              setTimeout(function(){
+              	api.closeWin();
+              },500)
+        		}
+        	}else{
+        		console.log(JSON.stringify(err))
+        	}
+        });
+			},
+			close_keybord:function(){
+				close_content()
+			},
+			tabchange:function(idx){
+
+				vm.state = idx;
+			},
+			select_pic:function(){//选择商铺照片
+
+				var maxNum = 9;
+
+				if( 9 - vm.cover.length == 0 ){
+					api.toast({
+						msg:'最多上传9张照片',
+						duration:2000,
+						location:'middle'
+					});
+					return;
+				}else{
+					maxNum = 9 - vm.cover.length;
+				}
+
+				var selectPic = api.require('selectPic');
+
+					var param = {
+						maxNum: maxNum //用户选择的最多图片张数
+					};
+					selectPic.showPics(param, function(ret, err) {
+
+						if (api.systemType == 'ios') {
+							var cover = JSON.parse(ret.data);
+
+								for(var i=0;i<cover.length;i++){
+									vm.cover.push(cover[i]);
+								}
+								console.log(JSON.stringify(vm.cover))
+						} else {
+
+							for(var i=0;i<ret.data.length;i++){
+								vm.cover.push(ret.data[i]);
+							}
+
+						}
+					});
+				},
+				del_pic:function(idx){//删除照片
+					vm.cover.splice(idx,1);
+					vm.cover_img.splice(idx,1);
+
+				}
+		}
+	})
+
+	apiready = function(){
+
+		vm.token = $api.getStorage("token");
+
+		vm.id = api.pageParam.id;
+
+		vm.goods_id=api.pageParam.goods_id;
+
+		vm.list=api.pageParam.list;
+
+		console.log(JSON.stringify(vm.list));
+
+
+
+		contents();
+
+		api.addEventListener({
+      name:'sub_info'
+    },function(ret,err){
+    	vm.save();
+    });
+	}
+	var y = $api.dom('.list').offsetHeight + $api.dom('.pj').offsetHeight+20;
+
+	function contents(){
+			var UIInput = api.require('UIInput');
+			UIInput.open({
+			    rect: {
+			        x: 15,
+			        y: y,
+			        w: api.winWidth-30,
+			        h:100
+			    },
+			    styles: {
+			        bgColor: "rgba(0,0,0,0)",
+			        size: 14,
+			        color: '#000',
+			        placeholder: {
+			            color: '#ccc'
+			        }
+			    },
+			    isCenterVertical:true,
+			    autoFocus: false,
+			    maxRows: 5,
+			    keyboardType:'default',
+			    placeholder: '说说该商品的优点吧~（评价内容不能少于10字）',
+			    inputType:'text',
+			    fixedOn: api.frameName,
+			    fixed:false,
+			}, function(ret) {
+
+				if(ret.eventType=="change"){
+
+					UIInput.value({
+			    		id:ret.id,
+			    	},function(ret) {
+
+					    if (ret) {
+
+					       vm.content = ret.msg
+
+
+					    }
+					});
+				}
+
+			});
+
+
+		}
+
+	function close_content(){
+			var UIInput = api.require('UIInput');
+		var id = '';
+
+		if(api.systemType=='ios'){
+			id = 1
+		}else{
+			id = 0
+		}
+
+		UIInput.closeKeyboard({
+		    id:id
+		});
+	}
+
+	var isclick = false;
+  function change(mydivid,num) {
+      if (!isclick) {
+          var tds = $("#"+mydivid+" ul li");
+          for (var i = 0; i < num; i++) {
+              var td = tds[i];
+              $(td).find("img").attr("src","../../image/star_full.png");
+          }
+          var tindex = $("#"+mydivid).attr("currentIndex");
+          tindex = tindex==0?0:tindex+1;
+          for (var j = num; j < tindex; j++) {
+              var td = tds[j];
+              $(td).find("img").attr("src","../../image/star_empty.png");
+          }
+					console.log(num);
+					vm.num=num;
+          $("#"+mydivid).attr("currentIndex",num);
+      }
+  }
+  function repeal(mydivid,num) {
+      if (!isclick) {
+          var tds = $("#"+mydivid+" ul li");
+          var tindex = $("#"+mydivid).attr("currentIndex");
+          tindex = tindex==0?0:tindex+1;
+          for (var i = tindex; i < num; i++) {
+              var td = tds[i];
+              $(td).find("img").attr("src","../../image/star_empty.png");
+          }
+					console.log(num);
+					vm.num=num;
+          $("#"+mydivid).attr("currentIndex",num);
+      }
+  }
+  function change1(mydivid,num) {
+      if (!isclick) {
+          change(mydivid,num);
+      }
+      else {
+          alert("Sorry,You had clicked me!");
+      }
+  }
+  $(function(){
+      initEvent('mydiv1');
+      initEvent('mydiv2');
+      initEvent('mydiv3');
+  });
+  function initEvent(mydivid) {
+      var tds = $("#"+mydivid+" ul li");
+      for (var i = 0; i < tds.length; i++) {
+          var td = tds[i];
+          $(td).live('mouseover',function(){var num = $(this).attr("num");change(mydivid,num);});
+          $(td).live('click',function(){var num = $(this).attr("num");change1(mydivid,num);});
+      }
+  }
+
+</script>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>账号安全</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+	</style>
+
+	<body class="aui-bg-grayer">
+		<div  id="app" v-cloak>
+		<div class="aui-content aui-border-bgT ">
+		    <ul class="aui-list">
+		        <li class="aui-list-item aui-border-b aui-padded-t-5 aui-padded-b-5 aui-padded-l-12"  @click="settel()">
+		            <div class="aui-list-item-inner aui-list-item-arrow aui-text-grayer">
+		            	<div class="aui-list-item-title aui-font-size-15 aui-text-blacker">更换手机号</div>
+		            	<div class="aui-list-item-right aui-text-grayer aui-font-size-13">{{mobile}}</div>
+		            </div>
+		        </li>
+		        <li class="aui-list-item  aui-padded-t-5 aui-padded-b-5 aui-padded-l-12"  @click="setpwd()">
+		            <div class="aui-list-item-inner aui-list-item-arrow">
+		                <div class="aui-list-item-title aui-font-size-15 aui-text-blacker">修改登录密码</div>
+		                <div class="aui-list-item-right aui-font-size-13"></div>
+		            </div>
+		        </li>
+		    </ul>
+		</div>
+		<div class="aui-content aui-border-bgB ">
+		    <ul class="aui-list">
+
+
+						<li class="aui-list-item  aui-padded-t-5 aui-padded-b-5 aui-padded-l-12">
+		            <div class="aui-list-item-inner aui-list-item-arrow" v-if="list.wx_openid==null || list.wx_openid==''" @click="bindwx()">
+		                <div class="aui-list-item-title aui-font-size-15 aui-text-blacker">微信账号</div>
+		                <div class="aui-list-item-right aui-font-size-13">去绑定</div>
+		            </div>
+								<div class="aui-list-item-inner aui-list-item-arrow"  v-else  @click="unbindwx()">
+		                <div class="aui-list-item-title aui-font-size-15 aui-text-blacker">微信账号</div>
+		                <div class="aui-list-item-right aui-font-size-13">解绑微信账号</div>
+		            </div>
+		        </li>
+		    </ul>
+		</div>
+	</div>
+
+
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/vue.js"></script>
+	<script type="text/javascript" src="../../script/jq.js"></script>
+	<script type="text/javascript" src="../../script/common.js"></script>
+	<script>
+			var vm = new Vue({
+					el:'#app',
+					data:{
+							token:'',
+							list:[],
+							mobile:''
+					},
+					methods:{
+						settel:function(){
+							 api.openWin({
+ 		              name: 'replacePhone_win',
+ 		              url: 'widget://html/set/replacePhone_win.html',
+									pageParam:{
+										tel:vm.mobile
+									}
+ 		            });
+						},
+						bindwx:function() {
+							var wx = api.require('wx');
+							wx.auth({
+								apiKey:'wx28ecf104aaf888d2',
+								scope:'snsapi_userinfo'
+							},function(ret, err) {
+									console.log(JSON.stringify(ret));
+							    if (ret.status) {
+							        wx.getToken({//获取
+							        apiKey:'wx28ecf104aaf888d2',
+							        apiSecret:'2b8fb997ecc50de5f4fe0055c09517e6',
+									    code: ret.code
+									}, function(ret, err) {
+									    if (ret.status) {
+									       wx.getUserInfo({//获取微信用户信息
+											    accessToken: ret.accessToken,
+											    openId: ret.openId
+											}, function(res, err) {
+											    if (ret.status) {
+											      api.hideProgress();
+											        api.ajax({
+								                url:bindingOpenId_url,
+								                method:'post',
+								                timeout:30,
+								                dataType:'json',
+								                returnAll:false,
+								                data:{
+								                	values:{
+								                		wx_openid:res.openid,
+																		token:vm.token
+								                	}
+								                }
+							                },function(ret,err){
+																console.log(JSON.stringify(ret));
+							                	if(ret){
+																	if(ret.status==1){
+																		api.toast({
+																		    msg: ret.msg,
+																		    duration: 2000,
+																		    location: 'bottom'
+																		});
+																		vm.init()
+																	}else{
+																		api.toast({
+																		    msg: ret.msg,
+																		    duration: 2000,
+																		    location: 'bottom'
+																		});
+																	}
+
+							                	}else{
+																	console.log(JSON.stringify(err));
+																}
+							                });
+
+
+											    }else{
+															api.hideProgress()
+													}
+											});
+									    }
+									});
+							    } else {
+											api.hideProgress();
+
+							        if(err.code==3){
+							        	api.toast({
+			                      msg:'当前设备未安装微信客户端',
+			                      duration:2000,
+			                      location:'middle'
+			                    });
+							        }
+							    }
+							});
+						},
+						unbindwx:function() {
+							api.confirm({
+							title:'解绑提示',
+							msg:'是否解绑当前微信？',
+							buttons:['确定','取消']
+							},function(ret,err){
+									if(ret.buttonIndex==1){
+									api.ajax({
+											url: untyingOpenId_url,
+											method: 'post',
+											returnAll:false,
+											dataType:'json',
+											timeout:30,
+											data: {
+													values: {
+															token: vm.token
+													}
+											}
+									},function(ret, err){
+											if (ret) {
+													if(ret.status==1){
+														api.toast({
+																msg: ret.msg,
+																duration: 2000,
+																location: 'bottom'
+														});
+														vm.init();
+													}else{
+														api.toast({
+																msg: ret.msg,
+																duration: 2000,
+																location: 'bottom'
+														});
+													}
+											}
+									});
+								}
+							})
+						},
+						setpwd:function(){
+							api.openWin({
+		              name: 'setPassword_win',
+		              url: 'widget://html/set/setPassword_win.html',
+		              animation:{
+		              	type:'none',
+		              	duration:300
+		              }
+		            });
+						},
+							init:function(){
+									api.ajax({
+									    url: show_phone_url,
+									    method: 'get',
+											timeout:30,
+											returnAll:false,
+									    data: {
+									        values: {
+									            token: vm.token
+									        }
+									    }
+									},function(ret, err){
+									    if (ret) {
+												console.log(JSON.stringify(ret));
+													vm.list=ret.data.account;
+													vm.mobile = ret.data.account.phone;
+									    }
+									});
+
+							}
+					}
+			})
+
+
+			apiready = function(){
+					vm.token = $api.getStorage('token');
+					vm.init();
+			}
+	</script>
+</html>

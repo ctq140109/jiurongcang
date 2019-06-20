@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>规格</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/animate.css" />
+	    <link rel="stylesheet" href="../../css/common.css" />
+	    <style>
+	    	.aui-list-item-text{ justify-content: flex-start !important;flex-wrap:wrap;}
+	    	.spec div{ background-color: #f5f5f5;padding: 0.2rem 0.75rem;color: #333;margin-right: 0.5rem;border-radius: 15px;margin-bottom: 0.5rem}
+	    	.aui-active{ background-color: #21af9d !important;color: #fff !important;}
+	    	.num{ width: 1.75rem !important;height: 1.45rem !important;background-color: #f5f5f5 !important;}
+	    	.dialog{ position: fixed;bottom: 0;width: 100%;}
+	    	.hide{ width:100%;height:15rem;}
+	    	.add{background-color:#21af9d !important;color:#fff;}
+			.payment{background-color:#21af9d !important;color:#fff;}
+			.ov-scr{min-height: 3rem;max-height: 12rem;overflow-y: scroll;}
+
+
+	    </style>
+	</head>
+	<body style="background-color: rgba(0,0,0,0.3)">
+		<div class="hide" onclick="hides()"></div>
+		<div class='aui-list aui-media-list aui-padded-15 aui-bg-white dialog animated slideInUp' id="app" v-cloak>
+			<!-- <div style="position: absolute;top: 0rem;right: 0.6rem;">
+				<img style="width: 0.9rem;" src="../../image/close2.png"  @click="hides()"/>
+			</div> -->
+			<div class="aui-text-center aui-font-size-15 aui-font-weight aui-padded-r-12" style="">
+
+				<!-- <div style="position: absolute;top: 0.5rem;right: 0.6rem;">
+					<img style="width: 0.9rem;" src="../../image/close2.png" @click="hides()"/>
+				</div> -->
+			</div>
+      <div class="guigeSel">
+            <div class="aui-media-list-item-inner">
+                <div class="aui-list-item-media" style='width:5.5rem'>
+                    <image :src="info.thumb" style='width:5.5rem;height: 4.5rem'></image>
+                </div>
+                <div class="aui-list-item-inner aui-font-size-15">
+                    <div class="aui-list-item-text aui-margin-b-5" style='position:relative;'>
+                        <div class="aui-list-item-title aui-text-danger">￥{{info.market_price}}</div>
+                        <img src='../../image/close2.png'  @click="hides()" style='width: 0.9rem;position:absolute;right:-1rem;top:-0.5rem'>
+                    </div>
+                    <div class="aui-list-item-text aui-margin-b-5  aui-text-black" style="display:block;padding-right:5px;">
+                        库存{{info.stocknum}}件    <span class="aui-pull-right" v-if="info.score">赠送{{info.score}}分</span>
+                    </div>
+                     <div class="aui-list-item-text aui-text-black aui-padded-t-5">
+                        <span class="aui-ellipsis-2">{{info.name}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+				<div class="ov-scr">
+						<div class='aui-list-item aui-padded-l-0 aui-border-t' v-if="data.one">
+		            <div class='aui-list-item-inner'>
+		                <div class='aui-list-item-text'>{{data.spec_name}}</div>
+		                <div class='aui-list-item-text aui-margin-t-10 spec'>
+		                	<template v-for="(vo,index) in data.one">
+		                    <div :class="{'aui-active':o_idx==index}" @click="one_spec(index)">{{vo.item_name}}</div>
+		                    </template>
+		                </div>
+		            </div>
+			        </div>
+		        <div class='aui-list-item aui-padded-l-0 aui-border-t' v-if="t_list!=''">
+		            <div class='aui-list-item-inner'>
+		                <div class='aui-list-item-text'>{{t_list.spec_name}}</div>
+		                <div class='aui-list-item-text aui-margin-t-10 spec'>
+		                	<template v-for="(vo,index) in t_list.list">
+		                    <div :class="{'aui-active':t_idx==index}" @click="t_spec(index)">{{vo.item_name}}</div>
+		                    </template>
+		                </div>
+		            </div>
+		        </div>
+		        <div class='aui-list-item aui-padded-l-0 aui-border-t' v-if="th_list!=''">
+		            <div class='aui-list-item-inner'>
+		                <div class='aui-list-item-text'>{{th_list.spec_name}}</div>
+		                <div class='aui-list-item-text aui-margin-t-10 spec'>
+		                	<template v-for="(vo,index) in th_list.list">
+		                    <div :class="{'aui-active':th_idx==index}" @click="th_spec(index)">{{vo.item_name}}</div>
+		                    </template>
+		                </div>
+		            </div>
+		        </div>
+				</div>
+
+        <!-- <div class='aui-list-item aui-padded-l-0 aui-border-t'>
+            <div class='aui-list-item-inner'>
+                <div class='aui-list-item-text'>购买数量</div>
+                <div class='aui-list-item-text aui-margin-t-10'>
+                    <div class='aui-margin-r-5' @click="miusNum()">
+                        <image src='../../image/mius.jpg' style='width:1.75rem;height:1.45rem;vertical-align:middle'></image>
+                    </div>
+                    <div class='aui-margin-r-5'>
+                        <input class='aui-text-center num' type='text' readonly="" :value="num"></input>
+                    </div>
+                    <div class='aui-margin-r-5' @click="addNum()">
+                        <image src='../../image/add.jpg' style='width:1.75rem;height:1.45rem;vertical-align:middle'></image>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+				<div class='aui-list-item aui-padded-l-0 aui-border-t'>
+						<div class='aui-list-item-inner aui-padded-r-0'>
+							<div class='aui-list-item-text aui-text-blacker aui-pull-left aui-padded-b-5 aui-font-size-15'>
+								购买数量
+							</div>
+							<div class='aui-list-item-text  aui-pull-right aui-border' style="border-radius: 1rem;">
+									<div  @click="miusNum()">
+											<image src='../../image/mius.png' style='width:1.2rem;height:1.2rem;vertical-align:middle;'></image>
+									</div>
+									<div class='aui-margin-r-5 aui-margin-l-5'>
+											<input class='aui-text-center num' placeholder="0" @click="add_number(num)" type='text' readonly="" :value="num"></input>
+									</div>
+									<div @click="addNum()">
+											<image src='../../image/add.png' style='width:1.2rem;height:1.2rem;vertical-align:middle;'></image>
+									</div>
+							</div>
+					</div>
+			</div>
+
+
+
+				<div class="aui-padded-t-12 aui-padded-r-12 aui-padded-l-12" @click="closes()">
+					<div class="aui-btn aui-btn-block" style="background-color:#21af9d;color:#fff">完成</div>
+				</div>
+    </div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript">
+
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			id:'',
+			idx:'',
+			area_id:'',
+			data:'',
+			th_list:'',
+			t_list:'',
+			o_idx:0,
+			t_idx:0,
+			th_idx:0,
+			info:'',
+			num:1,
+			token:''
+		},
+		methods:{
+			add_number:function(goods_num) {
+        var dialogBox = api.require('dialogBox');
+        dialogBox.amount({
+            texts: {
+                title: '请输入数量或手动加减数量',
+                default: goods_num,
+                leftBtnTitle: '取消',
+                rightBtnTitle: '确定'
+            },
+            styles: {
+                bg: '#fff',
+                corner: 0.5,
+                w: 300,
+                h: 260,
+                title: {
+                    marginT: 10,
+                    size: 14,
+                    color: '#000'
+                },
+                input: {
+                    w: 150,
+                    h: 44,
+                    marginT: 15,
+                    size: 14,
+                    color: '#000'
+                },
+                dividingLine: {
+                    marginT: 10,
+                    width: 0.5,
+                    color: '#696969'
+                },
+                left: {
+                    marginL: 10,
+                    w: 135,
+                    h: 55,
+                    bg: '#eee',
+                    color: '#000',
+                    size: 12
+                },
+                right: {
+                    marginR: 10,
+                    w: 135,
+                    h: 55,
+                    bg: '#eee',
+                    color: '#000',
+                    size: 12
+                }
+            }
+        }, function(ret) {
+            if (ret.eventType == 'left') {
+                var dialogBox = api.require('dialogBox');
+                dialogBox.close({
+                    dialogName: 'amount'
+                });
+            }else{
+							if(ret.amount==0){
+								api.toast({
+								    msg: '请输入大于0的数量',
+								    duration: 2000,
+								    location: 'bottom'
+								});
+								var dialogBox = api.require('dialogBox');
+								dialogBox.close({
+										dialogName: 'amount'
+								});
+								return;
+							}
+							vm.addNums(ret.amount);
+							var dialogBox = api.require('dialogBox');
+							dialogBox.close({
+									dialogName: 'amount'
+							});
+						}
+        });
+      },
+			init:function(){
+				api.showProgress();
+
+				api.ajax({
+						url:goods_spec_url,
+						method:"get",
+						timeout:30,
+						dataType:"json",
+						returnAll:false,
+						data:{
+							values:{
+								id:vm.id,
+								token:vm.token,
+								agency_manage_id:vm.area_id
+							}
+						}
+					},function(ret,err){
+						if(ret){
+							api.hideProgress();
+
+						console.log(JSON.stringify(ret))
+						vm.data = ret;
+						if(vm.data.tag!=0){
+							if(vm.data.one[vm.o_idx].two){
+								vm.t_list = vm.data.one[vm.o_idx].two;
+
+								if(vm.data.one[vm.o_idx].two.list[vm.t_idx].three){
+									vm.th_list = vm.data.one[vm.o_idx].two.list[vm.t_idx].three
+								}
+							}
+
+						}
+						vm.is_spec();
+
+					}else{
+							console.log(JSON.stringify(err))
+					}
+				});
+			},
+
+			is_spec:function(){
+
+				if(vm.data.tag == 0){
+
+					vm.info = vm.data
+
+				}else{
+
+					if(!vm.data.one[vm.o_idx].two){
+
+						if(vm.data.one.length!=0){
+							vm.info = vm.data.one[vm.o_idx]
+						}
+
+
+					}else if(!vm.data.one[vm.o_idx].two.list[vm.t_idx].three){
+
+						if(vm.info = vm.data.one[vm.o_idx].two.list.length!=0){
+							vm.info = vm.data.one[vm.o_idx].two.list[vm.t_idx];
+						}
+
+					}else{
+
+						if(vm.data.one[vm.o_idx].two.list[vm.t_idx].three.list.length!=0){
+
+							vm.info = vm.data.one[vm.o_idx].two.list[vm.t_idx].three.list[vm.th_idx]
+						}
+
+
+					}
+				}
+			},
+
+			one_spec:function(idx){
+				vm.o_idx = idx;
+				vm.init();
+			},
+
+			t_spec:function(idx){
+				vm.t_idx = idx;
+				vm.init();
+			},
+			th_spec:function(idx){
+				vm.th_idx = idx;
+				vm.init();
+			},
+
+			add_cart:function(){
+				if(!vm.token){
+					api.openWin({
+						name: 'login',
+						url: 'widget://html/login/login.html',
+						animation:{
+							type:'movein',
+							subType:'from_bottom',
+							duration:300
+						}
+					});
+					return;
+				}
+				api.ajax({
+					url:cart_add_url,
+					method:'post',
+					timeout:30,
+					dataType:"json",
+					returnAll:false,
+					data:{
+						values:{
+							token:vm.token,
+							id:vm.id,
+							spec_id:vm.info.spec_id,
+							agency_manage_id:vm.area_id,
+							num:vm.num
+						}
+					}
+				},function(ret,err){
+					if(ret){
+						if(ret.status==1){
+							api.toast({
+								msg:ret.msg,
+								duration:2000,
+								location:'middle'
+							});
+							$api.addCls($api.dom('.dialog'), 'slideOutDown');
+							$api.removeCls($api.dom('.dialog'), 'slideInUp');
+							setTimeout(function(){
+								api.closeFrame();
+							},300)
+						 api.sendEvent({
+							 name:'addCart_init',
+							 extra:{
+									cart_size:vm.num
+							 }
+						 });
+						}
+					}
+				});
+
+			},
+
+			payment:function(){
+				if(!vm.token){
+					api.openWin({
+							name: 'login',
+							url: 'widget://html/login/login.html',
+							animation:{
+								type:'movein',
+								subType:'from_bottom',
+								duration:300
+							}
+						});
+
+					return;
+				}
+				api.openWin({
+					name: 'buy_win',
+					url: 'widget://html/shop/buy_win.html',
+					pageParam:{
+						id:vm.id,
+						spec_id:vm.info.spec_id,
+						num:vm.num,
+						is_subOrder:1
+					}
+				});
+			},
+
+			addNum:function(){
+				var num = vm.num;
+				num += 1
+				api.ajax({
+					url:add_num_url,
+					method:'get',
+					timeout:30,
+					dataType:'json',
+					returnAll:false,
+					data:{
+						values:{
+							goods_id:vm.id,
+							model_id:!vm.info.spec_id?0:vm.info.spec_id,
+							goods_num:num
+						}
+					}
+				},function(ret,err){
+					if(ret){
+
+						if(ret.status==1){
+							vm.num += 1;
+						}else{
+							api.toast({
+								msg:ret.msg,
+								duration:2000,
+								location:'middle'
+							});
+						}
+					}else{
+						console.log(JSON.stringify(err))
+					}
+				});
+
+			},
+			addNums:function(num){
+				api.ajax({
+					url:add_num_url,
+					method:'get',
+					timeout:30,
+					dataType:'json',
+					returnAll:false,
+					data:{
+						values:{
+							goods_id:vm.id,
+							model_id:!vm.info.spec_id?0:vm.info.spec_id,
+							goods_num:num
+						}
+					}
+				},function(ret,err){
+					if(ret){
+
+						if(ret.status==1){
+							vm.num = num;
+						}else{
+							api.toast({
+								msg:ret.msg,
+								duration:2000,
+								location:'middle'
+							});
+						}
+					}else{
+						console.log(JSON.stringify(err))
+					}
+				});
+
+			},
+
+			miusNum:function(){
+				if(vm.num==1){
+					return;
+				}
+				vm.num -= 1
+			},
+
+			closes:function(){
+				$api.addCls($api.dom('.dialog'), 'slideOutDown');
+				$api.removeCls($api.dom('.dialog'), 'slideInUp');
+				if(vm.info.spec_id!=undefined){
+					api.ajax({
+						url:goods_option_detail_url,
+						method:'post',
+						timeout:30,
+						dataType:"json",
+						returnAll:false,
+						data:{
+							values:{
+								token:vm.token,
+								model_id:vm.info.spec_id,
+								agency_manage_id:vm.area_id
+							}
+						}
+					},function(ret,err){
+						if(ret){
+								console.log(JSON.stringify(ret));
+							if(ret.status==1){
+								api.sendEvent({
+										name: 'spec_info',
+										extra: {
+											id:vm.id,
+											spec_id:vm.info.spec_id,
+											num:vm.num,
+											is_chage:1,
+											good_option:ret.data.good_option,
+											discounts_list:ret.data.discounts_list,
+											idx:vm.idx
+										}
+								});
+								setTimeout(function(){
+									api.closeFrame();
+								},300)
+							}else{
+								api.toast({
+								    msg: ret.msg,
+								    duration: 2000,
+								    location: 'bottom'
+								});
+								setTimeout(function(){
+									api.closeFrame();
+								},300)
+							}
+						}
+					});
+				}else{
+					api.sendEvent({
+							name: 'spec_info_spec',
+							extra: {
+								id:vm.id,
+								spec_id:vm.info.spec_id,
+								num:vm.num,
+								idx:vm.idx
+							}
+					});
+					setTimeout(function(){
+						api.closeFrame();
+					},300)
+				}
+			},
+			hides:function (){
+				console.log(123);
+				$api.addCls($api.dom('.dialog'), 'slideOutDown');
+				$api.removeCls($api.dom('.dialog'), 'slideInUp');
+
+				setTimeout(function(){
+
+					api.closeFrame();
+				},300)
+			}
+		}
+	})
+
+	apiready = function(){
+
+		vm.token = $api.getStorage("token");
+
+		vm.area_id=$api.getStorage('area_id');
+
+		vm.id = api.pageParam.id;
+
+		vm.idx=api.pageParam.idx;
+
+		vm.state = api.pageParam.state;
+
+		vm.init();
+	};
+
+	function hides(){
+		console.log(123);
+		$api.addCls($api.dom('.dialog'), 'slideOutDown');
+		$api.removeCls($api.dom('.dialog'), 'slideInUp');
+
+		setTimeout(function(){
+
+			api.closeFrame();
+		},300)
+	}
+</script>

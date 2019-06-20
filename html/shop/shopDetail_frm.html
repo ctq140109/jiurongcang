@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>商品详情</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.shop-pic{height: 18rem;overflow: hidden;}
+		.shop-pic img{width: 100%;height: 100%;object-fit:cover ;}
+		.line{ text-decoration: line-through;}
+    	.price{display: inline-block; }
+    	.price span{ display: block;}
+    	.share{ width: 1rem;height: 1rem;position: relative;top: -0.4rem;}
+    	.cup{ border: 1px solid #f14416;border-radius: 5px;color: #f14416;overflow: hidden;position: relative;z-index: 100;}
+    	.time{width: 1.2rem;height: 1.2rem;border-radius: 0.25rem;display: inline-block;text-align: center;line-height: 1.2rem;}
+		.sc{width: 0.85rem;vertical-align: sub;}
+		.shaixuan .aui-media-list-item-inner{padding-top: 0 !important;padding-bottom: 0 !important;}
+		.shaixuan .aui-list-item-inner{min-height: auto !important;padding-right: 0.6rem !important;padding-bottom: 0 !important; padding-top: 0 !important;height: 2.3rem; line-height: 2.3rem;}
+		.aui-list-item-media{width: auto !important;}
+		/*评价*/
+		.header{width: 1.5rem;height: 1.5rem;border-radius: 50%;overflow: hidden;}
+		.header img{width: 100%;height: 100%;object-fit: cover;}
+		.list .aui-col-xs-4{width: 32.3333%;height: 5rem; margin-right: 1.5%;border-radius: 0.25rem;overflow: hidden;}
+		.list .aui-col-xs-4:nth-of-type(3n){margin-right: 0 !important;}
+		.qb{height: 1.5rem;line-height: 1.5rem;width:5.5rem;border-radius: 1rem; margin: auto;}
+		.qb span{color: #333333;border-bottom: solid 1px #333333;}
+
+		.quan{background-color: #fff6f7;border: dashed 1px #ff2742;display: inline-block;line-height: 1.5rem;padding: 0 1.2rem;}
+
+	</style>
+	<body>
+		<div class="aui-content" id="app" v-cloak v-if="is_load">
+			<div class="shop-pic">
+				<!-- <img src="../../image/lizi2.jpg"/> -->
+			</div>
+			<div class="aui-list aui-media-list">
+				<div class="aui-list-item aui-padded-l-0">
+					<div class="aui-media-list-item-inner aui-border-bgB aui-padded-l-12">
+						<div class="aui-list-item-inner">
+							<!-- type==0  //1秒杀 -->
+							<div class="aui-list-item-text" v-if="list.type==0">
+									<div class="" v-if="is_chage==''">
+										<span class="aui-text-danger aui-margin-r-5 fweight-5 aui-font-size-20" v-if="list.market_price">￥{{list.market_price}}</span>
+										<span class="aui-font-size-14 aui-margin-r-5  aui-text-grayerBlue" style="text-decoration: line-through;" v-if="list.original_price">￥{{list.original_price}}</span>
+										<span class="aui-text-danger aui-font-size-15" v-if="list.purchase_num && list.promote_num">{{list.purchase_num}}箱起购 限购{{list.promote_num}}箱 </span>
+										<span class="aui-margin-l-10 aui-text-brown" v-if="list.return_score">送{{list.return_score}}积分</span>
+									</div>
+									<div class="" v-else>
+										<span class="aui-text-danger aui-margin-r-5 fweight-5 aui-font-size-20" v-if="good_option.market_price">￥{{good_option.market_price}}</span>
+										<span class="aui-font-size-14 aui-margin-r-5  aui-text-grayerBlue" style="text-decoration: line-through;" v-if="good_option.original_price">￥{{good_option.original_price}}</span>
+										<span class="aui-text-danger aui-font-size-15" v-if="good_option.purchase_num && good_option.promote_num">{{good_option.purchase_num}}箱起购 限购{{good_option.promote_num}}箱 </span>
+										<span class="aui-margin-l-10 aui-text-brown" v-if="good_option.return_score">送{{good_option.return_score}}积分</span>
+									</div>
+							</div>
+							<div class="aui-list-item-text" v-else>
+								<div class="" v-if="is_chage==''">
+									<span class="aui-text-danger aui-margin-r-5 fweight-5 aui-font-size-20" v-if="list.market_price">￥{{list.market_price}}</span>
+									<span class="aui-font-size-14 aui-text-grayerBlue" style="text-decoration: line-through;" v-if="list.original_price">￥{{list.original_price}}</span>
+								</div>
+								<div class="" v-else>
+									<span class="aui-text-danger aui-margin-r-5 fweight-5 aui-font-size-20" v-if="good_option.market_price">￥{{good_option.market_price}}</span>
+									<span class="aui-font-size-14 aui-text-grayerBlue" style="text-decoration: line-through;" v-if="list.original_price">￥{{good_option.original_price}}</span>
+								</div>
+								<div class="aui-margin-l-15 aui-text-blue">
+									<span class="aui-text-blacker aui-font-size-15 aui-margin-r-12">距结束</span>
+									<span class="time aui-bg-blue aui-text-white aui-font-size-11">{{h}}</span> ：<span class="time aui-bg-blue aui-text-white aui-font-size-11">{{m}}</span> ：<span class="time aui-bg-blue aui-text-white aui-font-size-11">{{s}}</span>
+								</div>
+							</div>
+
+
+							<div class="aui-list-item-text aui-font-size-15 aui-text-blacker aui-margin-t-12" style="align-items: flex-start;">
+								<div style="width: 80%;">{{list.name}}</div>
+								<div style="width: 20%;" class="aui-font-size-14 aui-text-gray aui-text-right" @click="coll(0)"  v-if="is_coll==0">
+									<img class="sc" src="../../image/shoucang.png"/>
+									收藏
+								</div>
+								<div style="width: 20%;" class="aui-font-size-14 aui-text-gray aui-text-right" @click="coll(1)" v-else>
+									<img class="sc" src="../../image/shoucang-on.png"/>
+									已收藏
+								</div>
+							</div>
+							<div class="aui-list-item-text aui-margin-t-12 aui-font-size-13 aui-text-grayerBlue">
+								<span v-if="list.full_money">满{{list.full_money}}元可下单</span>
+								<span>月销：{{list.sales}}</span>
+								<span>库存：{{list.stocknum}}</span>
+							</div>
+						</div>
+					</div>
+					<div class="aui-border-bgB shaixuan">
+						<div class="aui-media-list-item-inner aui-padded-l-12 aui-border-b" v-if="coupon_list.length>0">
+							<div class="aui-list-item-inner" @click="coupon()">
+								<div class="aui-list-item-text">
+									<div class="aui-ellipsis-1">
+										<span class="aui-margin-r-10 aui-text-grayBlue">领券</span>
+										<span class="aui-text-blacker">
+											<template v-for="(v,index) in coupon_list">
+												<span class="quan aui-text-center aui-text-danger aui-margin-r-5">{{v.name}}</span>
+											</template>
+										</span>
+									</div>
+									<div class="aui-font-size-13">
+										<i class="aui-iconfont aui-icon-right aui-font-size-12 aui-font-weight"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="aui-media-list-item-inner aui-padded-l-12" v-if="discounts_list.length>0">
+							<div class="aui-list-item-inner"  @click="discounts()">
+								<div class="aui-list-item-text">
+									<div class="aui-ellipsis-1">
+										<span class="aui-margin-r-10 aui-text-grayBlue">优惠</span>
+										<template v-for="(v,index) in discounts_list" v-if="index<2">
+											<span class="aui-text-blacker aui-padded-r-10">{{v.name}}</span>
+										</template>
+									</div>
+									<div class="aui-font-size-13">
+										<i class="aui-iconfont aui-icon-right aui-font-size-12 aui-font-weight"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="aui-media-list-item-inner aui-padded-l-12" v-if="list.good_promote_num">
+							<div class="aui-list-item-inner" >
+								<div class="aui-list-item-text">
+									<div class="aui-ellipsis-1">
+										<span class="aui-margin-r-10 aui-text-grayBlue">产品每天限购</span>
+										<span class="aui-text-blacker aui-padded-r-10">{{list.good_promote_num}}</span>
+
+									</div>
+									<div class="aui-font-size-13">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="aui-border-bgB shaixuan" v-if="list.quality_date && list.production_date">
+						<div class="aui-media-list-item-inner aui-padded-l-12 aui-border-b">
+							<div class="aui-list-item-inner">
+								<div class="aui-list-item-text">
+									<div class="aui-ellipsis-1">
+										<span class="aui-margin-r-10 aui-text-grayBlue" v-if="list.production_date">生产日期{{list.production_date}}</span>
+										<span class="aui-text-grayBlue" v-if="list.quality_date">保质期{{list.quality_date}}</span>
+									</div>
+									<div class="aui-font-size-13">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="aui-media-list-item-inner aui-padded-l-12 aui-border-b" @click="server()">
+							<div class="aui-list-item-inner">
+								<div class="aui-list-item-text">
+									<div class="aui-ellipsis-1">
+										<span class="aui-margin-r-10 aui-text-grayBlue">服务</span>
+										<span class="aui-text-blacker">{{service}}</span>
+									</div>
+									<div class="aui-font-size-13">
+										<i class="aui-iconfont aui-icon-right aui-font-size-12 aui-font-weight"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="aui-media-list-item-inner aui-padded-l-12 ">
+							<div class="aui-list-item-inner" @click="spec(5)">
+								<div class="aui-list-item-text">
+									<div class="aui-ellipsis-1" >
+										<span class="aui-margin-r-10 aui-text-grayBlue">选择</span>
+										<span class="aui-text-blacker" >{{spec_name}}</span>
+									</div>
+									<div class="aui-font-size-13">
+										<i class="aui-iconfont aui-icon-right aui-font-size-12 aui-font-weight"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<!--评论-->
+			<div class="aui-row aui-bg-white  aui-border-bgB">
+				<div class="aui-col-xs-12 aui-padded-t-12 aui-padded-b-12 aui-padded-r-12  aui-border-b">
+					<div class="aui-padded-l-12" style="display: flex; justify-content: space-between;align-items: baseline;">
+						<span class="fweight-5 aui-font-size-15">评价 ({{evaluate.total_size}}条)</span>
+						<span class="aui-font-size-13 aui-text-grayerBlue" v-if="evaluate.feedback">
+							好评率{{evaluate.feedback}}<i class="aui-iconfont aui-icon-right aui-font-size-12 aui-font-weight aui-margin-l-12"></i>
+						</span>
+					</div>
+				</div>
+				<!--评价内容-->
+				<div class="list" v-if="evaluate.evaluate.length>0">
+					<template v-for="(v,index) in evaluate.evaluate">
+					<div class="aui-list aui-padded-12 aui-padded-t-0 aui-border-b">
+						<div class="aui-list-item aui-list-item-middle aui-padded-l-0">
+	            <div class="aui-media-list-item-inner">
+	                <div class="aui-list-item-media">
+	                	<div class="header">
+	                    	<img :src="v.head_portrait?v.head_portrait:'../../image/head.png'">
+	                    </div>
+	                </div>
+	                <div class="aui-list-item-inner ">{{v.nick_name}}</div>
+	            </div>
+			        </div>
+			        <div class="aui-font-size-11 aui-text-grayerBlue">{{v.create_time}}</div>
+	    				<div class="aui-padded-t-12 aui-padded-b-0 aui-font-size-15">{{v.content}}</div>
+	    				<div class="aui-row aui-padded-t-10" v-if="v.pic">
+								<template v-for="(vs,idx) in v.pic">
+		    					<div class="aui-col-xs-4 aui-margin-t-5">
+		    						<img :src="vs" style="width: 100%;height: 100%;object-fit:cover ;" @click="openShopPics(v.pic)"/>
+		    					</div>
+								</template>
+	    				</div>
+	    			</div>
+					</template>
+    			<div class="aui-text-center" style="padding: 0.75rem 0;">
+						<div class="qb aui-border aui-font-size-10 aui-text-center" @click="open_el()"><span class="aui-text-grayBlue">全部评价</span></div>
+					</div>
+  			</div>
+			</div>
+			<!--详情-->
+			<div class="content">
+			<div class="sp-title aui-text-center aui-padded-12" >
+				<img src="../../image/title1.jpg"/>
+				<div v-html="list.content">
+
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm =new Vue({
+		el:'#app',
+		data:{
+			token:'',
+			id:'',
+			area_id:'',
+			list:[],
+			evaluate:[],
+			spec_name:'请选择 规格数量',
+			is_load:'',
+			total_size:'',
+			shop:'',
+			banner_list:[],
+			full_money:'',
+
+			good_option:[],// 规格筛选完成之后的返回数据
+
+
+			service:'',
+			discounts_list:'',
+			is_coll:'',
+			coupon_list:'',
+			h:'',// 秒杀倒计时
+			m:'',// 秒杀倒计时
+			s:'',// 秒杀倒计时
+			tag:'',
+
+
+			spec_id:'',
+			num:'',
+			is_chage:''//是否选择过规则
+
+		},
+		methods:{
+			openShopPics:function(pic,idx){
+				var photoBrowser = api.require('photoBrowser');
+				photoBrowser.open({
+						images:pic,
+						placeholderImg: 'widget://res/img/apicloud.png',
+						bgColor: '#000'
+				}, function(ret, err) {
+
+						if(ret.eventType == 'click'){
+								photoBrowser.close();
+
+						}
+				});
+				photoBrowser.setIndex({
+						index: idx
+				});
+
+			},
+			spec:function (idx) {
+				if(!vm.token){
+					is_login();
+					return;
+				}
+				if(vm.tag==1){
+					api.openFrame({
+						name: 'xuanze',
+						url: 'widget://html/pageone/xuanze.html',
+						rect: {
+							x:0,
+							y:0,
+							w:api.winWidth,
+							h:api.winHeight
+						},
+						pageParam:{
+							id:vm.id,
+							idx:idx
+						}
+					});
+				}else if(vm.tag==0){
+					alert_shop();
+				}else{
+					api.toast({
+					    msg: '门店审核中请耐心等待',
+					    duration: 4000,
+					    location: 'bottom'
+					});
+
+				}
+
+			},
+			coupon:function(){
+				if(!vm.token){
+					is_login();
+					return;
+				}
+				api.openFrame({
+						name: 'lingquan',
+						url: 'widget://html/pageone/lingquan.html',
+						rect: {
+								x: 0,
+								y: 0,
+								w:'auto',
+								h:api.winHeight
+						},
+						pageParam:{
+							id:vm.id
+						},
+				});
+			},
+			open_el:function(){
+				console.log(1);
+
+					api.sendEvent({
+					    name: 'pj',
+					});
+
+					setTimeout(function() {
+						api.closeFrame();
+					},300)
+
+			},
+			coll:function(idx) {
+				console.log(1);
+				if(!vm.token){
+					is_login();
+					return;
+				}
+				api.ajax({
+						url:goods_coll_url,
+						method:'post',
+						timeout:30,
+						dataType:'json',
+						returnAll:false,
+						data:{
+							values:{
+								id:vm.id,
+								agency_manage_id:vm.area_id,
+								token:vm.token,
+							}
+						}
+				},function(ret,err){
+					if(ret){
+						if(ret.status==1){
+							if(idx==1){
+								vm.is_coll=0;  //取消收藏
+							}else{
+								vm.is_coll=1;  //收藏
+							}
+							api.toast({
+								msg:ret.msg,
+								duration:2000,
+								location:'middle'
+							});
+						}else{
+							api.toast({
+								msg:ret.msg,
+								duration:2000,
+								location:'middle'
+							});
+						}
+					}
+				});
+			},
+			openShopPic:function(idx){
+				var photoBrowser = api.require('photoBrowser');
+				photoBrowser.open({
+						images: vm.banner_list,
+						activeIndex:idx,
+						placeholderImg: 'widget://res/img/apicloud.png',
+						bgColor: '#000'
+				}, function(ret, err) {
+
+						if(ret.eventType == 'click'){
+								photoBrowser.close();
+
+						}
+				});
+				photoBrowser.setIndex({
+						index: idx
+				});
+
+			},
+			server:function() {
+				api.openFrame({
+						name: 'fuwu',
+						url: 'widget://html/pageone/fuwu.html',
+						rect: {
+								x: 0,
+								y: 0,
+								w:'auto',
+								h:api.winHeight
+						},
+						pageParam:{
+							id:vm.id
+						},
+				});
+			},
+			discounts:function() {
+				api.openFrame({
+						name: 'discounts',
+						url: 'widget://html/pageone/discounts.html',
+						rect: {
+								x: 0,
+								y: 0,
+								w:'auto',
+								h:api.winHeight
+						},
+						pageParam:{
+							list:vm.discounts_list,
+
+						},
+				});
+			},
+			init:function() {
+				api.showProgress();
+				api.ajax({   //banner
+				    url: good_detail_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+				    method: 'post',
+				    data: {
+				        values: {
+				            token: vm.token,
+										agency_manage_id:vm.area_id,
+										id:vm.id
+				        }
+				    }
+					},function(ret, err){
+				    if (ret) {
+								console.log(JSON.stringify(ret));
+								api.hideProgress();
+								if(ret.status==1){
+									 vm.is_load=1;
+									 vm.evaluate=ret.data.evaluate;
+									 vm.list=ret.data.good;
+									 vm.service=ret.data.service;
+									 vm.discounts_list=ret.data.discounts_list;
+									 vm.is_coll=ret.data.is_coll;
+									 vm.coupon_list=ret.data.coupon_list;
+									 vm.tag=ret.data.tag;
+	 								 vm.banner_list=ret.data.good.pictures;
+									 vm.full_money=ret.data.full_money;
+	 								 var banners_lists=[];
+									 api.sendEvent({
+									     name: 'shop',
+									     extra: {
+									         list: ret.data.good
+									     }
+									 });
+
+	 								 if(ret.data.good.pictures.length>0){
+	 									for (var i = 0; i < ret.data.good.pictures.length; i++) {
+	 										 banners_lists.push($api.trimAll(ret.data.good.pictures[i]));
+	 									}
+	 									setTimeout(function(){
+	 										vm.banns(banners_lists);
+	 									},500)
+	 								}
+									if(ret.data.good){
+										if(ret.data.good.type==1){
+											if(ret.data.kill_data){
+												if(ret.data.kill_data.kill_end_time){
+													var time = new Date(ret.data.kill_data.kill_end_time.replace(/-/g,"/")).getTime();
+													if(time>new Date().getTime()){
+															setInterval(function(){
+																var endTime = time-new Date().getTime();
+																var d,h,m,s;
+																if(endTime>=0){
+																		d = Math.floor(endTime/1000/60/60/24);
+																		h = Math.floor(endTime/1000/60/60%24);
+																		m = Math.floor(endTime/1000/60%60);
+																		s = Math.floor(endTime/1000%60);
+																}
+																if(d<10){
+																	 d = "0" + d;
+																}
+																if(h < 10){
+																		h = "0" + h
+																}
+																if(m < 10){
+																	 m = "0" + m
+																}
+																if(s < 10){
+																	 s = "0" + s
+																}
+																vm.h = h;
+																vm.m=m;
+																vm.s=s;
+														},1000)
+													}
+												}
+											}
+
+										}
+									}
+
+								}else{
+									api.toast({
+									    msg: ret.msg,
+									    duration: 2000,
+									    location: 'bottom'
+									});
+
+								}
+				    }else{
+							api.hideProgress();
+							if(err.statusCode==500){
+								api.toast({
+										msg: '服务器请求错误！',
+										duration: 2000,
+										location: 'middle'
+								});
+							}else{
+									api.toast({
+											msg: '请求超时，请检查网络',
+											duration: 2000,
+											location: 'middle'
+									});
+							}
+						}
+				});
+			},
+
+			banns:function(banners_list){
+					var UIScrollPicture = api.require('UIScrollPicture');
+					UIScrollPicture.open({
+						 rect: {
+									x: 0,
+									y: 0,
+									w: api.winWidth,
+									h: $api.dom('.shop-pic').offsetHeight
+							},
+							data: {
+									paths:banners_list,
+							},
+							styles: {
+									caption: {
+											height: 35,
+											color: '#E0FFFF',
+											size: 13,
+											bgColor: '#696969',
+											position: 'bottom'
+									},
+									indicator: {
+										 dot:{
+											 w:4,
+											 h:5,
+											 r:2,
+											 margin:5
+										},
+											align: 'center',
+											color: '#FFFFFF',
+											activeColor: '#34d594'
+									}
+							},
+							placeholderImg: 'widget://image/s_banner.png',
+							contentMode: 'scaleToFill',
+							interval: 3,
+							fixedOn: api.frameName,
+							loop: true,
+							fixed: false
+					}, function(ret, err) {
+							if(ret){
+								if(ret.eventType=='click'){
+										vm.openShopPic(ret.index);
+								}
+							}
+					});
+			},
+			add_cart:function() {   //加入购物车
+				if(!vm.token){
+					api.openWin({
+						name: 'login',
+						url: 'widget://html/login/login.html',
+						animation:{
+							type:'movein',
+							subType:'from_bottom',
+							duration:300
+						}
+					});
+					return;
+				}
+				if(vm.tag==0){
+					alert_shop();
+					return;
+				}
+				api.ajax({
+					url:cart_add_url,
+					method:'post',
+					timeout:30,
+					dataType:"json",
+					returnAll:false,
+					data:{
+						values:{
+							token:vm.token,
+							id:vm.id,
+							spec_id:vm.spec_id,
+							agency_manage_id:vm.area_id,
+							num:vm.num
+						}
+					}
+				},function(ret,err){
+					if(ret){
+						api.hideProgress();
+
+						if(ret.status==1){
+							api.toast({
+								msg:ret.msg,
+								duration:4000,
+								location:'middle'
+							});
+						 api.sendEvent({
+							 name:'addCart_init',
+						 });
+					 }else{
+						 api.toast({
+							 msg:ret.msg,
+							 duration:4000,
+							 location:'middle'
+						 });
+					 }
+				 }else{
+					 api.toast({
+							msg:ret.msg,
+							duration:4000,
+							location:'middle'
+						});
+				 }
+				});
+			},
+			payment:function(){
+				if(!vm.token){
+					api.openWin({
+							name: 'login',
+							url: 'widget://html/login/login.html',
+							animation:{
+								type:'movein',
+								subType:'from_bottom',
+								duration:300
+							}
+						});
+					return;
+				}
+				if(vm.tag==0){
+					alert_shop();
+					return;
+				}
+				api.ajax({
+					url:goods_submit_url,
+					method:'get',
+					timeout:30,
+					dataType:"json",
+					returnAll:false,
+					data:{
+						values:{
+							id:vm.id,
+							spec_id:vm.spec_id,
+							count:vm.num,
+							agency_manage_id:vm.area_id,
+							token:vm.token
+						}
+					}
+				},function(ret,err){
+					if(ret){
+						api.hideProgress();
+						if(ret.status==1){
+							api.openWin({
+								name: 'buy_win',
+								url: 'widget://html/shop/buy_win.html',
+								pageParam:{
+									id:vm.id,
+									spec_id:vm.spec_id,
+									num:vm.num,
+									is_subOrder:1
+								}
+							});
+						}else{
+							api.toast({
+							    msg: ret.msg,
+							    duration: 4000,
+							    location: 'bottom'
+							});
+
+						}
+
+					}else{
+						console.log(JSON.stringify(err))
+					}
+				});
+
+
+
+
+
+			},
+		}
+	})
+	apiready = function(){
+		  vm.token=$api.getStorage('token');
+			vm.area_id=$api.getStorage('area_id');
+			vm.tag=$api.getStorage('tag');
+			vm.id=api.pageParam.id;
+			vm.init();
+			api.addEventListener({
+			    name: 'spec_info'
+			}, function(ret, err){
+			    if( ret ){
+						console.log(JSON.stringify(ret));
+						vm.spec_id=ret.value.spec_id;
+					 	vm.num=ret.value.num;
+					 	vm.is_chage=ret.value.is_chage;
+						vm.good_option=ret.value.good_option;
+						vm.spec_name=ret.value.good_option.name;
+						vm.discounts_list=ret.value.discounts_list;
+						if(ret.value.idx==2){
+							setTimeout(function(){
+									api.showProgress();
+
+									vm.add_cart();
+							},200)
+
+						}else if(ret.value.idx==3){
+							setTimeout(function(){
+									api.showProgress();
+									vm.payment();
+							},200)
+
+						}
+			    }
+			});
+			api.addEventListener({
+			    name: 'spec_info_spec'
+			}, function(ret, err){
+			    if( ret ){
+						console.log(JSON.stringify(ret));
+						vm.spec_id=ret.value.spec_id;
+						vm.num=ret.value.num;
+						if(ret.value.idx==2){
+							setTimeout(function(){
+									api.showProgress();
+
+									vm.add_cart();
+							},200)
+
+						}else if(ret.value.idx==3){
+							setTimeout(function(){
+									api.showProgress();
+									vm.payment();
+							},200)
+
+						}
+			    }
+			});
+
+			api.addEventListener({
+			    name: 'spec_pay'
+			}, function(ret, err){
+			    if( ret ){
+						// if(!vm.is_chage){
+						// 	vm.spec(3);
+						// }else{
+						// 	vm.payment();
+						// }
+						vm.spec(3);
+					}
+			});
+
+			api.addEventListener({
+			    name: 'spec_chage'
+			}, function(ret, err){
+			    if( ret ){
+			        //  if(!vm.is_chage){
+							// 	 vm.spec(2);
+							//  }else{
+							// 	 vm.add_cart();
+							//  }
+							vm.spec(2);
+			    }
+			});
+			api.addEventListener({
+			    name: 'reshuf'
+			}, function(ret, err){
+			    if( ret ){
+						 vm.token=$api.getStorage('token');
+						 vm.area_id=$api.getStorage('area_id');
+						 vm.tag=$api.getStorage('tag');
+						 vm.init();
+			    }
+			});
+
+
+
+	};
+
+</script>

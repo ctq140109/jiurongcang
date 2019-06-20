@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>积分商品-确认订单</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.aui-row{ position: relative;}
+    	.aui-row i{ position: absolute;top: 50%;right: 0.75rem;margin-top: -7.5px;}
+    	.dizhi{ position: relative;}
+		.dizhi .aui-list-item-media{width:2.25rem !important;align-items: center !important;}
+		.dizhi .aui-list-item-media img{width: 1.5rem;}
+    	.line{ position: absolute;bottom: 0;left:0;width: 100%;height: 4px;}
+
+	    .shop .aui-list-item-media{width: 5.25rem !important;height: 5.5rem;overflow: hidden;}
+	    .shop .aui-list-item-media img{width: 100%;height: 100%;object-fit: cover;}
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content" id="app" v-cloak>
+			<!--地址-->
+			<div class="aui-list aui-media-list dizhi aui-padded-t-5 aui-padded-b-5 aui-border-bgT" v-if="add"  @click="open_address_list()">
+				<div class="aui-list-item aui-padded-l-12">
+					<div class="aui-media-list-item-inner">
+						<div class="aui-list-item-media">
+							<img src="../../image/dizhi1.jpg"/>
+						</div>
+						<div class="aui-list-item-inner">
+							<div class="aui-list-item-text aui-font-size-15">
+								<div class="aui-text-blacker">{{add.name}}  <span class="aui-text-grayer">{{add.mobile}}</span>  </div>
+							</div>
+							<div class="aui-list-item-text aui-text-blacker aui-margin-t-10">{{add.full_address}}{{add.address_info}}</div>
+						</div>
+					</div>
+				</div>
+				<img src="../../image/line.jpg" class="line"/>
+			</div>
+			<!--没添加地址-->
+			<div class="aui-row aui-bg-white aui-padded-12 aui-border-bgT"  v-else  onclick="open_window('personal','addressAdd_win')">
+				<div class="aui-font-size-14 aui-text-blacker" style="width: 90%;line-height: 1.3rem;">
+					您还没有添加过收货地址，快去添加吧
+				</div>
+				<i class="aui-iconfont aui-icon-right aui-font-weight"></i>
+			</div>
+
+			<!--商品信息-->
+			<div class="aui-list aui-media-list shop aui-border-bgT ">
+				<!--商品-->
+				<div class="aui-list-item aui-padded-l-0">
+					<div class="aui-media-list-item-inner aui-padded-l-12 aui-padded-r-12">
+						<div class="aui-list-item-media">
+							<img :src="info.thumb" />
+						</div>
+						<div class="aui-list-item-inner aui-padded-r-0">
+							<div class="aui-list-item-text aui-padded-t-5">
+								<span class="aui-ellipsis-1 aui-font-size-15 aui-text-black">{{info.name}}</span>
+							</div>
+							<div class="aui-list-item-text aui-padded-t-10">
+								<!-- <div class="aui-font-size-12">500ml*20/箱</div>
+								<span class="aui-text-grayer aui-pull-right">x3</span> -->
+							</div>
+							<div class="aui-list-item-text aui-padded-t-15 aui-font-size-17 aui-text-danger">{{info.exchange_score}}积分</div>
+						</div>
+					</div>
+				</div>
+				<div class="aui-padded-12 aui-padded-b-0 aui-border-bgT">
+					<!-- <div class="aui-font-size-13 aui-padded-b-12">
+						<span class="aui-text-grayerBlue">运费</span>
+						<span class="aui-text-blacker aui-pull-right">￥10</span>
+					</div> -->
+					<div class="aui-font-size-13 aui-padded-b-12">
+						<span class="aui-text-grayerBlue">商品合计</span>
+						<span class="aui-text-blacker aui-pull-right fweight-5">{{info.exchange_score}}积分</span>
+					</div>
+				</div>
+			</div> <!--商品信息结束-->
+
+		</div>
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			idx:'1',
+			id:'',
+			token:'',
+			add:'',
+			area_id:'',
+			info:[],
+			banners_lists:[]
+		},
+		methods:{
+			init:function () {
+				api.showProgress();
+
+				api.ajax({   //积分  热门兑换
+				    url: confirm_redeem_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+				    method: 'post',
+				    data: {
+				        values: {
+				            token: vm.token,
+										id:vm.id,
+										agency_manage_id:vm.area_id
+				        }
+				    }
+					},function(ret, err){
+				    if (ret) {
+								api.hideProgress();
+								console.log(JSON.stringify(ret));
+								if(ret.status==1){
+										vm.info=ret.data.score_goods;
+										vm.add=ret.data.address;
+										api.sendEvent({
+										    name: 'exchange_score',
+										    extra: {
+										        exchange_score:ret.data.score_goods.exchange_score
+										    }
+										});
+
+								}else{
+									api.toast({
+									    msg: ret.msg,
+									    duration: 2000,
+									    location: 'bottom'
+									});
+
+								}
+				    }else{
+							api.hideProgress();
+							if(err.statusCode==500){
+								api.toast({
+										msg: '服务器请求错误！',
+										duration: 2000,
+										location: 'middle'
+								});
+							}else{
+									api.toast({
+											msg: '请求超时，请检查网络',
+											duration: 2000,
+											location: 'middle'
+									});
+							}
+						}
+				});
+			},
+			open_address_list:function(){
+				api.openWin({
+					name: 'address_win',
+					url: 'widget://html/personal/address_win.html',
+					pageParam:{
+						is_change:1
+					}
+				});
+			},
+			sub:function() {
+				if(!vm.add){
+					api.toast({
+						msg:'请选择收货地址',
+						duration:2000,
+						location:'middle'
+					});
+					return;
+				}
+				api.confirm({
+						title: '提示',
+						msg: '是否使用积分兑换商品？',
+						buttons: ['确定', '取消']
+				}, function(ret, err) {
+						if(ret.buttonIndex==1){
+							api.showProgress();
+
+						api.ajax({
+								url: confirm_exchange_url,
+								returnAll:false,
+								dataType:'json',
+								timeout:30,
+								method: 'post',
+								data: {
+										values: {
+												token: vm.token,
+												id:vm.id,
+												address_id:vm.add.id
+										}
+								}
+						},function(ret, err){
+								if (ret) {
+										console.log(JSON.stringify(ret))
+										api.hideProgress();
+										if(ret.status==1){
+											api.toast({
+											    msg: ret.msg,
+											    duration: 2000,
+											    location: 'bottom'
+											});
+											setTimeout(function() {
+												api.closeWin();
+
+											},300)
+
+										}else{
+											api.toast({
+											    msg: ret.msg,
+											    duration: 2000,
+											    location: 'bottom'
+											});
+
+										}
+								}else{
+									if(err.statusCode==500){
+										api.toast({
+												msg: '服务器请求错误！',
+												duration: 2000,
+												location: 'middle'
+										});
+									}else{
+											api.toast({
+													msg: '请求超时，请检查网络',
+													duration: 2000,
+													location: 'middle'
+											});
+									}
+								}
+						});
+					}
+				})
+
+			}
+		}
+	})
+	apiready = function(){
+		vm.token=$api.getStorage('token');
+		vm.area_id=$api.getStorage('area_id');
+		vm.id=api.pageParam.id
+		vm.init();
+		api.addEventListener({
+		    name: 'sub'
+		}, function(ret, err){
+		    if( ret ){
+		         vm.sub()
+		    }
+		});
+		api.addEventListener({
+			name:'add_address_init'
+			},function(ret,err){
+			 vm.token = $api.getStorage("token");
+			 vm.init()
+		});
+
+	};
+
+</script>

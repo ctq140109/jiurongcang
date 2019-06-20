@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width"/>
+    <title>退款原因</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" href="../../css/global.css" />
+    <style type="text/css">
+    	input[type=radio]:checked{ background-color: #21af9d !important;border: 1px solid #34d594 !important;}
+    	.aui-btn{width: 100%; line-height: 2.1rem;height: 2.1rem;}
+    </style>
+</head>
+
+<body style="background-color: #F4F4F4;">
+  <div id="app" v-cloak>
+	<div class="aui-padded-15 aui-bg-grayer aui-text-gray aui-font-size-13">请告诉我们您的退款原因</div>
+	<div class="aui-list">
+    <template v-for="(v,index) in list">
+  		<div class="aui-list-item">
+  			<div class="aui-list-item-inner aui-padded-r-15 ">
+  				<div class="aui-list-item-title aui-font-size-14">{{v.name}}</div>
+  				<div class="aui-list-item-right">
+  					<input type="radio" name="is_pay"   @click="chage(v.id)" class="aui-radio" :checked="tk_id==v.id"/>
+  				</div>
+  			</div>
+  		</div>
+    </template>
+	</div>
+  <div class="aui-border-bgB aui-text-grayer aui-font-size-15 aui-padded-15" style="height: 8rem;">
+    <textarea placeholder="请输入备注信息" class="aui-font-size-15 aui-padded-15" id="more_info" onclick="focusInput()" style="height:6rem;background-color:#e3e3e3" :value="more_info" v-model="more_info"></textarea>
+  </div>
+
+
+	<div class="btn aui-padded-15 aui-margin-t-15" @click="sub()">
+		<div class="aui-btn   aui-font-size-16" style="background-color:#21af9d;color:#fff">退款</div>
+	</div>
+</div>
+
+</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+		var vm = new Vue({
+			el:'#app',
+			data:{
+				token:'',
+        list:[],
+				id:'',
+        tk_id:'',
+				resonal:1,
+        more_info:''
+			},
+			methods:{
+        chage:function(id) {
+          vm.tk_id=id
+        },
+        sub:function() {
+          if(vm.tk_id==''){
+            api.toast({
+                msg: '请选择退款原因',
+                duration: 2000,
+                location: 'bottom'
+            });
+            return;
+          }
+          api.ajax({
+							url: refund_apply_url,
+							method:'get',
+							timeout:30,
+							dataType:'json',
+							returnAll:false,
+							data: {
+									values: {
+											token:vm.token,
+                      id:vm.id,
+                      content:vm.more_info,
+                      cause_id:vm.tk_id
+									},
+							}
+					},function(ret, err){
+						if (ret) {
+              console.log(JSON.stringify(ret));
+              if(ret.status==1){
+                api.toast({
+                    msg: ret.msg,
+                    duration: 2000,
+                    location: 'bottom'
+                });
+                api.sendEvent({
+                    name: 'order_init',
+                    extra:{
+                      state:-1
+                    }
+                });
+
+                setTimeout(function() {
+                  api.closeToWin({
+                      name: 'myOrder_win'
+                  });
+
+                },500)
+
+							}else{
+                if(err.statusCode==500){
+  								api.toast({
+  										msg: '服务器请求错误！',
+  										duration: 2000,
+  										location: 'middle'
+  								});
+  							}else{
+  									api.toast({
+  											msg: '请求超时，请检查网络',
+  											duration: 2000,
+  											location: 'middle'
+  									});
+  							}
+              }
+            }
+					});
+        },
+				init:function(){
+					api.ajax({
+							url: refund_cause_list_url,
+							method:'get',
+							timeout:30,
+							dataType:'json',
+							returnAll:false,
+							data: {
+									values: {
+											token:vm.token
+									},
+							}
+					},function(ret, err){
+						if (ret) {
+              console.log(JSON.stringify(ret));
+              if(ret.status==1){
+                vm.list=ret.data.refund_cause_list
+							}else{
+                api.toast({
+                    msg: ret.msg,
+                    duration: 2000,
+                    location: 'bottom'
+                });
+              }
+            }
+					});
+				},
+			}
+		})
+		apiready = function(){
+			vm.token=$api.getStorage('token');
+			vm.id=api.pageParam.id;
+      vm.init();
+		}
+    function focusInput(){
+  		if(api.systemType=='ios'){
+  	    // 使用模块弹出键盘
+	    var softInput = api.require('softInputMgr');
+	    softInput.toggleKeyboard();
+	    // 将相应的输入框获取焦点
+
+	      document.getElementById("more_info").focus()
+	    }
+		}
+	</script>

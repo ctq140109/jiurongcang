@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>订单详情-代发货</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		header{ position: fixed !important;width: 100%;top: 0;z-index: 100000;}
+		.bg{height: 7.5rem;background: linear-gradient(to right, #52a589, #c4f2e5);background: -prefix-linear-gradient(left, #52a589, #c4f2e5);}
+		.dizhi{ position: relative;}
+		.dizhi .aui-list-item-media{width:2.25rem !important;align-items: center !important;}
+		.dizhi .aui-list-item-media img{width: 1.5rem;}
+		.line{ position: absolute;bottom: 0;left:0;width: 100%;height: 4px;}
+		
+	    .pay{ width: 1rem;height: 1rem;vertical-align: middle;}
+		    
+		.shop .aui-list-item-media{width: 5.25rem !important;padding-right: 0.6rem !important;padding-top: 0 !important; padding-bottom: 0 !important;}
+	    .shop .aui-list-item-media .pic{height: 4.5rem;width: 4.5rem;border-radius: 0.25rem;overflow: hidden;}
+	    .shop .aui-list-item-media img{width: 100%;height: 100%;object-fit: cover;}
+	    .shop .aui-list-item-inner{padding: 0 !important;}
+	    .aui-ellipsis-2{height: 44px; line-height: 22px;}
+	    .aui-btn-outlined{border-radius: 1rem;border-color: #ccc;height: 1.25rem;line-height: 1.25rem;padding: 0;width: 3rem;}
+		
+	</style>
+	<body  class="aui-bg-grayer">
+		<div class="aui-content">
+			<header class="aui-bar aui-bar-nav aui-bar-light" style="background-color: inherit !important;">
+	            <a class="aui-btn aui-btn-warning aui-pull-left" onclick="close_win()">
+	                <span class="aui-iconfont aui-icon-left aui-text-white"></span>
+	            </a>
+	            <div class="aui-title aui-font-size-17 aui-text-white">订单详情</div>
+	        </header>
+	        
+	        <div class="bg">
+	        	<div class="aui-list aui-media-list" style="background-color: initial !important; padding:2.5rem 1rem 0;">
+					<div class="aui-list-item">
+			            <div class="aui-media-list-item-inner" style="align-items: center !important;">
+			                <div class="aui-list-item-inner">
+			                    <div class="aui-list-item-title fweight-5 aui-text-white">卖家已发货</div>
+			                    <div class="aui-list-item-text aui-text-white aui-font-size-12 aui-padded-t-5">剩余6小时29分钟自动关闭订单</div>
+			                </div>
+			                <div class="aui-list-item-media">
+			                    <img src="../../image/daifahuo.png">
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+			<!--地址-->
+			<div class="aui-list aui-media-list dizhi aui-padded-0 ">
+				<div class="aui-list-item aui-padded-l-12">
+					<div class="aui-media-list-item-inner">
+						<div class="aui-list-item-media">
+							<img src="../../image/dizhi1.jpg"/>
+						</div>
+						<div class="aui-list-item-inner">
+							<div class="aui-list-item-text">
+								<div class="">李静好  <span class="aui-text-grayer">15125365478</span>  </div>
+							</div>
+							<div class="aui-list-item-text aui-text-blacker aui-margin-t-10">陕西省 西安市 雁塔区 电子正街 双桥国际社区一单元3号楼2010</div>
+						</div>
+					</div>
+				</div>
+				<img src="../../image/line.jpg" class="line"/>
+			</div>
+			<!--商品-->
+			<div class="aui-list aui-media-list shop aui-padded-12 aui-padded-b-0 aui-border-bgT">
+				<div class="aui-list-item aui-padded-l-0">
+					<div class="aui-media-list-item-inner aui-padded-0 aui-padded-b-12">
+						<div class="aui-list-item-media">
+							<div class="pic">
+								<img src="../../image/lizi2.jpg" />
+							</div>
+						</div>
+						<div class="aui-list-item-inner aui-padded-r-0">
+							<div class="aui-list-item-text aui-font-size-14">
+								<span class="aui-ellipsis-2  aui-text-blacker">Vero Moda2018秋季新款chic毛衫针织衫女边圆领桃心图案落肩宽松</span>
+							</div>
+							<div class="aui-list-item-text aui-font-size-12 aui-text-grayerBlue">
+								<span class="">500ml*20/箱 </span>
+								<span class="aui-pull-right">x1</span> 
+							</div>
+							<div class="aui-list-item-text aui-padded-t-10">
+								<span class="aui-font-size-17 aui-text-danger">￥120 </span>
+								<div class="aui-btn  aui-btn-outlined aui-font-size-13 aui-text-blacker">退款</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="aui-list-item aui-padded-l-0">
+					<div class="aui-media-list-item-inner aui-padded-0 aui-padded-b-12">
+						<div class="aui-list-item-media">
+							<div class="pic">
+								<img src="../../image/lizi2.jpg" />
+							</div>
+						</div>
+						<div class="aui-list-item-inner aui-padded-r-0">
+							<div class="aui-list-item-text aui-font-size-14">
+								<span class="aui-ellipsis-2  aui-text-blacker">Vero Moda2018秋季新款chic毛衫针织衫女边圆领桃心图案落肩宽松</span>
+							</div>
+							<div class="aui-list-item-text aui-font-size-12 aui-text-grayerBlue">
+								<span class="">500ml*20/箱 </span>
+								<span class="aui-pull-right">x1</span> 
+							</div>
+							<div class="aui-list-item-text aui-padded-t-10">
+								<span class="aui-font-size-17 aui-text-danger">￥120 </span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>	
+			<!--明细-->
+			<div class="aui-list aui-media-list">
+				<div class="aui-list-item aui-padded-12 aui-border-bgT">
+		            <div class="aui-list-item-inner aui-padded-0" style="line-height: 160%;">
+		            	<div class="aui-list-item-text aui-font-size-13 aui-text-grayer aui-padded-t-5">
+		            		<div class="">商品总价</div>
+		            		<div class="">￥110</div>
+		            	</div>
+		            	<div class="aui-list-item-text aui-font-size-13 aui-text-grayer aui-padded-t-5">
+		            		<div class="">送积分</div>
+		            		<div class="">+10</div>
+		            	</div>
+		            	<div class="aui-list-item-text aui-font-size-13 aui-text-grayer aui-padded-t-5">
+		            		<div class="">优惠</div>
+		            		<div class="">-10.00</div>
+		            	</div>
+		            	<div class="aui-list-item-text aui-font-size-13 aui-text-grayer aui-padded-t-5">
+		            		<div class="">运费</div>
+		            		<div class="">￥110</div>
+		            	</div>
+		            	<div class="aui-list-item-text aui-font-size-13 aui-text-grayer aui-padded-t-5">
+		            		<div class="">留言</div>
+		            		<div class="">无</div>
+		            	</div>
+		            	<div class="aui-list-item-text aui-font-size-13 aui-text-blacker aui-padded-t-5">
+		            		<div class="">订单总价</div>
+		            		<div class="">￥120</div>
+		            	</div>
+		            </div>
+		        </div>
+		        <div class="aui-list-item aui-padded-12 aui-border-t">
+		            <div class="aui-list-item-inner aui-padded-0" style="min-height: auto !important;">
+		            	<div class="aui-list-item-text aui-font-size-13 aui-text-black">
+		            		<div class="">需支付</div>
+		            		<div class="aui-list-item-text aui-font-size-16 aui-text-danger">￥120</div>
+		            	</div>
+		            </div>
+		        </div>
+	        </div>
+	        <!--订单信息-->
+			<div class="aui-list aui-border-bgT">
+				<div class="aui-padded-12 aui-padded-t-15 aui-padded-b-15 aui-border-b fweight-5">订单信息</div>
+		        <div style="line-height: 160%;" class="aui-padded-10 aui-text-gray">
+		        	<div class="aui-font-size-13 aui-text-grayerBlue aui-padded-b-5">付款方式：<span class="aui-text-black">到货付款</span></div>
+		        	<div class="aui-font-size-13 aui-text-grayerBlue aui-padded-b-5">订单编号：<span class="aui-text-black">00000000000</span></div>
+		        	<div class="aui-font-size-13 aui-text-grayerBlue aui-padded-b-5">创建时间：<span class="aui-text-black">2012-9-9</span></div>
+		        	<div class="aui-font-size-13 aui-text-grayerBlue aui-padded-b-5">付款时间：<span class="aui-text-black">2012-9-9</span></div>
+		        </div>
+		    </div>
+				
+		</div><!--外层结束-->
+		
+		
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>

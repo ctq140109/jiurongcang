@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>搜索</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.shanchu img{width: 1.1rem;}
+		.item{display: inline-block;border-radius: 1rem;padding: 0.2rem 0.75rem;border: solid .5px #f2f2f2; }
+
+		.hot-item{border: solid .5px #f32c52;background-color: #fff !important;color: #f32c52;}
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content aui-border-bgT" id="app" v-cloak>
+			<div class="aui-bg-white aui-border-bgB aui-padded-12"  v-if="list">
+				<div class="aui-margin-b-15 aui-margin-t-5">
+					<span class="fweight-5 aui-font-size-15">最近搜索</span>
+					<div class="aui-pull-right shanchu" @click='del_history()' > <img src="../../image/shanchu.png"></div>
+				</div>
+				<div class="">
+						<template v-for="(vo,index) in list">
+							<span @click="serch(index)" class="item aui-bg-grayer aui-margin-r-10 aui-margin-b-12 aui-font-size-13">{{vo.name}}</span>
+					</template>
+				</div>
+			</div>
+
+			<!-- <div class="aui-bg-white aui-border-bgB aui-padded-12">
+				<div class="aui-margin-b-15 aui-margin-t-5">
+					<span class="fweight-5 aui-font-size-15">热门搜索</span>
+				</div>
+				<div class="">
+					<span class="item aui-bg-grayer aui-margin-r-10 aui-margin-b-12 aui-font-size-13">羽绒服</span>
+					<span class="item aui-bg-grayer aui-margin-r-10 aui-margin-b-12 aui-font-size-13">保温杯</span>
+					<span class="item aui-bg-grayer aui-margin-r-10 aui-margin-b-12 aui-font-size-13">针织百搭衫</span>
+					<span class="item aui-bg-grayer aui-margin-r-10 aui-margin-b-12 aui-font-size-13">取暖暖宝宝</span>
+					<span class="item aui-bg-grayer aui-margin-r-10 aui-margin-b-12 aui-font-size-13">保温杯</span>
+					<span class="item aui-bg-grayer aui-margin-r-10 aui-margin-b-12 aui-font-size-13">针织百搭衫</span>
+				</div>
+			</div> -->
+
+
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+			el:"#app",
+			data:{
+				list:[]
+			},
+			methods:{
+				serch:function(idx){
+					api.sendEvent({
+              name:'history_search_init',
+              extra:{
+              	keywords:vm.list[idx].name
+              }
+            });
+				},
+				del_history:function(){
+					$api.rmStorage("history");
+					vm.list = []
+				},
+			}
+		})
+
+		apiready = function(){
+			vm.list = $api.getStorage("history");
+			console.log(api.winHeight);
+		}
+</script>

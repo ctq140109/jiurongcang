@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>我的收藏</title>
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.mui-table-view:before{ height:0}
+		.mui-table-view:after{ height:0}
+		.mui-table-view-cell{padding: 0 !important;}
+		.aui-list-item-media{width: 5.25rem !important;height: 5.5rem;overflow: hidden;}
+		.aui-list-item-media img{width: 100%;height: 100%;object-fit: cover;}
+		.mui-table-view-cell:after{height: 0;}
+		.mui-table-view-cell>.mui-slider-left>.mui-btn, .mui-table-view-cell>.mui-slider-right>.mui-btn{padding: 0 20px!important;}
+
+		.aui-ellipsis-2{height: 44px;line-height: 22px;}
+
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content aui-border-bgT" id="app" v-cloak v-if="is_load">
+			<div class="mui-content" >
+				<div class='aui-list aui-media-list'>
+					<ul class="mui-table-view">
+						<template v-for="(vo,index) in list">
+						<li class="mui-table-view-cell aui-padded-l-0 aui-border-bgB" >
+							<div class="mui-slider-right mui-disabled" @click="cancel(vo.id,index)" >
+								<a class="mui-btn aui-bg-grayer"> <img src="../../image/shanchu5.png"/ style="width: 2.2rem;"> </a>
+							</div>
+							<div class="mui-slider-handle"  @click="openDetail(vo.id)">
+								<div class="aui-list-item aui-padded-l-12 aui-padded-t-5 aui-padded-b-5">
+									<div class="aui-media-list-item-inner ">
+										<div class="aui-list-item-media">
+											<img :src="vo.thumb"></img>
+										</div>
+										<div class="aui-list-item-inner">
+											<div class="aui-list-item-text aui-text-blacker aui-font-size-13 aui-ellipsis-2">{{vo.name}}</div>
+											<div class="aui-list-item-text aui-text-grayerBlue aui-font-size-12">{{vo.coll_count}}人收藏 </div>
+											<div class="aui-list-item-text aui-padded-t-5 ">
+												<div class="aui-text-danger aui-font-size-15">
+													<span v-if="vo.market_price">￥{{vo.market_price}}</span>
+													<span class="aui-text-brown aui-font-size-13 aui-margin-l-5">送{{vo.return_score}}积分</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+						</template>
+					</ul>
+				</div>
+
+				<div class="aui-col-xs-12 aui-text-center" id="bot" v-if="list.length>10">
+						 <span class="aui-font-size-12 aui-text-gray">正在加载</span>
+						 <img src="../../image/uploading.gif" style="width:0.7rem;height:0.7rem;vertical-align:middle"/>
+				</div>
+				<div class="nodata aui-bg-grayer" v-show="totalRow==0&&is_load==1">
+      		<img src="../../icon/nodata.png" style="width: 12.5rem;height: 12.5rem;margin: 5rem auto 0;display: block !important;"/>
+      	</div>
+				<div class="nodata aui-bg-grayer" v-show="totalRow==0&&is_load==2">
+      		<img src="../../icon/nodata.png" style="width: 12.5rem;height: 12.5rem;margin: 5rem auto 0;display: block !important;"/>
+      	</div>
+
+
+			</div>
+
+
+		</div>
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+
+var vm = new 	Vue({
+		el:'#app',
+		data:{
+			token:'',
+			pageNumber:1,
+			pageSize:10,
+			totalRow:'',
+			area_id:'',
+			list:[],
+			type:2,
+			is_load:''
+		},
+		methods:{
+				init:function(){
+						if(!vm.is_load){
+							api.showProgress({
+									style: 'default',
+									animationType: 'fade',
+									title: '加载中',
+							});
+						}
+						api.ajax({
+								url: my_coll_url,
+								method: 'get',
+								timeout:10,
+								dataType:'json',
+								returnAll:false,
+								data: {
+										values: {
+												token:vm.token,
+												agency_manage_id:vm.area_id,
+												pageNo:vm.pageNumber,
+												pageSize:vm.pageSize
+										}
+								}
+						},function(ret, err){
+								if (ret) {
+										console.log( JSON.stringify( ret ) );
+										vm.is_load = 1;
+										api.hideProgress();
+										vm.list = ret.data.page.list;
+										vm.totalRow = ret.data.page.totalRow;
+
+								} else {
+										vm.is_load = 2;
+											console.log( JSON.stringify( err ) );
+										api.hideProgress();
+										api.toast({
+												msg: '服务器请求错误！',
+												duration: 2000,
+												location: 'middle'
+										});
+
+								}
+						});
+
+				},
+				openDetail:function(id){
+						api.openWin({
+								name: 'shopDetail_win',
+								url: 'widget://html/shop/shopDetail_win.html',
+								pageParam: {
+										id:id
+								}
+						});
+
+				},
+				cancel:function(id,idx){
+						api.ajax({
+								url: coll_del_url,
+								method: 'get',
+								timeout:10,
+								reutrnAll:false,
+								data: {
+										values: {
+												token:vm.token,
+												id:id
+										}
+								}
+						},function(ret, err){
+								if (ret) {
+										if(ret.status==1){
+												vm.list.splice(idx,1);
+										}else{
+												api.toast({
+														msg: ret.msg,
+														duration: 2000,
+														location: 'middle'
+												});
+
+										}
+								} else {
+										console.log(JSON.stringify(err))
+										api.toast({
+												msg: '请求失败',
+												duration: 2000,
+												location: 'middle'
+										});
+
+								}
+						});
+
+				},
+		}
+})
+apiready = function(){
+		vm.token = $api.getStorage('token');
+		vm.area_id=$api.getStorage('area_id')
+		vm.init();
+
+
+		//上啦加载
+		api.addEventListener({
+			 name:'scrolltobottom',
+			 extra:{
+				 threshold:300
+			 }
+		},function(ret,err){
+			if(vm.totalRow == vm.list.length){
+					if(vm.totalRow>10){
+								$api.html($api.byId('bot'),"<div style='background-color:#f5f5f5;color:#666;' class='aui-font-size-12 aui-padded-t-10 aui-padded-b-10'>到底了~</div>")
+							}
+					return;
+				}
+			vm.pageNumber++
+			vm.init();
+		 });
+
+
+}
+
+</script>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>物流通知</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.aui-list-item{ padding-left:0 !important; }
+		.aui-list-item-media{width: 4rem !important;height: 4rem;border-radius: 0.25rem;overflow: hidden;}
+		.aui-list-item-media img{width: 100%;height: 100%;object-fit: cover;}
+		.aui-media-list-item-inner{border-radius: 0.25rem;overflow: hidden;}
+		.aui-dot{position: inherit !important;}
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="" id="app" v-cloak v-if="is_load">
+			<div class="aui-list aui-media-list aui-padded-t-0">
+					<template v-for="(v,index) in list">
+		        <div class="aui-list-item aui-list-item-middle  " @click="det(v.t_id,v.status)">
+		        	<div class=" aui-padded-12 aui-border-bgT aui-bg-white">
+			        	<div class="aui-padded-b-12">
+							<span class="fweight-5">{{v.order_state}} </span>
+							<div class="aui-pull-right">
+								<span class="aui-text-grayerBlue aui-font-size-13">{{v.create_time}}</span>
+								<!-- <span div class="aui-dot aui-bg-danger"></span> -->
+							</div>
+						</div>
+	            <div class="aui-media-list-item-inner aui-bg-grayer">
+	                <div class="aui-list-item-media aui-padded-0 aui-margin-r-12">
+	                	<img :src="v.good_thumb">
+	                </div>
+	                <div class="aui-list-item-inner">
+	                    <div class="aui-list-item-text">
+	                        <div class="aui-list-item-title aui-text-blacker aui-font-size-14 aui-ellipsis-2">{{v.good_name}}</div>
+	                    </div>
+	                    <!-- <div class="aui-list-item-text aui-margin-t-5 aui-text-grayerBlue aui-font-size-12">750ml*6整箱装</div> -->
+	                    <div class="aui-list-item-text aui-margin-t-5 aui-text-blacker aui-font-size-12">订单编号：{{v.order_sn}}</div>
+	                </div>
+	            </div>
+			      </div>
+		      </div>
+				</template>
+			</div>
+			<div class="nodata aui-text-center" v-if="totalRow==0">
+        	<img src="../../image/nodata.png" style=""/>
+        </div>
+			<div class="aui-col-xs-12 aui-text-center aui-margin-t-5" id="bot" v-if="totalRow>10">
+				<img src="../../image/uploading.gif" style="width: 1rem;height: 1rem;display: inline-block"/>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			token:'',
+			list:[],
+			pageNo:1,
+			is_load:'',
+			pageSize:10,
+			totalRow:0
+		},
+		methods:{
+			det:function (id,status) {
+				if(status==0){
+						api.openWin({
+								name: 'daifukuan_win',
+								url: 'widget://html/order/daifukuan_win.html',
+								pageParam: {
+										id:id
+								}
+						});
+				}else if(status==1){
+					api.openWin({
+							name: 'daifahuo_win',
+							url: 'widget://html/order/daifahuo_win.html',
+							pageParam: {
+									id:id
+							}
+					});
+				}else if(status==2){
+					api.openWin({
+							name: 'daishouhuo_win',
+							url: 'widget://html/order/daishouhuo_win.html',
+							pageParam: {
+									id:id
+							}
+					});
+				}else if(status==3){
+					api.openWin({
+							name: 'wancheng_win',
+							url: 'widget://html/order/wancheng_win.html',
+							pageParam: {
+									id:id
+							}
+					});
+				}else if(status==7){
+					api.openWin({
+							name: 'yiquxiao_win',
+							url: 'widget://html/order/yiquxiao_win.html',
+							pageParam: {
+									id:id
+							}
+					});
+				}else if(status==8){
+					api.openWin({
+							name: 'guanbi_win',
+							url: 'widget://html/order/guanbi_win.html',
+							pageParam: {
+									id:id
+							}
+					});
+				}else if(status==4 || status==5 || status==6){
+					api.openWin({
+							name: 'tuikuan_win',
+							url: 'widget://html/order/tuikuan_win.html',
+							pageParam: {
+									id:id,
+									status:status
+							}
+					});
+				}
+			},
+			init:function(){
+				api.showProgress();
+
+				api.ajax({
+          url:message_list_url,
+          method:'get',
+          timeout:30,
+          dataType:'json',
+          returnAll:false,
+          data:{
+          	values:{
+          		token:vm.token,
+          		pageNo:vm.pageNo,
+          		pageSize:vm.pageSize,
+							type:3
+          	}
+          }
+        },function(ret,err){
+        	if(ret){
+						api.hideProgress();
+
+						if(ret.status==1){
+							vm.is_load=1;
+
+								console.log(JSON.stringify(ret));
+
+								vm.list = vm.list.concat(ret.data.page.list)
+
+								vm.totalRow = ret.data.page.totalRow;
+
+		        		api.sendEvent({
+		              name:'is_read_init'
+		            });
+						}
+        	}else{
+        		console.log(JSON.stringify(err))
+        	}
+        });
+			}
+		}
+	})
+
+	apiready = function(){
+
+		vm.token = $api.getStorage('token')
+
+		vm.init();
+
+		 api.addEventListener({
+	        name:'scrolltobottom',
+	        extra:{
+        		threshold:300
+        	}
+        },function(ret,err){
+
+      	if(vm.totalRow == vm.list.length){
+					if(vm.totalRow>10){
+      			$api.byId('bot').style.display='block'
+      			$api.byId('bot').innerHTML = "<div style='background-color:#f5f5f5;color:#666;' class='aui-font-size-12 aui-padded-10'>到底啦！</div>";
+
+      		}
+				 return;
+			}
+				vm.pageNo++
+      	vm.init();
+      });
+	}
+</script>

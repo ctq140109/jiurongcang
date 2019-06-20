@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>详情</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <style>
+    </style>
+</head>
+<body>
+	<div id="app" v-cloak>
+		<div calss="aui-font-size-20 aui-list-item-title aui-padded-10">{{list.title}}</div>
+		<div class="aui-content aui-padded-10">
+
+			<div id="content" class=" " v-html="list.content"></div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+
+
+<script>
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			list:'',
+			token:''
+		},
+		methods:{
+
+
+		}
+
+	})
+	apiready = function(){
+		vm.list=api.pageParam.list;
+		vm.token=$api.getStorage('token');
+
+
+	}
+</script>
+</html>

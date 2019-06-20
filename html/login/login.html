@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>账号密码登录</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css" />
+	</head>
+	<style>
+
+	</style>
+	<div class="" >
+		<div  id="app" v-cloak onclick="closeKeyborder()">
+			<div class=" login-bg-lay" style="z-index:10"></div>
+			<div  onclick="closeKeyborder()":style="{ 'backgroundImage': 'url(' + background_image + ')'}" style="background-size:100%;position: absolute;width: 100%;height: 100%;z-index: 9;"></div>
+			<div style="position: relative;z-index: 99;" >
+				<header class="aui-bar aui-bar-nav aui-bar-light head"  style="background-color:initial !important;padding-top:1.5rem">
+				    <a class="aui-pull-left aui-btn" onclick="closeWin()">
+				        <span class="aui-iconfont aui-icon-close" style="font-size: 1.1rem;color: #808993 !important;"></span>
+				    </a>
+				    <div class="aui-title aui-text-white">账号登录</div>
+				     <!-- <a class="aui-pull-right" onclick="closeWin()">
+				        <span class="aui-text-decoration">注册</span>
+				    </a> -->
+				</header>
+				<div class="dl aui-font-size-15">
+					<div class="logo">
+						<img src="../../image/logo.png" />
+					</div>
+					<div class="inpt aui-margin-t-10">
+						<input class="aui-text-white" placeholder="" readOnly name="" id="" value="" />
+						<!-- <div class="clos"><img src="../../image/close.png"/></div> -->
+					</div>
+					<div class="inpt inpt-yzm aui-margin-t-10">
+						<input class="aui-text-white" placeholder="" readOnly name="" id="" value="" />
+					</div>
+					<div class="aui-text-right aui-margin-t-12"><span class="aui-text-grayBlue aui-font-size-13 aui-text-decoration" @click="code_load()">使用手机验证码登录</span> </div>
+					<div class="aui-btn aui-btn-block aui-btn-blue aui-text-center aui-text-white aui-font-size-15" style="margin-top: 1.5rem !important;"  @click="login()">登 录</div>
+					<div class="aui-text-center aui-margin-t-12"><span class="aui-text-grayBlue aui-font-size-13 aui-text-decoration"  @click="forget()">忘记密码？</span> </div>
+				</div>
+
+
+				<footer class="dl-shengming" >
+					<div class="aui-text-center" >
+						<img src="../../image/weixin.png" style="width: 2.1rem;" v-if="is_open==0" @click="open_wx()">
+					</div>
+					<div class="aui-text-center aui-text-grayerBlue aui-text-center aui-font-size-12 aui-margin-t-15"><span @click="xy()">《服务条款》</span>和<span @click="ys()">《酒榕仓隐私政策》</span></div>
+				</footer>
+
+			</div>
+
+		</div>
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/jq.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var UIInput = null;
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			account:'',	//手机号
+			countDown:60,
+			validCode:'',
+			pass:'',	//验证吗
+			background_image:'',
+			mobile_res:/^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[0-9])\d{8}$/,
+			is_login:'',
+			is_open:0
+		},
+		methods:{
+			xy:function(){
+				api.openWin({
+					name: 'xy_win',
+					url: 'widget://html/login/xy_win.html',
+				});
+			},
+			ys:function(){
+				api.openWin({
+					name: 'ys_win',
+					url: 'widget://html/login/ys_win.html',
+				});
+			},
+			forget:function(){
+				api.openWin({
+					name: 'password',
+					url: 'widget://html/login/password.html',
+					rect: {
+						x:0,
+						y:15,
+						w:'auto',
+						h:api.winHeight
+					},
+					bgColor:"#fff",
+					animation:{
+						type:"movein",                //动画类型（详见动画类型常量）
+					  subType:"from_right",       //动画子类型（详见动画子类型常量）
+					  duration:300
+					}
+				});
+			},
+			is_opens:function(){
+				api.ajax({
+				    url: is_open_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+				    method: 'post',
+				    data: {
+				        values: {
+				            token: vm.token
+				        }
+				    }
+				},function(ret, err){
+				    if (ret) {
+							if(ret.status==1){
+								vm.is_open=ret.data.is_open
+							}
+				    }
+				});
+				api.ajax({
+				    url: background_image_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+				    method: 'post',
+				    data: {
+				        values: {
+				            token: vm.token
+				        }
+				    }
+				},function(ret, err){
+				    if (ret) {
+							if(ret.status==1){
+								vm.background_image=ret.data.background_image
+							}
+				    }
+				});
+			},
+			code_load:function(){
+				api.openWin({
+					name: 'passwordLogin',
+					url: 'widget://html/login/passwordLogin.html',
+					rect: {
+						x:0,
+						y:0,
+						w:'auto',
+						h:api.winHeight
+					},
+					pageParam:{
+						is_login:1
+					},
+					animation:{
+						type:"push",                //动画类型（详见动画类型常量）
+						subType:"from_right",       //动画子类型（详见动画子类型常量）
+						duration:300
+					},
+					bgColor:"#fff",
+					bounces:false,
+				});
+				setTimeout(function(){
+					api.closeWin();
+				},500)
+			},
+			login:function(){
+				if(vm.account==''){
+					api.toast({
+            msg:'请输入手机号',
+            duration:2000,
+            location:'middle'
+          });
+          return;
+				}
+				if(!vm.mobile_res.test(vm.account)){
+						api.toast({
+              msg:'请输入正确的手机号',
+              duration:2000,
+              location:'middle'
+            });
+          return;
+				}
+				if(vm.pass==""){
+					api.toast({
+            msg:'请输入密码',
+            duration:2000,
+            location:'middle'
+          });
+          return;
+				}
+				api.ajax({
+          url:pass_account_url,
+          method:'post',
+          timeout:30,
+          dataType:'json',
+          returnAll:false,
+          data:{
+          	values:{
+          		phone:vm.account,
+          		password:vm.pass
+          	}
+          }
+        },function(ret,err){
+        	if(ret){
+        		if(ret.status==1){
+        			 api.toast({
+                  msg:ret.msg,
+                  duration:2000,
+                  location:'middle'
+                });
+								$api.setStorage('token',ret.data.token);
+								api.sendEvent({
+									name:'reshuf'
+								});
+								api.sendEvent({
+										name: 'login_init'
+								});
+								 api.closeToWin({
+									 name: 'root'
+								 });
+
+        		}else{
+        			api.toast({
+                  msg:ret.msg,
+                  duration:2000,
+                  location:'middle'
+                });
+        		}
+        	}else{
+        		console.log(JSON.stringify(err))
+        	}
+        });
+			},
+
+			open_wx:function(){
+
+				api.showProgress();
+				var wx = api.require('wx');
+				wx.auth({
+					apiKey:'wx28ecf104aaf888d2',
+					scope:'snsapi_userinfo'
+				},function(ret, err) {
+					console.log(JSON.stringify(ret));
+				    if (ret.status) {
+				        wx.getToken({//获取
+				        apiKey:'wx28ecf104aaf888d2',
+				        apiSecret:'2b8fb997ecc50de5f4fe0055c09517e6',
+						    code: ret.code
+						}, function(ret, err) {
+						    if (ret.status) {
+						       wx.getUserInfo({//获取微信用户信息
+								    accessToken: ret.accessToken,
+								    openId: ret.openId
+								}, function(res, err) {
+									console.log(JSON.stringify(res));
+
+								    if (ret.status) {
+											if(res.sex==0){
+												var sex=2
+											}else{
+												var sex=1
+											}
+								      api.hideProgress();
+								        api.ajax({
+					                url:selByOpenId_url,
+					                method:'get',
+					                timeout:30,
+					                dataType:'json',
+					                returnAll:false,
+					                data:{
+					                	values:{
+					                		openId:res.openid,
+															portrait:res.headimgurl,
+															sex:sex,
+															name:res.nickname
+					                	}
+					                }
+				                },function(ret,err){
+													console.log(JSON.stringify(ret));
+				                	if(ret){
+				                		if(ret.code==1){
+				                			api.toast({
+			                            msg:'登录成功',
+			                            duration:2000,
+			                            location:'middle'
+		                            });
+																$api.setStorage("token",ret.data.ordinaryUser.token);
+				                				api.sendEvent({
+			                            name:'reshuf'
+		                            });
+																api.sendEvent({
+																    name: 'login_init'
+																});
+				                				setTimeout(function(){
+				                				api.closeWin();
+				                			},500)
+				                		}else if(ret.code==3){
+															api.openWin({
+                                  name: 'bindweixin_win',
+                                  url: 'widget://html/login/bindweixin_win.html',
+                                  pageParam:{
+                                  	data:res
+                                  }
+                                });
+				                		}else{
+															api.toast({
+			                            msg:ret.msg,
+			                            duration:2000,
+			                            location:'middle'
+		                            });
+				                		}
+				                	}
+				                });
+
+
+								    }
+								});
+						    }
+						});
+				    } else {
+				        if(err.code==3){
+				        	api.toast({
+                      msg:'当前设备未安装微信客户端',
+                      duration:2000,
+                      location:'middle'
+                    });
+				        }
+				    }
+				});
+			}
+		}
+	})
+
+	apiready = function(){
+		api.addEventListener({
+		    name: 'is_login'
+		}, function(ret, err){
+		    if( ret ){
+		         vm.is_login= ret.value.is_login;
+		    }
+		});
+		vm.is_opens();
+		vm.is_login=api.pageParam.is_login
+		resize();
+		UIInput = api.require('UIInput');
+		account();password();
+
+	}
+
+	//获取输入框距离顶部的距离；
+
+
+	//获取li-input的高度
+	//登录框
+	function account(){
+			var y = $api.dom('.head').offsetHeight + $api.dom('.logo').offsetHeight+ $api.dom('.inpt').offsetHeight*2-10;
+			UIInput.open({
+			    rect: {
+			        x: 25,
+			        y: y,
+			        w: api.winWidth-150,
+			        h: 35
+			    },
+			    styles: {
+			        bgColor: "rgba(0,0,0,0)",
+			        size: 16,
+			        color: '#fff',
+			        placeholder: {
+			            color: '#ccc'
+			        }
+			    },
+			    isCenterVertical:true,
+			    autoFocus: false,
+			    maxRows: 1,
+			    placeholder: '请输入手机号',
+			    keyboardType: 'number',
+			    fixedOn: api.frameName,
+			    fixed:false,
+			}, function(ret) {
+					if(api.systemType=="ios"){
+						var id = 1;
+					}else{
+						var id = 0;
+					}
+			    if (ret.eventType == 'change') {
+		    		UIInput.value({
+			    		id:id,
+			    	},function(ret) {
+					    if (ret) {
+					        vm.account = ret.msg
+					    }
+						});
+
+			    }
+			});
+	}
+	//密码框
+	function password(){
+		var y = $api.dom('.head').offsetHeight + $api.dom('.logo').offsetHeight+ $api.dom('.inpt').offsetHeight*2-10;
+		var iHeights = y+$api.dom('.inpt').offsetHeight+10;
+			UIInput.open({
+			    rect: {
+			        x: 25,
+			        y: iHeights,
+			        w: api.winWidth-100,
+			        h: 35
+			    },
+			    styles: {
+			        bgColor: "rgba(0,0,0,0)",
+			        size: 16,
+			        color: '#fff',
+			        placeholder: {
+			            color: '#ccc'
+			        }
+			    },
+			    isCenterVertical:true,
+			    autoFocus: false,
+			    maxRows: 1,
+			    placeholder: '请输入密码',
+			    keyboardType: 'default',
+					inputType:'password',
+			    fixedOn: api.frameName,
+			    fixed:false,
+			}, function(ret) {
+			    if (ret.eventType == 'change') {
+			    		UIInput.value({
+				    		id:ret.id,
+				    	},function(ret) {
+						    if (ret) {
+						        vm.pass = ret.msg
+						    }
+						});
+			    }
+			});
+	}
+	function close_frame(){
+		api.closeToWin({
+			name: 'root'
+		});
+
+	}
+	function closeKeyborder(){
+			UIInput = api.require('UIInput');
+				UIInput.closeKeyboard({
+						id:0
+				});
+				UIInput.closeKeyboard({
+						id:1
+				});
+				UIInput.closeKeyboard({
+						id:2
+				});
+				UIInput.closeKeyboard({
+						id:3
+				});
+		}
+</script>

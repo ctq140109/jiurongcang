@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	    <title>收货地址</title>
+	   	<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+
+	</style>
+	<body>
+		<header class="aui-bar aui-bar-nav aui-bar-light aui-bg-white">
+	        <a class="aui-btn aui-btn-warning aui-pull-left" onclick="closeWin()">
+	            <span class="aui-iconfont aui-icon-left aui-text-black"></span>
+	        </a>
+	        <div class="aui-title aui-font-size-17 aui-text-black">收货地址</div>
+	   </header>
+
+	   <footer class="aui-bar aui-bar-tab" id="footer" onclick="check_login('personal','addressAdd_win')">
+			<div class="aui-btn aui-btn-block aui-btn-blue" style="border-radius: 0 !important;">添加收货地址</div>
+	   </footer>
+
+
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/vue.js"></script>
+	<script type="text/javascript" src="../../script/common.js"></script>
+	<script type="text/javascript">
+		apiready = function(){
+			 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+		        api.openFrame({
+		            name: 'address_frm',
+		            url: 'widget://html/personal/address_frm.html',
+		            rect: {
+		                x: 0,
+		                y: $api.dom('header').offsetHeight,
+		                w: 'auto',
+		                h: api.winHeight -$api.dom('header').offsetHeight- $api.dom('footer').offsetHeight
+		            },
+		            bounces: false,
+		            pageParam: {
+		                is_edit: api.pageParam.is_edit,
+										is_change:api.pageParam.is_change,
+		                list:api.pageParam.list
+		            }
+		        });
+		};
+	</script>
+</html>

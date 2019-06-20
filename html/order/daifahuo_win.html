@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>订单详情</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+    	footer .aui-btn{border-radius: 1.3rem;margin-left: .5rem; margin-top: .45rem;width: 4rem; }
+	</style>
+
+	<body>
+
+
+	    <footer class="aui-bar aui-bar-tab aui-border-t" id="footer">
+        	<div class="aui-text-right aui-padded-r-10">
+        		<div class="aui-btn  aui-btn-outlined "  onclick="server()">联系客服</div>
+	        	<div class="aui-btn  aui-btn-outlined " onclick="tk()">申请退款</div>
+        	</div>
+        </footer>
+
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	apiready = function(){
+	    api.openFrame({
+	        name: 'daifahuo_frm',
+	        url: 'widget://html/order/daifahuo_frm.html',
+	        rect: {
+	            x: 0,
+	            y: 0,
+	            w: 'auto',
+	            h: api.winHeight - $api.dom('footer').offsetHeight
+	        },
+	        bounces: true,
+	        pageParam: {
+	            id: api.pageParam.id
+	        }
+	    });
+	};
+	function tk() {
+		api.openWin({
+				name: 'tuikuan_chage_win',
+				url: 'widget://html/order/tuikuan_chage_win.html',
+				pageParam: {
+						id:api.pageParam.id
+				}
+		});
+	}
+</script>

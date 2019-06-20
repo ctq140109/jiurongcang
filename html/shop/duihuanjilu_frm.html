@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	    <title>兑换记录</title>
+	    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+	    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+	    <style type="text/css">
+	    	.aui-list-item-media{ width: 6.25rem !important;}
+	    </style>
+	</head>
+	<body class="aui-bg-white">
+		<div class="aui-content" id="app" v-cloak>
+			<ul class="aui-list aui-media-list">
+				<template v-for="(vo,index) in list">
+				<li class="aui-list-item aui-border-b aui-padded-t-10 aui-padded-b-10" @click="det(vo.id)">
+					<div class="aui-media-list-item-inner">
+						<div class="aui-list-item-media">
+							<img :src="vo.good_thumb" style="height: 5.5rem;"/>
+						</div>
+						<div class="aui-list-item-inner">
+							<div class="aui-list-item-text aui-font-size-15 aui-text-black aui-margin-t-5 aui-ellipsis-2">
+								{{vo.good_name}}
+							</div>
+							<div class="aui-list-item-text aui-font-size-15 aui-text-danger aui-margin-t-5">
+								{{vo.score}}积分
+							</div>
+							<div class="aui-list-item-text aui-font-size-13 aui-text-grayer aui-margin-t-5" v-if="status==3">
+								拒绝时间：{{vo.exchange_time}}
+							</div>
+							<div class="aui-list-item-text aui-font-size-13 aui-text-grayer aui-margin-t-5" v-else>
+								兑换时间：{{vo.exchange_time}}
+							</div>
+						</div>
+					</div>
+				</li>
+				</template>
+			</ul>
+			<div class="nodata" v-if="totalRow==0">
+        	<img src="../../image/nodata.png" style=""/>
+      </div>
+		</div>
+	</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			token:'',
+			status:1,
+			pageNo:'',
+			pageSize:10,
+			totalRow:'',
+			list:[]
+		},
+		methods:{
+			det:function(id) {
+				api.openWin({
+						name: 'jifenDuihuan_win',
+						url: 'widget://html/shop/jifenDuihuan_win.html',
+						pageParam: {
+							id:id
+						}
+				});
+			},
+			init:function(){
+				api.showProgress();
+
+				api.ajax({
+          url:exchange_logs_url,
+          method:'get',
+          timeout:30,
+          dataType:'json',
+          returnAll:false,
+          data:{
+          	values:{
+          		token:vm.token,
+							pageSize:vm.pageSize,
+							pageNo:vm.pageNo,
+          		status:vm.status
+          	}
+          }
+        },function(ret,err){
+        	if(ret){
+						api.hideProgress();
+						console.log(JSON.stringify(ret));
+        		if(ret.status){
+							vm.list = vm.list.concat(ret.data.page.list)
+							vm.totalRow = ret.data.page.totalRow;
+						}else{
+							api.toast({
+							    msg: ret.msg,
+							    duration: 2000,
+							    location: 'bottom'
+							});
+
+						}
+
+
+        	}
+        });
+			}
+		}
+	})
+
+	apiready = function(){
+		vm.token = $api.getStorage("token");
+
+		vm.init();
+
+		api.addEventListener({
+      name:'duihuanjilu_init'
+    },function(ret,err){
+
+			if(ret){
+
+				vm.list=[]
+
+				vm.token = $api.getStorage("token");
+
+				vm.status = ret.value.status;
+
+				vm.init();
+			}
+
+    });
+		api.setRefreshHeaderInfo({
+				 visible: true,
+				 loadingImg: 'widget://image/refresh.png',
+					bgColor: '#f6f6f6',
+				 textColor: '#999',
+				 textDown: '下拉刷新...',
+				 textUp: '松开刷新...',
+				 showTime: true
+		 }, function (ret, err) {
+			 if(ret){
+				 vm.list = [];
+				 vm.pageNo = 1;
+				 vm.init();
+				 setTimeout("api.refreshHeaderLoadDone()", '500');
+			 }
+		 });
+		 //上啦加载
+			api.addEventListener({
+					 name:'scrolltobottom',
+					 extra:{
+						 threshold:300
+					 }
+				 },function(ret,err){
+					 if(vm.totalRow == vm.list.length){
+
+				 return;
+			 }
+			 vm.pageNo++;
+			 vm.init();
+		 });
+	}
+</script>
+</html>

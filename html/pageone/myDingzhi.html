@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>我要定制</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/animate.css" />
+	</head>
+	<style>
+		.aui-content{ position:fixed;bottom: 0;width: 100%;}
+		.hide{ width:100%;height:22rem;}
+		.aui-btn{border-radius: 1.5rem;}
+		.aui-list-item-label{color: #333 !important;width: 4.7rem !important;}
+	</style>
+
+	<body  style="background-color: rgba(0,0,0,0.3)">
+		<div class="hide" onclick="hide()"></div>
+		<div class="aui-content  animated slideInUp" id="app" v-cloak>
+			<div class="aui-bg-white aui-padded-12 inner ">
+				<div class="aui-text-center aui-font-weight dz" style="padding-top: 1rem;padding-bottom: 1rem;">
+					我要定制
+					<div style="position: absolute;top: 0.5rem;right: 0.6rem;" onclick="hide()">
+						<img style="width: 0.9rem;" src="../../image/close2.png"/>
+					</div>
+				</div>
+				<div class="">
+					<ul class="aui-list aui-form-list">
+				        <li class="aui-list-item aui-padded-l-0 aui-border-b">
+				            <div class="aui-list-item-inner aui-padded-t-5 aui-padded-b-5">
+				                <div class="aui-list-item-label aui-font-size-15">真实姓名：</div>
+				                <div class="aui-list-item-input aui-font-size-14">
+				                    <input type="text" placeholder="请填写真实姓名" v-model="username" id="username">
+				                </div>
+				            </div>
+				        </li>
+				        <li class="aui-list-item aui-padded-l-0 aui-border-b">
+				            <div class="aui-list-item-inner aui-padded-t-5 aui-padded-b-5">
+				                <div class="aui-list-item-label aui-font-size-15">联系电话：</div>
+				                <div class="aui-list-item-input aui-font-size-14">
+				                    <input type="text" placeholder="请填写有效联系方式"  v-model="mobile" id="mobile">
+				                </div>
+				            </div>
+				        </li>
+				        <li class="aui-list-item aui-padded-l-0 aui-border-b">
+				            <div class="aui-list-item-inner aui-padded-t-5 aui-padded-b-5">
+				                <div class="aui-list-item-label aui-font-size-15">门店名称：</div>
+				                <div class="aui-list-item-input aui-font-size-14">
+				                    <input type="text" placeholder="请填写真实门店名称"  v-model="shop_address" id="shop_address">
+				                </div>
+				            </div>
+				        </li>
+				        <li class="aui-list-item aui-padded-l-0 aui-border-b">
+				            <div class="aui-list-item-inner aui-padded-t-5 aui-padded-b-5">
+				                <div class="aui-list-item-label aui-font-size-15">门店地址：</div>
+				                <div class="aui-list-item-input aui-font-size-14">
+				                    <input type="text" placeholder="请填写正确的门店信息" value="" v-model="address_info" id="address_info">
+				                </div>
+				            </div>
+				        </li>
+				    </ul>
+				</div>
+				<div style="padding:2rem 0.6rem 1.15rem;" @click="sub()">
+					<div class="aui-btn aui-btn-block aui-btn-blue">提交申请</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript">
+
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			token:'',
+			username:'',
+			area_id:'',
+			shop_address:'',
+			address_info:'',
+			mobile:'',
+			id:'',
+		},
+		methods:{
+				sub:function() {
+					api.ajax({   //积分  热门兑换
+					    url: customized_submit_url,
+							dataType:'json',
+							returnAll:false,
+							timeout:30,
+					    method: 'post',
+					    data: {
+					        values: {
+					            token: vm.token,
+											real_name:vm.username,
+											agency_manage_id:vm.area_id,
+											phone:vm.mobile,
+											store_name:vm.shop_address,
+											store_address:vm.address_info
+					        }
+					    }
+						},function(ret, err){
+					    if (ret) {
+									console.log(JSON.stringify(ret));
+									if(ret.status==1){
+										api.toast({
+										    msg: ret.msg,
+										    duration: 2000,
+										    location: 'bottom'
+										});
+										setTimeout(function() {
+											api.closeFrame();
+
+										},300)
+									}else{
+										api.toast({
+										    msg: ret.msg,
+										    duration: 2000,
+										    location: 'bottom'
+										});
+										setTimeout(function() {
+											api.closeFrame();
+
+										},300)
+									}
+					    }else{
+								api.hideProgress();
+								if(err.statusCode==500){
+									api.toast({
+											msg: '服务器请求错误！',
+											duration: 2000,
+											location: 'middle'
+									});
+								}else{
+										api.toast({
+												msg: '请求超时，请检查网络',
+												duration: 2000,
+												location: 'middle'
+										});
+								}
+							}
+					});
+				}
+		}
+	})
+
+	apiready = function(){
+
+		vm.token = $api.getStorage("token");
+
+		vm.area_id=$api.getStorage('area_id');
+
+		vm.id = api.pageParam.id;
+
+		UIInput = api.require('UIInput');
+		//添加地址信息框内容
+		//user(); mobile();shop_address();addressinfo();
+	};
+
+	function hide(){
+
+		$api.addCls($api.dom('.aui-content'), 'slideOutDown');
+		$api.removeCls($api.dom('.aui-content'), 'slideInUp');
+
+		setTimeout(function(){
+
+			api.closeFrame();
+		},300)
+	}
+	function username(){
+		if(api.systemType=='ios'){
+	    // 使用模块弹出键盘
+	    var softInput = api.require('softInputMgr');
+	    softInput.toggleKeyboard();
+	    // 将相应的输入框获取焦点
+
+	      document.getElementById("username").focus()
+	    }
+	}
+	function mobile(){
+		if(api.systemType=='ios'){
+	    // 使用模块弹出键盘
+	    var softInput = api.require('softInputMgr');
+	    softInput.toggleKeyboard();
+	    // 将相应的输入框获取焦点
+
+	      document.getElementById("mobile").focus()
+	    }
+	}
+	function shop_address(){
+		if(api.systemType=='ios'){
+	    // 使用模块弹出键盘
+	    var softInput = api.require('softInputMgr');
+	    softInput.toggleKeyboard();
+	    // 将相应的输入框获取焦点
+
+	      document.getElementById("shop_address").focus()
+	    }
+	}
+	function address_info(){
+		if(api.systemType=='ios'){
+	    // 使用模块弹出键盘
+	    var softInput = api.require('softInputMgr');
+	    softInput.toggleKeyboard();
+	    // 将相应的输入框获取焦点
+
+	      document.getElementById("address_info").focus()
+	    }
+	}
+	var iHeight = $api.dom('.dz').offsetHeight
+	function user(){
+
+			UIInput.open({
+					rect: {
+							x: 15,
+							y: iHeight,
+							w: api.winWidth-30,
+							h: 45
+					},
+					styles: {
+							bgColor: "rgba(0,0,0,0)",
+							size: 16,
+							color: '#000',
+							placeholder: {
+									color: '#ccc'
+							}
+					},
+					isCenterVertical:true,
+					autoFocus: false,
+					maxRows: 1,
+					placeholder: '请填写真实姓名',
+					inputType:'default',
+					fixedOn: api.frameName,
+					fixed:false,
+			}, function(ret) {
+					if (ret.eventType == 'change') {
+						UIInput.value({
+							id:ret.id,
+						},function(ret) {
+
+							if (ret) {
+									vm.username = ret.msg
+							}
+					});
+					}
+			});
+	}
+
+	function mobile(){
+			var y = $api.dom('li').offsetHeight*2;
+			UIInput.open({
+					rect: {
+							x: 15,
+							y: iHeight+y,
+							w: api.winWidth-30,
+							h: 45
+					},
+					styles: {
+							bgColor: "rgba(0,0,0,0)",
+							size: 16,
+							color: '#000',
+							placeholder: {
+									color: '#ccc'
+							}
+					},
+					isCenterVertical:true,
+					autoFocus: false,
+					maxRows: 1,
+					placeholder: '请填写有效联系方式',
+					keyboardType:'number',
+					inputType:'text',
+					fixedOn: api.frameName,
+					fixed:false,
+			}, function(ret) {
+					if (ret.eventType == 'change') {
+
+						UIInput.value({
+							id:ret.id,
+						},function(ret) {
+
+							if (ret) {
+									vm.mobile = ret.msg
+							}
+					});
+					}
+			});
+	}
+	function shop_address(){
+			var y = $api.dom('li').offsetHeight*3;
+			UIInput.open({
+					rect: {
+							x: 15,
+							y: iHeight+y,
+							w: api.winWidth-30,
+							h: 45
+					},
+					styles: {
+							bgColor: "rgba(0,0,0,0)",
+							size: 16,
+							color: '#000',
+							placeholder: {
+									color: '#ccc'
+							}
+					},
+					isCenterVertical:true,
+					autoFocus: false,
+					maxRows: 1,
+					placeholder: '请填写真实门店名称',
+					inputType:'text',
+					fixedOn: api.frameName,
+					fixed:false,
+			}, function(ret) {
+					if (ret.eventType == 'change') {
+						UIInput.value({
+							id:ret.id,
+						},function(ret) {
+
+							if (ret) {
+									vm.shop_address = ret.msg
+							}
+					});
+					}
+			});
+	}
+	function addressinfo(){
+			var y = $api.dom('li').offsetHeight*4;
+			UIInput.open({
+					rect: {
+							x: 15,
+							y: iHeight+y,
+							w: api.winWidth-30,
+							h: 45
+					},
+					styles: {
+							bgColor: "rgba(0,0,0,0)",
+							size: 16,
+							color: '#000',
+							placeholder: {
+									color: '#ccc'
+							}
+					},
+					isCenterVertical:true,
+					autoFocus: false,
+					maxRows: 1,
+					placeholder: '请填写正确的门店信息',
+					inputType:'text',
+					fixedOn: api.frameName,
+					fixed:false,
+			}, function(ret) {
+					if (ret.eventType == 'change') {
+						UIInput.value({
+							id:ret.id,
+						},function(ret) {
+
+							if (ret) {
+									vm.address_info = ret.msg
+							}
+					});
+					}
+			});
+	}
+</script>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>兑换详情</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css" />
+	</head>
+	<style type="text/css">
+    	footer .aui-btn{border-radius: 1.3rem;margin-left: .5rem; margin-top: .45rem;width: 4rem; }
+	</style>
+
+	<body>
+
+		<header class="aui-bar aui-bar-nav aui-bar-light aui-border-b" >
+		    <a class="aui-pull-left aui-btn" onclick="closeWin()">
+		        <span class="aui-iconfont aui-icon-left"></span>
+		    </a>
+		    <div class="aui-title">兑换详情</div>
+		</header>
+
+
+
+		<footer class="aui-bar aui-bar-tab aui-border-t" id="footer">
+    	<div class="aui-text-right aui-padded-r-10">
+    		<div class="aui-btn  aui-btn-outlined"  onclick="open_meiQia()">联系客服</div>
+    	</div>
+    </footer>
+
+
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	apiready = function(){
+		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+      api.openFrame({
+          name: 'jifenDuihuan_frm',
+          url: 'widget://html/shop/jifenDuihuan_frm.html',
+          rect: {
+              x: 0,
+              y: $api.dom('header').offsetHeight,
+              w: 'auto',
+              h: api.winHeight - $api.dom('header').offsetHeight - $api.dom('footer').offsetHeight
+          },
+          bounces: true,
+          pageParam: {
+              id: api.pageParam.id
+          }
+      });
+	};
+
+</script>

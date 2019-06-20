@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>订单详情</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+    	footer .aui-btn{border-radius: 1.3rem;margin-left: .5rem; margin-top: .45rem;width: 4rem; }
+    	.aui-text-blue{border:solid 1px #35adbe;}
+	</style>
+
+	<body>
+
+
+		<div id="app">
+	    <footer class="aui-bar aui-bar-tab aui-border-t" id="footer" v-if="height==1">
+      	<div class="aui-text-right aui-padded-r-10">
+      		<div class="aui-btn  aui-btn-outlined " onclick="qx_order()">取消订单</div>
+        	<div class="aui-btn aui-text-blue aui-bg-white" onclick="pay_ment()">付款</div>
+      	</div>
+      </footer>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			height:1
+		}
+	})
+	apiready = function(){
+		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+      api.openFrame({
+          name: 'daifukuan_frm',
+          url: 'widget://html/order/daifukuan_frm.html',
+          rect: {
+              x: 0,
+              y: 0,
+              w: 'auto',
+              h: api.winHeight  - $api.dom('footer').offsetHeight
+          },
+          bounces: true,
+          pageParam: {
+              id: api.pageParam.id,
+							idx:api.pageParam.idx
+          }
+      });
+			api.addEventListener({
+			    name: 'footer_height'
+			}, function(ret, err){
+			    if( ret ){
+			         vm.height=0
+			    }
+			});
+
+	};
+	function pay_ment(){
+		api.sendEvent({
+			name:'daifukuanDetail_payment_init'
+		});
+	}
+	function qx_order() {
+		api.sendEvent({
+			name:'quxiao'
+		});
+	}
+
+</script>

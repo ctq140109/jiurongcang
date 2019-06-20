@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>热销排行</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		.banner{height: 9rem;width: 100%;overflow: hidden;}
+		.banner img{width: 100%;height: 100%;object-fit: cover;}
+		.td{width: 0.5rem; vertical-align: middle; }
+		.sx{width: 0.8rem; vertical-align: middle;}
+		.aui-tab span{display: inline-block;height: 99%;}
+		.aui-active{border-bottom: none !important;}
+		.aui-active span{border-bottom:solid 2px #35adbe;color:#35adbe; font-weight: bold;}
+
+		.fixed{ position: fixed;width:100%;top:0;background-color:#fff;z-index:9999}
+	</style>
+	<body class="aui-bg-grayer">
+		<div  id="app" v-cloak v-if="is_load">
+		<div class="banner" v-if="banners_lists">
+
+		</div>
+		<!--筛选-->
+			<div class="aui-tab" id="tab" v-if="tag==1">
+		    <div class="aui-tab-item aui-text-grayBlue" :class="{' aui-active':idx==1}">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5" @click="rec()">
+		    		综合
+						<!-- <img class="td aui-margin-l-5" src="../../image/4.png"/> -->
+		    	</span>
+		    </div>
+		    <div class="aui-tab-item aui-text-grayBlue" :class="{' aui-active':idx==2}">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5" @click="sx()">
+		    		价格<img class="td aui-margin-l-10" src="../../image/0.png" v-if="price==0"/>
+								<img class="td aui-margin-l-10" src="../../image/1.png" v-if="price==2"/>
+								<img class="td aui-margin-l-10" src="../../image/2.png" v-if="price==1"/>
+		    	</span>
+		   	</div>
+		    <div class="aui-tab-item aui-text-grayBlue" :class="{' aui-active':idx==3}">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5" @click="sxs()">
+						销量 <img class="td aui-margin-l-10" src="../../image/0.png" v-if="sales==0"/>
+								<img class="td aui-margin-l-10" src="../../image/1.png" v-if="sales==2"/>
+								<img class="td aui-margin-l-10" src="../../image/2.png" v-if="sales==1"/>
+		    	</span>
+		    </div>
+		    <div class="aui-tab-item aui-text-grayBlue" @click="left()">
+		    	<span class="aui-font-size-15 aui-padded-l-5 aui-padded-r-5">
+		    		筛选 <img class="sx aui-margin-l-5" src="../../image/shaixuan.png"/>
+		    	</span>
+		    </div>
+		</div>
+
+		<div class="aui-row aui-padded-l-12 aui-padded-r-12 aui-border-bgT publis-list">
+
+				<template v-for="(v,index) in list">
+						<div class="aui-col-xs-6 aui-margin-b-10 aui-bg-white" @click="det(v.id)">
+							<div class="list-pic">
+								<img :src="v.thumb" />
+							</div>
+							<div class="list-text aui-padded-l-5 aui-padded-r-5" style="height:4rem">
+								<!-- <div class="jianjei aui-ellipsis-1 aui-font-size-13 aui-padded-t-10">{{v.name}}</div> -->
+								<div class="jianjei aui-ellipsis-2 aui-font-size-13 aui-padded-t-10">
+									<div class="aui-label aui-label-danger aui-label-outlined aui-font-size-10" v-if="v.full_reduction_tag==1">满赠</div>
+									<div class="aui-label aui-label-danger aui-label-outlined aui-font-size-10" v-if="v.reduce_tag==1">直降</div>
+									{{v.name}}
+								</div>
+								<div class="aui-padded-t-5" v-if="tag==1">
+									<span class="aui-text-danger fweight-5" v-if="v.market_price">￥{{v.market_price}}</span>
+									<span class="aui-font-size-11 aui-text-grayer" style="text-decoration: line-through;" v-if="v.original_price">￥{{v.original_price}}</span>
+								</div>
+								<!-- <div class="aui-font-size-13 aui-text-grayer aui-padded-t-5 aui-text-brown" v-if="v.return_score">送{{v.return_score}}积分</div>
+								<div class="aui-padded-t-5">
+									<div class="aui-label aui-label-danger aui-label-outlined aui-font-size-10" v-if="v.full_reduction_tag==1">满赠</div>
+									<div class="aui-label aui-label-danger aui-label-outlined aui-font-size-10" v-if="v.reduce_tag==1">直降</div>
+								</div> -->
+							</div>
+						</div>
+			</template>
+
+		</div>
+
+		<div class="nodata aui-bg-white" v-if="totalRow==0">
+				<img src="../../image/nodata.png" style="height:100%;width:100%;display: block !important;"/>
+		</div>
+	</div>
+
+</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			idx:'1',
+			token:'',
+			tag:'',
+			area_id:'',
+			pageSize:10,
+			pageNo:1,
+			list:[],
+			totalRow:'',
+			banners_lists:[],
+			is_load:'',
+			idx:'',
+
+
+			sales:'0',
+			price:'0',
+			prefecture_id:'',//专区id
+			country_id: '',	//国家id
+			classify_id: '',		//	商品一级分类id
+			brand_id:'',		//品牌id
+			agency_manage_id:'',  //区域id
+			floor_price:'',
+			top_price:''
+		},
+		methods:{
+			rec:function () {
+				vm.idx=1;
+				vm.is_rec=1;
+				vm.floor_price='',
+				vm.top_price='',
+				vm.sales='';
+				vm.price='';
+				vm.country_id='',
+				vm.brand_id='',
+				vm.classify_id='',
+				vm.list=[];
+				vm.pageNo=1;
+				vm.init()
+			},
+			sx:function(){
+				vm.idx=2;
+				vm.sales=0;
+				vm.is_rec=0;
+				if(vm.price==0){
+					vm.price=1;
+				}else if(vm.price==1){
+					vm.price=2;
+				}else if(vm.price==2){
+					vm.price=1;
+				}
+				vm.floor_price='',
+				vm.top_price='',
+				vm.brand_id='',
+				vm.country_id='',
+				vm.classify_id='',
+				vm.pageNo=1;
+				vm.list=[];
+				vm.init()
+			},
+			sxs:function(){
+				vm.idx=3;
+				vm.price=0;
+				vm.is_rec=0;
+				if(vm.sales==0){
+					vm.sales=1;
+				}else if(vm.sales==1){
+					vm.sales=2;
+				}else if(vm.sales==2){
+					vm.sales=1;
+				}
+				vm.pageNo=1;
+				vm.floor_price='';
+				vm.top_price='';
+				vm.brand_id='';
+				vm.country_id='';
+				vm.classify_id='';
+				vm.list=[];
+				vm.init()
+			},
+			left:function(){
+				api.openFrame({
+					name: 'shaixuan_all_frm',
+					url: 'widget://html/pageone/shaixuan_all_frm.html',
+					rect: {
+						x:0,
+						y:0,
+						w:'auto',
+						h:api.winHeight
+					},
+					pageParam:{
+						id:vm.id,
+						country_id: vm.country_id,
+						classify_id: vm.classify_id,
+						floor_price:vm.floor_price,
+						brand_id:vm.brand_id,
+						top_price:vm.top_price
+					},
+					animate:{
+						type:"movein",                //动画类型（详见动画类型常量）
+						subType:"from_right",       //动画子类型（详见动画子类型常量）
+						duration:300                //动画过渡时间，默认300毫秒
+					},
+				});
+			},
+			det:function(id){
+				api.openWin({
+					name: 'shopDetail_win',
+					url: 'widget://html/shop/shopDetail_win.html',
+					pageParam:{
+						id:id
+					}
+				});
+			},
+			init:function () {
+				api.showProgress();
+
+				api.ajax({   //积分  热门兑换
+				    url: prefecture_gooods_list_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+				    method: 'post',
+				    data: {
+				        values: {
+									token: vm.token,
+									pageSize:vm.pageSize,
+									pageNo:vm.pageNo,
+									sales:vm.sales,
+									agency_manage_id:vm.area_id,
+									price:vm.price,
+									floor_price:vm.floor_price,
+									top_price:vm.top_price,
+									classify_id:vm.classify_id,
+									country_id:vm.country_id,
+									prefecture_id:vm.prefecture_id,
+									brand_id:vm.brand_id
+				        }
+				    }
+					},function(ret, err){
+				    if (ret) {
+							console.log(JSON.stringify(ret));
+							api.hideProgress();
+							vm.is_load=1;
+							if(ret.status==1){
+
+
+								vm.list=vm.list.concat(ret.data.page.list);
+								vm.totalRow=ret.data.page.totalRow;
+							}else{
+								vm.totalRow=0;
+								vm.list=[];
+								api.toast({
+										msg: ret.msg,
+										duration: 2000,
+										location: 'bottom'
+								});
+
+							}
+				    }else{
+								console.log(JSON.stringify(err));
+									console.log(JSON.stringify(ret));
+							if(err.statusCode==404){
+								api.toast({
+										msg: '请求失败',
+										duration: 2000,
+										location: 'middle'
+								});
+							}else{
+								api.toast({
+										msg: '请求超时，请检查网络',
+										duration: 2000,
+										location: 'middle'
+								});
+							}
+						}
+				});
+			},
+			banner:function(){
+				// if(vm.idx==0){
+				// 	var idx = 6
+				// }else if(vm.idx==1){
+				// 	var idx = 7
+				// }else if(vm.idx==2){
+				// 	var idx = 8
+				// }else if(vm.idx==3){
+				// 	var idx = 9
+				// }else if(vm.idx==4){
+				// 	var idx = 10
+				// }else if(vm.idx==5){
+				// 	var idx = 11
+				// }
+				console.log(vm.prefecture_id);
+				api.ajax({   //banner
+				    url: pre_banners_url,
+						dataType:'json',
+						returnAll:false,
+						timeout:30,
+				    method: 'post',
+				    data: {
+				        values: {
+				            token: vm.token,
+										id:vm.prefecture_id,
+										agency_manage_id:vm.area_id
+				        }
+				    }
+					},function(ret, err){
+				    if (ret) {
+							if(ret.status){
+								console.log(JSON.stringify(ret));
+								var banners_lists=[];
+								if(ret.data.banner_list.pics){
+										setTimeout(function(){
+												vm.banns(ret.data.banner_list.pics);
+										},500)
+								}
+								console.log(ret.data.banner_list.pics);
+								vm.banners_lists=ret.data.banner_list.pics;
+
+							}else{
+								api.toast({
+								    msg: ret.msg,
+								    duration: 2000,
+								    location: 'bottom'
+								});
+
+							}
+
+				    }
+				});
+			},
+			banns:function(banners_list){
+					var UIScrollPicture = api.require('UIScrollPicture');
+					UIScrollPicture.open({
+						 rect: {
+									x: 0,
+									y: 0,
+									w: api.winWidth,
+									h: 180
+							},
+							data: {
+									paths:banners_list,
+							},
+							styles: {
+									caption: {
+											height: 35,
+											color: '#E0FFFF',
+											size: 13,
+											bgColor: '#696969',
+											position: 'bottom'
+									},
+									indicator: {
+										 dot:{
+											 w:4,
+											 h:5,
+											 r:2,
+											 margin:5
+										},
+											align: 'center',
+											color: '#FFFFFF',
+											activeColor: '#34d594'
+									}
+							},
+							placeholderImg: 'widget://image/s_banner.png',
+							contentMode: 'scaleToFill',
+							interval: 3,
+							fixedOn: api.frameName,
+							loop: true,
+							fixed: false
+					}, function(ret, err) {
+							if(ret){
+								console.log(JSON.stringify(ret));
+								if(ret.eventType=='click'){
+									if(vm.banners_lists!='' && vm.banners_lists!=null){
+										vm.openShopPic(ret.index);
+									}
+									// api.ajax({
+									//     url: good_detail_url,
+									// 		dataType:'json',
+									// 		returnAll:false,
+									// 		timeout:30,
+									//     method: 'post',
+									//     data: {
+									//         values: {
+									//             token: vm.token,
+									// 						agency_manage_id:vm.area_id,
+									// 						id:vm.id
+									//         }
+									//     }
+									// 	},function(ret, err){
+									//     if (ret) {
+									// 				api.hideProgress();
+									// 				if(ret.status==1){
+									// 						api.openWin({
+									// 								name: 'shopDetail_win',
+									// 								url: 'widget://html/shop/shopDetail_win.html',
+									// 								pageParam: {
+									// 										id:vm.banners_lists[ret.index].id
+									// 								}
+									// 						});
+									// 				}else{
+									// 					api.toast({
+									// 					    msg: ret.msg,
+									// 					    duration: 2000,
+									// 					    location: 'bottom'
+									// 					});
+									//
+									// 				}
+									//     }else{
+									// 			api.hideProgress();
+									// 			if(err.statusCode==500){
+									// 				api.toast({
+									// 						msg: '服务器请求错误！',
+									// 						duration: 2000,
+									// 						location: 'middle'
+									// 				});
+									// 			}else{
+									// 					api.toast({
+									// 							msg: '请求超时，请检查网络',
+									// 							duration: 2000,
+									// 							location: 'middle'
+									// 					});
+									// 			}
+									// 		}
+									// });
+
+								}
+							}
+					});
+			},
+			openShopPic:function(idx){
+				var photoBrowser = api.require('photoBrowser');
+				photoBrowser.open({
+						images: vm.banners_lists,
+						activeIndex:idx,
+						placeholderImg: 'widget://res/img/apicloud.png',
+						bgColor: '#000'
+				}, function(ret, err) {
+
+						if(ret.eventType == 'click'){
+								photoBrowser.close();
+
+						}
+				});
+				photoBrowser.setIndex({
+						index: idx
+				});
+
+			},
+			sub:function() {
+				api.openWin({
+						name: 'jifenOrder_win',
+						url: 'widget://html/order/jifenOrder_win.html',
+						pageParam: {
+								id:vm.id,
+						}
+				});
+			}
+		}
+	})
+	apiready = function(){
+	//	$api.css($api.dom('body'),'padding-top:180px')
+		vm.token=$api.getStorage('token');
+		vm.tag=$api.getStorage('tag');
+		vm.area_id=$api.getStorage('area_id');
+		vm.idx=api.pageParam.idx;
+		vm.prefecture_id=api.pageParam.id
+		vm.init();
+		vm.banner();
+		window.onscroll = function(e) {
+			var scrollTop = document.body.scrollTop;
+			if(vm.tag==1){
+				if(scrollTop>160){
+					$api.addCls($api.dom('#tab'),'fixed');
+				}else{
+					$api.removeCls($api.dom('#tab'),'fixed')
+				}
+			}
+
+		};
+		//上啦加载
+		 api.addEventListener({
+					name:'scrolltobottom',
+					extra:{
+						threshold:300
+					}
+				},function(ret,err){
+					if(vm.totalRow == vm.list.length){
+
+					return;
+			}
+			vm.pageNo++;
+			vm.init();
+		});
+		api.addEventListener({
+				name: 'shaixuan'
+		}, function(ret, err){
+				if( ret ){
+					console.log(JSON.stringify(ret))
+					vm.sales='',
+					vm.price='',
+					vm.country_id=ret.value.country_id,	//国家id
+					vm.classify_id=ret.value.classify_id,		//	商品一级分类id
+					vm.floor_price=ret.value.floor_price,
+					vm.brand_id=ret.value.brand_id,
+					vm.top_price=ret.value.top_price
+					setTimeout(function(){
+						vm.list=[];
+						vm.pageNo=1;
+						vm.init();
+					},200)
+				}
+		});
+
+		api.setRefreshHeaderInfo({
+			 visible: true,
+			 loadingImg: 'widget://image/refresh.png',
+				bgColor: '#f6f6f6',
+			 textColor: '#999',
+			 textDown: '下拉刷新...',
+			 textUp: '松开刷新...',
+			 showTime: true
+		 }, function (ret, err) {
+			 if(ret){
+				 vm.pageNo=1;
+				 vm.country_id='',	//国家id
+				 vm.classify_id='',		//	商品一级分类id
+				 vm.floor_price='',
+				 vm.top_price=''
+				 vm.brand_id='',
+				 vm.sales='',
+				 vm.price='',
+				 vm.list = [];
+				 vm.init();
+				 setTimeout("api.refreshHeaderLoadDone()", '500');
+			 }
+		 });
+
+	};
+</script>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>退款详情</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+		header{ position: fixed !important;width: 100%;top: 0;z-index: 100000;}
+		.bg{background: linear-gradient(to right, #52a589, #c4f2e5);background: -prefix-linear-gradient(left, #52a589, #c4f2e5);}
+		.bg .aui-list-item-media{width: 2rem !important;padding-right: 0.6rem !important;padding-top: 0 !important; padding-bottom: 0 !important;}
+
+	    .pay{ width: 1rem;height: 1rem;vertical-align: middle;}
+
+		.shop .aui-list-item-media{width: 5.25rem !important;padding-right: 0.6rem !important;padding-top: 0 !important; padding-bottom: 0 !important;}
+	    .shop .aui-list-item-media .pic{height: 4.5rem;width: 4.5rem;border-radius: 0.25rem;overflow: hidden;}
+	    .shop .aui-list-item-media img{width: 100%;height: 100%;object-fit: cover;}
+	    .shop .aui-list-item-inner{padding: 0 !important;}
+	    .aui-ellipsis-2{height: 44px; line-height: 22px;}
+
+	</style>
+	<body class="aui-bg-grayer">
+		<div class="aui-content" id="app" v-cloak v-if="is_load">
+					<header class="aui-bar aui-bar-nav aui-bar-light" style="background-color: inherit !important;">
+	            <a class="aui-btn aui-btn-warning aui-pull-left" onclick="closeWin()">
+	                <span class="aui-iconfont aui-icon-left aui-text-white"></span>
+	            </a>
+	            <div class="aui-title aui-font-size-17 aui-text-white">订单详情</div>
+	        </header>
+
+	        <div class="bg">
+	        	<div class="aui-list aui-media-list" style="background-color: initial !important;padding-top:2.5rem;">
+					<div class="aui-list-item">
+			            <div class="aui-media-list-item-inner" style="align-items: center !important;">
+			            	<div class="aui-list-item-media" style="">
+			                    <!--<img src="../../image/chenggong.png">-->  <!--成功-->
+			                    <img src="../../image/dengdai.png">  <!--等待-->
+			                </div>
+			                <div class="aui-list-item-inner">
+			                    <div class="aui-list-item-title fweight-5 aui-text-white">
+														<template v-if="status==4">退款中</template>
+														<template v-else-if="status==5">退款失败</template>
+														<template v-else-if="status==6">退款成功</template>
+													</div>
+			                    <div class="aui-list-item-text aui-text-white aui-font-size-12 aui-padded-t-5" v-if="status==4">卖家会在24小时内将款项退回</div>
+													<div class="aui-list-item-text aui-text-white aui-font-size-12 aui-padded-t-5" v-else-if="status==5">退款失败，如有疑问请联系客服</div>
+													<div class="aui-list-item-text aui-text-white aui-font-size-12 aui-padded-t-5" v-else-if="status==6">退款成功，如有疑问请联系客服</div>
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+
+			<div class="aui-padded-15 aui-font-size-15 aui-bg-white aui-text-grayer aui-padded-l-12">退款金额 ：￥{{order_info.pay_price}}</div>
+
+			<div class="aui-text-blacker aui-padded-12 aui-padded-t-15 aui-padded-b-15 aui-bg-grayer aui-font-size-15" >
+				退款信息
+			</div>
+			<!--商品-->
+			<div class="aui-list aui-media-list shop aui-padded-12 aui-padded-b-0">
+				<template v-for="(vo,index) in list">
+					<div class="aui-list-item aui-padded-l-0">
+						<div class="aui-media-list-item-inner aui-padded-0 aui-padded-b-12">
+							<div class="aui-list-item-media">
+								<div class="pic">
+									<img :src="vo.thumb" />
+								</div>
+							</div>
+							<div class="aui-list-item-inner aui-padded-r-0">
+								<div class="aui-list-item-text aui-font-size-14">
+									<span class="aui-ellipsis-2  aui-text-blacker">{{vo.goods_name}}</span>
+								</div>
+								<div class="aui-list-item-text aui-font-size-12 aui-text-grayerBlue">
+									<span class="" v-if="vo.spec_name">{{vo.spec_name}}</span>
+									<span class="aui-pull-right">x{{vo.goods_num}}</span>
+								</div>
+								<div class="aui-list-item-text aui-padded-t-10">
+									<span class="aui-font-size-17 aui-text-danger">￥{{vo.goods_price}} </span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</template>
+			</div>
+		    <div class="aui-list aui-border-t">
+		        <div style="line-height: 160%;" class="aui-padded-10 aui-text-gray">
+							<div class="aui-font-size-13 aui-text-grayerBlue ">退款类型：{{order_info.refund_cause}}</div>
+		        	<div class="aui-font-size-13 aui-text-grayerBlue ">退款原因：{{order_info.content}}</div>
+		        	<div class="aui-font-size-13 aui-text-grayerBlue aui-padded-t-5">退款金额：￥{{order_info.pay_price}}</div>
+		        	<div class="aui-font-size-13 aui-text-grayerBlue aui-padded-t-5">扣除积分：{{order_info.total_return_score}}积分</div>
+		        	<div class="aui-font-size-13 aui-text-grayerBlue aui-padded-t-5">申请件数：{{order_info.goods_num}}</div>
+		        	<div class="aui-font-size-13 aui-text-grayerBlue aui-padded-t-5">申请时间：{{order_info.refund_time}}</div>
+		        	<div class="aui-font-size-13 aui-text-grayerBlue aui-padded-t-5">退款编号：{{order_info.order_sn}}</div>
+		        </div>
+		    </div>
+
+		</div><!--外层结束-->
+
+
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm = new  Vue({
+		el:"#app",
+		data:{
+			add:'',
+			order_info:'',
+			list:[],
+			id:'',
+			is_load:'',
+			status:''
+		},
+		methods:{
+			init:function(){
+				api.showProgress();
+
+				api.ajax({
+          url:order_details_url,
+          method:'get',
+          timeout:30,
+          dataType:'json',
+          returnAll:false,
+          data:{
+          	values:{
+          		id:vm.id
+          	}
+          }
+        },function(ret,err){
+        	if(ret){
+						console.log(JSON.stringify(ret));
+						api.hideProgress();
+
+						vm.is_load=1;
+        		vm.list = ret.data.goods_list;
+        		vm.add = ret.data.address;
+        		vm.order_info = ret.data.order;
+						setTimeout(function(){
+							 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+							 $api.fixStatusBar($api.dom("header"));
+					 },300)
+						api.openFrame({
+								name: 'order_header',
+								url: 'widget://html/pageone/order_header.html',
+								rect: {
+										x: 0,
+										y: 0,
+										w: 'auto',
+										h: 72
+								},
+								bounces: true,
+								vScrollBarEnabled: true,
+								hScrollBarEnabled: true
+						});
+						$api.css($api.dom('header'),'border:none !important')
+
+        	}else{
+        		console.log(JSON.stringify(err))
+        	}
+        });
+			},
+
+		}
+	})
+
+	apiready = function(){
+
+		vm.token = $api.getStorage('token');
+
+		vm.id = api.pageParam.id,
+
+		vm.status=api.pageParam.status
+
+		vm.init();
+		window.onscroll = function(e) {
+				var scrollTop = document.body.scrollTop;
+				api.sendEvent({
+						name: 'myindex_init',
+						extra: {
+								scrollTop:scrollTop
+						}
+				});
+
+		};
+	}
+</script>

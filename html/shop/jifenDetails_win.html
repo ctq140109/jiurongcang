@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>积分商品详情</title>
+		<link rel="stylesheet" href="../../css/aui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/global.css"/>
+	</head>
+	<style type="text/css">
+	</style>
+
+	<body class="aui-bg-grayer">
+		<div id="app" v-cloak>
+		<header class="aui-bar aui-bar-nav aui-bar-light">
+		    <a class="aui-pull-left aui-btn" onclick="closeWin()">
+		        <span class="aui-iconfont aui-icon-left"></span>
+		    </a>
+		    <div class="aui-title">积分商品详情</div>
+		  
+		</header>
+
+
+		<footer class="aui-bar aui-bar-tab aui-bg-grayer" id="footer">
+			<div class="aui-btn aui-btn-block aui-btn-blue aui-text-decoration" onclick="sub()">立即兑换</div>
+		</footer>
+	</div>
+	</body>
+</html>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script>
+	var vm =new Vue({
+		el:'#app',
+		data:{
+			name:''
+		},
+		methods:{
+
+		}
+	})
+	apiready = function(){
+		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
+      api.openFrame({
+          name: 'jifenDetails_frm',
+          url: 'widget://html/shop/jifenDetails_frm.html',
+          rect: {
+              x: 0,
+              y: $api.dom('header').offsetHeight,
+              w: 'auto',
+              h: api.winHeight - $api.dom('header').offsetHeight - $api.dom('footer').offsetHeight
+          },
+          bounces: true,
+          pageParam: {
+              id: api.pageParam.id
+          }
+      });
+			api.addEventListener({
+			    name: 'scroe'
+			}, function(ret, err){
+			    if( ret ){
+			         vm.name=ret.value.name
+			    }
+			});
+
+	};
+	function sub() {
+		api.sendEvent({
+		    name: 'sub_scro',
+		});
+
+	}
+	function share() {
+		api.openFrame({
+			name: 'share',
+			url: 'widget://html/pageone/share.html',
+			rect: {
+				x:0,
+				y:0,
+				w:'auto',
+				h:api.winHeight
+			},
+			pageParam:{
+				name:vm.name
+			},
+		});
+	}
+
+</script>
