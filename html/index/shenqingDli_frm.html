@@ -147,7 +147,7 @@
 <script type="text/javascript" src="../../script/common.js"></script>
 <script>
 	var UIInput = null;
-	var base_url = '';
+	// var base_url = '';
 	var vm = new Vue({
 		el: '#app',
 		data: {
@@ -274,7 +274,7 @@
 				});
 			},
 			upload: function() { //视频上传
-				var base_url = "http://9rc.yunxiaochengxu.top";
+				// var base_url = "http://9rc.yunxiaochengxu.top";
 				var obj = api.require('qiniuUpfile');
 				var date = new Date().getTime();
 				for (var i = 0; i < vm.business_qualification.length; i++) {
@@ -285,7 +285,7 @@
 						console.log(JSON.stringify(ret));
 						if (ret.status) {
 							if (ret.oper == "complete") {
-								vm.business_qualification_url = base_url + '/' + ret.info.key;
+								vm.business_qualification_url = qiniu + '/' + ret.info.key;
 							}
 							if (ret.oper == 'progress') {
 								if (ret.percent == 100.00) {
@@ -304,7 +304,7 @@
 
 			},
 			uploads: function() { //视频上传
-				var base_url = "http://9rc.yunxiaochengxu.top";
+				// var base_url = "http://9rc.yunxiaochengxu.top";
 				var obj = api.require('qiniuUpfile');
 				var date = new Date().getTime();
 				for (var i = 0; i < vm.licence.length; i++) {
@@ -315,7 +315,7 @@
 						if (ret.status) {
 							console.log(JSON.stringify(ret));
 							if (ret.oper == "complete") {
-								vm.licence_url = base_url + '/' + ret.info.key;
+								vm.licence_url = qiniu + '/' + ret.info.key;
 								api.hideProgress()
 								vm.sub_info();
 							}

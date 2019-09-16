@@ -1,30 +1,55 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
-	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-		<title>积分商城</title>
-		<link rel="stylesheet" href="../../css/aui.css" />
-		<link rel="stylesheet" href="../../css/common.css" />
-		<link rel="stylesheet" href="../../css/global.css"/>
-	</head>
-	<style type="text/css">
-	.bg{height:5.5rem;background: url(../../image/beijing.jpg) no-repeat;background-size:cover;}
-	.mc{background-color: rgba(0,0,0,.5); height: 100%;}
-	.aui-list-item-title{ display: flex;display: -webkit-flex;align-items: center;}
-	.head-pic{height: 2.5rem;width: 2.5rem;border-radius: 50%;overflow: hidden;}
-	.head-pic img{height:100%;width:100%;object-fit: cover;}
-	</style>
 
-	<body class="aui-bg-grayer">
-		<div id="app" v-cloak>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>积分商城</title>
+	<link rel="stylesheet" href="../../css/aui.css" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/global.css" />
+</head>
+<style type="text/css">
+	.bg {
+		height: 5.5rem;
+		background: url(../../image/beijing.jpg) no-repeat;
+		background-size: cover;
+	}
+
+	.mc {
+		background-color: rgba(0, 0, 0, .5);
+		height: 100%;
+	}
+
+	.aui-list-item-title {
+		display: flex;
+		display: -webkit-flex;
+		align-items: center;
+	}
+
+	.head-pic {
+		height: 2.5rem;
+		width: 2.5rem;
+		border-radius: 50%;
+		overflow: hidden;
+	}
+
+	.head-pic img {
+		height: 100%;
+		width: 100%;
+		object-fit: cover;
+	}
+</style>
+
+<body class="aui-bg-grayer">
+	<div id="app" v-cloak>
 		<header class="aui-bar aui-bar-nav aui-bar-light">
-		    <a class="aui-pull-left aui-btn" onclick="closeWin()">
-		        <span class="aui-iconfont aui-icon-left"></span>
-		    </a>
-		    <div class="aui-title">积分商城</div>
-		    <a class="aui-pull-right" onclick="score()" style="display: block;color:#000">
+			<a class="aui-pull-left aui-btn" onclick="closeWin()">
+				<span class="aui-iconfont aui-icon-left"></span>
+			</a>
+			<div class="aui-title">积分商城</div>
+			<a class="aui-pull-right" onclick="score()" style="display: block;color:#000">
 		        兑换记录
 		    </a>
 		</header>
@@ -48,54 +73,54 @@
 				</ul>
 			</div>
 		</div> -->
-		</div>
-	</body>
+	</div>
+</body>
+
 </html>
 <script type="text/javascript" src="../../script/api.js"></script>
 <script type="text/javascript" src="../../script/vue.js"></script>
 <script type="text/javascript" src="../../script/common.js"></script>
 <script>
 	var vm = new Vue({
-		el:'#app',
-		data:{
-			account:[]
+		el: '#app',
+		data: {
+			account: [],
+			id: ''
 		},
-		methods:{
+		methods: {
 
 		}
-	})
-	apiready = function(){
-		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
-    api.openFrame({
-        name: 'jifen_frm',
-        url: 'widget://html/shop/jifen_frm.html',
-        rect: {
-            x: 0,
-            y: $api.dom('header').offsetHeight ,
-            w: 'auto',
-            h: api.winHeight - $api.dom('header').offsetHeight
-        },
-        bounces: true,
-        pageParam: {
-            id: api.pageParam.id
-        }
-    });
-		api.addEventListener({
-		    name: 'account'
-		}, function(ret, err){
-		    if( ret ){
-		         vm.account=ret.value.account
-		    }
+	});
+	apiready = function() {
+		vm.id = api.pageParam.id
+		$api.fixIos7Bar($api.dom("header")); //修复ios系统bar
+		api.openFrame({
+			name: 'jifen_frm',
+			url: 'widget://html/shop/jifen_frm.html',
+			rect: {
+				x: 0,
+				y: $api.dom('header').offsetHeight,
+				w: 'auto',
+				h: api.winHeight - $api.dom('header').offsetHeight
+			},
+			bounces: true,
+			pageParam: {
+				prefecture_id: vm.id
+			}
 		});
-
+		api.addEventListener({
+			name: 'account'
+		}, function(ret, err) {
+			if (ret) {
+				vm.account = ret.value.account
+			}
+		});
 	};
-	function  score() {
+	function score() {
 		api.openWin({
-				name: 'duihuanjilu_win',
-				url: 'widget://html/shop/duihuanjilu_win.html',
-				pageParam: {
-
-				}
+			name: 'duihuanjilu_win',
+			url: 'widget://html/shop/duihuanjilu_win.html',
+			pageParam: {}
 		});
 	}
 </script>

@@ -24,7 +24,7 @@
 							<div class="jianjei aui-ellipsis-1 aui-font-size-13 aui-padded-t-10">{{v.name}}</div>
 							<div class="aui-padded-t-5" style="display:flex;justify-content:space-between">
 									<div>
-										<span class="aui-text-danger fweight-5" v-if="v.market_price">￥{{v.market_price}}</span>
+										<span class="aui-text-danger fweight-5" v-if="v.market_price">￥{{v.price_space}}</span>
 										<span class="aui-font-size-11 aui-text-grayer" style="text-decoration: line-through;" v-if="v.original_price">￥{{v.original_price}}</span>
 									</div>
 									<div class="aui-font-size-11 aui-text-grayer aui-padded-t-5 aui-text-brown" v-if="v.return_score">送{{v.return_score}}积分</div>
@@ -54,6 +54,10 @@
 <script type="text/javascript" src="../../script/common.js"></script>
 
 <script>
+function sortNumber(a, b) {
+	return a - b;
+	console.log(a - b)
+}
 	var vm =new Vue({
 		el:'#app',
 		data:{
@@ -145,6 +149,20 @@
 								if(ret.status==1){
 									vm.is_load=1;
 									if(ret.data.page.list.length>0){
+										for(let i=0;i<ret.data.page.list.length;i++){
+											var arr = [];
+											for(let j=0;j<ret.data.page.list[i].market_price.length;j++){
+												arr.push(ret.data.page.list[i].market_price[j].goods_price);
+											}
+											if(arr.length > 0){
+												arr.sort(sortNumber);
+												if(arr.length == 1){ret.data.page.list[i].price_space = arr[0];}
+												if(arr.length == 2){ret.data.page.list[i].price_space = arr[0] + '~' + arr[1]}
+												if(arr.length > 2){ret.data.page.list[i].price_space = arr[0] + '~' + arr[arr.length - 1]}
+											}else {
+												ret.data.page.list[i].price_space = "0";
+											}
+										}
 										vm.list=vm.list.concat(ret.data.page.list);
 										$api.html($api.dom('.nodata'),'')
 									}else{

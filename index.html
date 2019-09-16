@@ -64,11 +64,9 @@
 		color: #bbc7c8;
 		font-size: 0.7rem;
 	}
-
 	/*.fenlei {
 		width: 100%;
 	}*/
-
 	/*.aui-tab .aui-tab-item {
 		position: relative;
 	}*/
@@ -88,6 +86,7 @@
 		margin-left: -0.7rem;
 		background-color: #35adbe;
 	}
+
 	#classify {
 		/*border: 1px solid #000;*/
 		margin: 0;
@@ -136,12 +135,12 @@
 				<div class="aui-tab-item aui-font-size-15 aui-active" style="background-color:rgba(0,0,0,0)"></div>
 			</div>
 			<div id="classify">
-				<span class="aui-padded-l-12 aui-padded-r-12 aui-text-gray aui-font-size-14" @click="sort(1)">
+				<!-- <span class="aui-padded-l-12 aui-padded-r-12 aui-text-gray aui-font-size-14" @click="sort(1)">
     					价格
     					<img class="td" src="image/0.png" v-if="price==0"/>
 							<img class="td" src="image/1.png" v-else-if="price==2"/>
 							<img class="td" src="image/2.png" v-else/>
-    				</span>
+    				</span> -->
 				<span class="aui-padded-l-12 aui-padded-r-12 aui-text-gray aui-font-size-14" @click="sort(2)">
     					销量
 							<img class="td" src="image/0.png" v-if="sales==0"/>
@@ -198,6 +197,7 @@
 				});
 			},
 			new_list: function() {
+				console.log('打开消息');
 				api.openWin({
 					name: 'news_win',
 					url: 'widget://html/news/news_win.html',
@@ -464,6 +464,8 @@
 
 			},
 			classifyOne: function() {
+				var selectedcIndex = $api.getStorage('selectedcIndex');
+				console.log('++++++NVNavigationBar++++++++'+selectedcIndex);
 				NVNavigationBar.open({
 					rect: {
 						x: 0,
@@ -493,19 +495,26 @@
 					id: 'first'
 				}, function(ret, err) {
 					if (ret.eventType == 'click') {
+						console.log('++++++++++点击一级分类++++++++++' + ret.index);
+						$api.setStorage('selectedcIndex', ret.index);
 						api.sendEvent({
 							name: 'classify_tabchange_init',
 							extra: {
 								idx: ret.index
 							}
 						});
-
+					}else {
+						console.log('+++++++不点击++++++++');
+						api.sendEvent({
+							name: 'classify_tabchange_init',
+							extra: {
+								idx: 0
+							}
+						});
 					}
 				});
 			}
-
 		}
-
 	})
 	apiready = function() {
 		//获取页面Header栏的高度

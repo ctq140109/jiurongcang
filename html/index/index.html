@@ -1,45 +1,118 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
-	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-		<title>首页</title>
-		<link rel="stylesheet" type="text/css" href="../../css/swiper-4.3.3.min.css" />
-		<link rel="stylesheet" href="../../css/aui.css" />
-		<link rel="stylesheet" href="../../css/common.css" />
-		<link rel="stylesheet" href="../../css/global.css"/>
-		<link rel="stylesheet" type="text/css" href="../../css/magic.css"/>
 
-	</head>
-	<style type="text/css">
-		.banner{height: 8rem;width: 100%;overflow: hidden;}
-		.banner img{width: 100%;height: 100%;object-fit: cover;}
-		.time{width: 1rem;height: 1rem;border-radius: 0.25rem;display: inline-block;text-align: center;line-height: 1.1rem;}
-		/*品牌好店*/
-		.swiper-container{height: auto !important;}
-		.swiper-container{border-radius:0.25rem;height: 15rem;}
-		.swiper-slide{height: auto !important;width: 5.5rem!important;}
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>首页</title>
+	<link rel="stylesheet" type="text/css" href="../../css/swiper-4.3.3.min.css" />
+	<link rel="stylesheet" href="../../css/aui.css" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/global.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/magic.css" />
 
+</head>
+<style type="text/css">
+	.banner {
+		height: 8rem;
+		width: 100%;
+		overflow: hidden;
+	}
 
+	.banner img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
 
+	.time {
+		width: 1rem;
+		height: 1rem;
+		border-radius: 0.25rem;
+		display: inline-block;
+		text-align: center;
+		line-height: 1.1rem;
+	}
+	/*品牌好店*/
 
-		.item{height: auto !important;width:31%!important; margin-right: 3%;float:left;}
-		.item:nth-of-type(3){margin-right: 0}
-		.big-pic{height: 5.5rem;width:100% !important;overflow: hidden;border-radius: 0.25rem;}
-		.big-pic img{height: 100%;width: 100%;/*object-fit: cover;*/}
-		.shop-title{height: 44px;line-height: 22px;}
-		/*秒杀滑动私有样式*/
-		/*精选滑动私有样式*/
-		.jxpp .swiper-slide{height: auto !important;width: 4rem!important;}
-		.jxpp .pic{height: 3.5rem !important;width: 3.5rem !important;display: flex;display: -webkit-flex;align-items: center;}
-		.jxpp .pic img{max-height: 100%;max-width: 100%;margin: auto;}
-		.none{display: none;}
-		.border span{ display: block;width: }
-	</style>
-	<body class="aui-bg-white">
-		<div class="aui-content aui-bg-white" style="padding-bottom:2.2rem" id="app" v-cloak>
-			<div  v-if="is_load==1">
+	.swiper-container {
+		height: auto !important;
+	}
+
+	.swiper-container {
+		border-radius: 0.25rem;
+		height: 15rem;
+	}
+
+	.swiper-slide {
+		height: auto !important;
+		width: 5.5rem!important;
+	}
+
+	.item {
+		height: auto !important;
+		width: 31%!important;
+		margin-right: 3%;
+		float: left;
+	}
+
+	.item:nth-of-type(3) {
+		margin-right: 0
+	}
+
+	.big-pic {
+		height: 5.5rem;
+		width: 100% !important;
+		overflow: hidden;
+		border-radius: 0.25rem;
+	}
+
+	.big-pic img {
+		height: 100%;
+		width: 100%;
+		/*object-fit: cover;*/
+	}
+
+	.shop-title {
+		height: 44px;
+		line-height: 22px;
+	}
+	/*秒杀滑动私有样式*/
+	/*精选滑动私有样式*/
+
+	.jxpp .swiper-slide {
+		height: auto !important;
+		width: 4rem!important;
+	}
+
+	.jxpp .pic {
+		height: 3.5rem !important;
+		width: 3.5rem !important;
+		display: flex;
+		display: -webkit-flex;
+		align-items: center;
+	}
+
+	.jxpp .pic img {
+		max-height: 100%;
+		max-width: 100%;
+		margin: auto;
+	}
+
+	.none {
+		display: none;
+	}
+
+	.border span {
+		display: block;
+		width:
+	}
+</style>
+
+<body class="aui-bg-white">
+	<div class="aui-content aui-bg-white" style="padding-bottom:2.2rem" id="app" v-cloak>
+		<div v-if="is_load==1">
 			<div class="banner">
 				<!-- <img src="../../image/banner.jpg"/> -->
 			</div>
@@ -48,15 +121,15 @@
 				<tempalte v-for="(vs,index) in prefecture_list_top">
 					<div class="aui-col-5 aui-text-center aui-margin-b-12" @click="det_class(index,vs.id,vs.name,vs.url,vs.win_name)">
 						<div class="fl-pic" v-if="vs.thumb">
-							<img :src="vs.thumb"/>
+							<img :src="vs.thumb" />
 
 						</div>
 						<div class="aui-font-size-13 aui-text-grayBlue">{{vs.name}}</div>
 					</div>
-				</template>
+					</template>
 			</div>
 			<!--倒计时-->
-			<div class="aui-list aui-border-b aui-padded-t-5 aui-padded-b-5  aui-border-bgT"  v-if="kill_goods!='' && kill_goods!=null">
+			<div class="aui-list aui-border-b aui-padded-t-5 aui-padded-b-5  aui-border-bgT" v-if="kill_goods!='' && kill_goods!=null">
 				<div class="aui-list-item aui-padded-l-12  aui-padded-r-12">
 					<div class="aui-list-item-inner aui-padded-r-0">
 						<div class="aui-list-item-title aui-font-size-15">
@@ -82,7 +155,7 @@
 			<!--秒杀-->
 			<div class="aui-padded-12 aui-border-bgB miaosha clearfix" style="padding-top: 1rem !important;padding-bottom: 1rem !important;" v-if="kill_goods!='' && kill_goods!=null">
 
-						<template v-for="(v,index) in kill_goods.kill_goods_list">
+				<template v-for="(v,index) in kill_goods.kill_goods_list">
 								<div class="item" @click="det_kill(v.id,time_tag)">
 									<div class="big-pic aui-margin-b-10" v-if="v.thumb">
 										<img :src="v.thumb"/>
@@ -115,9 +188,9 @@
 								<div class="ggao1 ggao "><img :src="v.thumb" /></div>
 							</div>
 						</template>
-					</div>
-				</template>
-				<template v-else-if="count==3">
+			</div>
+			</template>
+			<template v-else-if="count==3">
 					<!--三图-->
 					<div class="aui-row three">
 						<template v-for="(vs,index) in prefecture_list_middle" v-if="index==0">
@@ -125,14 +198,14 @@
 								<div class="ggao1 ggao "><img :src="vs.thumb" /></div>
 							</div>
 						</template>
-						<div class=" aui-col-xs-6" >
-							<template v-for="(ve,index) in prefecture_list_middle" v-if="index>0">
+			<div class=" aui-col-xs-6">
+				<template v-for="(ve,index) in prefecture_list_middle" v-if="index>0">
 								<div class="ggao2 ggao"  @click="det_fl(ve.id,ve.name)"><img :src="ve.thumb" /></div>
 							</template>
-						</div>
-					</div>
-				</template>
-				<template v-else-if="count==4">
+			</div>
+		</div>
+		</template>
+		<template v-else-if="count==4">
 					<!--四图-->
 					<div class="aui-row four">
 						<template v-for="(v,index) in prefecture_list_middle">
@@ -140,9 +213,9 @@
 								<div class="ggao1 ggao "><img :src="v.thumb" /></div>
 							</div>
 						</template>
-					</div>
-				</template>
-				<template v-else-if="count==5">
+	</div>
+	</template>
+	<template v-else-if="count==5">
 					<!--五图-->
 					<div class="five">
 
@@ -152,17 +225,17 @@
 									<div class="ggao1 ggao "><img :src="v.thumb" /></div>
 								</div>
 							</template>
-						</div>
-						<div class="aui-row">
-							<template v-for="(v,index) in prefecture_list_middle" v-if="index>1">
+	</div>
+	<div class="aui-row">
+		<template v-for="(v,index) in prefecture_list_middle" v-if="index>1">
 								<div class="aui-col-xs-4" @click="det_fl(v.id,v.name)">
 									<div class="ggao1 ggao "><img :src="v.thumb" /></div>
 								</div>
 							</template>
-						</div>
-					</div>
-				</template>
-				<template v-else-if="count==6">
+	</div>
+	</div>
+	</template>
+	<template v-else-if="count==6">
 					<div class="five">
 
 						<div class="aui-row ">
@@ -171,69 +244,69 @@
 									<div class="ggao1 ggao "><img :src="v.thumb" /></div>
 								</div>
 							</template>
-						</div>
-						<div class="aui-row">
-							<template v-for="(v,index) in prefecture_list_middle" v-if="index>2">
+	</div>
+	<div class="aui-row">
+		<template v-for="(v,index) in prefecture_list_middle" v-if="index>2">
 								<div class="aui-col-xs-4" @click="det_fl(v.id,v.name)">
 									<div class="ggao1 ggao "><img :src="v.thumb" /></div>
 								</div>
 							</template>
-						</div>
-					</div>
-					<!--四图-->
-					<!-- <div class="aui-row four">
+	</div>
+	</div>
+	<!--四图-->
+	<!-- <div class="aui-row four">
 						<template v-for="(v,index) in prefecture_list_middle">
 							<div class="aui-col-xs-6">
 								<div class="ggao1 ggao "><img :src="v.thumb" /></div>
 							</div>
 						</template>
 					</div> -->
-				</template>
+	</template>
 
-			</div>
-			<!--精选品牌-->
-			<div class="aui-list aui-border-b aui-padded-t-5 aui-padded-b-5" v-if="brands_list">
-				<div class="aui-list-item aui-padded-l-12  aui-padded-r-12">
-					<div class="aui-list-item-inner aui-padded-r-0">
-						<div class="aui-list-item-title aui-font-size-15">
-							<div class="aui-pull-left fweight-5">精选品牌</div>
-						</div>
-						<div class="aui-list-item-right aui-margin-l-0 aui-text-gray aui-font-size-12" @click="more_banrd()">查看更多
-							<i class="aui-iconfont aui-icon-right"></i>
-						</div>
-					</div>
+	</div>
+	<!--精选品牌-->
+	<div class="aui-list aui-border-b aui-padded-t-5 aui-padded-b-5" v-if="brands_list">
+		<div class="aui-list-item aui-padded-l-12  aui-padded-r-12">
+			<div class="aui-list-item-inner aui-padded-r-0">
+				<div class="aui-list-item-title aui-font-size-15">
+					<div class="aui-pull-left fweight-5">精选品牌</div>
+				</div>
+				<div class="aui-list-item-right aui-margin-l-0 aui-text-gray aui-font-size-12" @click="more_banrd()">查看更多
+					<i class="aui-iconfont aui-icon-right"></i>
 				</div>
 			</div>
-			<div class="aui-padded-12 aui-border-bgB jxpp" style="padding-top: 1rem !important;padding-bottom: 1rem !important;" v-if="brands_list">
-				<div class="swiper-container"  style="border-radius:0">
-					<div class="swiper-wrapper">
-							<template v-for="(v,index) in brands_list">
+		</div>
+	</div>
+	<div class="aui-padded-12 aui-border-bgB jxpp" style="padding-top: 1rem !important;padding-bottom: 1rem !important;" v-if="brands_list">
+		<div class="swiper-container" style="border-radius:0">
+			<div class="swiper-wrapper">
+				<template v-for="(v,index) in brands_list">
 								<div class="swiper-slide swiper-slide-active aui-margin-r-10" @click="det_brand(v.id)">
 									<div class="pic">
 										<img :src="v.icon"/>
 									</div>
 								</div>
 							</template>
-					</div>
-				</div>
 			</div>
+		</div>
+	</div>
 
-			<div class="aui-border-bgB" v-if="no_threshold.thumb" @click="coupon_list()">
-				<img :src="no_threshold.thumb" />
-			</div>
-			<div class="aui-list aui-padded-t-5 aui-padded-b-5">
-				<div class="aui-list-item aui-padded-l-12  aui-padded-r-12">
-					<div class="aui-list-item-inner aui-padded-r-0">
-						<div class="aui-list-item-title aui-font-size-15">
-							<div class="aui-pull-left fweight-5">热门推销</div>
-						</div>
-						<!-- <div class="aui-list-item-right aui-margin-l-0 aui-text-gray aui-font-size-12">查看更多
+	<div class="aui-border-bgB" v-if="no_threshold.thumb" @click="coupon_list()">
+		<img :src="no_threshold.thumb" />
+	</div>
+	<div class="aui-list aui-padded-t-5 aui-padded-b-5">
+		<div class="aui-list-item aui-padded-l-12  aui-padded-r-12">
+			<div class="aui-list-item-inner aui-padded-r-0">
+				<div class="aui-list-item-title aui-font-size-15">
+					<div class="aui-pull-left fweight-5">热门推销</div>
+				</div>
+				<!-- <div class="aui-list-item-right aui-margin-l-0 aui-text-gray aui-font-size-12">查看更多
 							<i class="aui-iconfont aui-icon-right"></i>
 						</div> -->
-					</div>
-				</div>
 			</div>
-			<template v-for="(vs,index) in thunb_list">
+		</div>
+	</div>
+	<template v-for="(vs,index) in thunb_list">
 			<!--热门推销-->
 			<template v-if="vs.state!=6">
 			<div class="aui-padded-l-12 aui-padded-r-12" v-if="vs.thumb" @click="det_fl(vs.id,vs.name)">
@@ -259,10 +332,10 @@
 							</div>
 						</template>
 
-			</div>
-			</template>
-			<template v-else>
-				<div class="aui-padded-l-12 aui-padded-r-12" v-if="vs.thumb" @click="jf_list()">
+	</div>
+	</template>
+	<template v-else>
+				<div class="aui-padded-l-12 aui-padded-r-12" v-if="vs.thumb" @click="jf_list(vs.id)">
 					<img style="border-radius: 0.25rem;" :src="vs.thumb" />
 				</div>
 				<div class="aui-padded-12  aui-border-bgB" style="padding-bottom: 1rem !important;">
@@ -278,20 +351,19 @@
 									</div>
 								</div>
 						</template>
-			</div>
-			</template>
-			</template>
+	</div>
+	</template>
+	</template>
 
 
 
-			<!--猜你喜欢-->
-			<div class="aui-text-center aui-bg-grayer aui-font-size-16 border" style="padding: 0.3rem;">
-				<span></span>
-				猜你喜欢
-				<span></span>
-			</div>
-			<div class="aui-row aui-padded-l-12 aui-padded-r-12 aui-bg-grayer publis-list aui-padded-t-15">
-				<template v-for="(vs,index) in like_list">
+	<!--猜你喜欢-->
+	<div class="aui-text-center aui-bg-grayer aui-font-size-16 border" style="padding: 0.3rem;">
+		<span></span> 猜你喜欢
+		<span></span>
+	</div>
+	<div class="aui-row aui-padded-l-12 aui-padded-r-12 aui-bg-grayer publis-list aui-padded-t-15">
+		<template v-for="(vs,index) in like_list">
 					<div class="aui-col-xs-6 aui-margin-b-10 aui-bg-white" @click="dets(vs.id)">
 						<div class="list-pic">
 							<img :src="vs.thumb" />
@@ -305,7 +377,7 @@
 							</div>
 							<div class="aui-padded-t-5">
 
-									<span class="aui-text-danger fweight-5" v-if="vs.market_price">￥{{vs.market_price}}</span>
+									<span class="aui-text-danger fweight-5" v-if="vs.market_price">￥{{vs.price_space}}</span>
 									<span class="aui-font-size-11 aui-text-grayer" style="text-decoration: line-through;" v-if="vs.original_price">￥{{vs.original_price}}</span>
 
 								<!-- <div class="aui-font-size-11 aui-text-grayer aui-text-brown" v-if="vs.return_score">送{{vs.return_score}}积分</div> -->
@@ -318,17 +390,18 @@
 						</div>
 					</div>
 				</template>
-			</div>
-			</div>
-			<div class="aui-text-center" v-if="is_load==2">
+	</div>
+	</div>
+	<div class="aui-text-center" v-if="is_load==2">
 
-					<img src="../../icon/nonet.png" @click="jz()" style="width:100%;height:100%"/>
-			</div>
-		</div>
+		<img src="../../icon/nonet.png" @click="jz()" style="width:100%;height:100%" />
+	</div>
+	</div>
 
 
 
-	</body>
+</body>
+
 </html>
 <script type="text/javascript" src="../../script/api.js"></script>
 <script type="text/javascript" src="../../script/vue.js"></script>
@@ -336,123 +409,127 @@
 <script type="text/javascript" src="../../script/common.js"></script>
 
 <script>
+function sortNumber(a, b) {
+	return a - b;
+	console.log(a - b)
+}
 	var vm = new Vue({
-		el:'#app',
-		data:{
-			token:'',
-			tag:'',
-			banner_list:[],
-			prefecture_list_top:[],		//首页5个分类
-			count:'0',//   判断显示第几种
-			prefecture_list_middle:[],   //专区集合
-			no_threshold:[],//品牌图片
-			thunb_list:[],  //循环所有数据
-			kill_goods:[],//秒杀商品
-			time_tag:'',
-			brands_list:[],//品牌
-			like_list:[],
-			area_id:'',
-			pageSize:4,
-			pageNo:1,
-			list:[],
-			totalRow:0,
-			h:'',// 秒杀倒计时
-			m:'',// 秒杀倒计时
-			s:'',// 秒杀倒计时
-			hs:'',// 秒杀倒计时
-			ms:'',// 秒杀倒计时
-			ss:'',// 秒杀倒计时
-			is_load:'',
-			lon:'',
-			lat:''
+		el: '#app',
+		data: {
+			token: '',
+			tag: '',
+			banner_list: [],
+			prefecture_list_top: [], //首页5个分类
+			count: '0', //   判断显示第几种
+			prefecture_list_middle: [], //专区集合
+			no_threshold: [], //品牌图片
+			thunb_list: [], //循环所有数据
+			kill_goods: [], //秒杀商品
+			time_tag: '',
+			brands_list: [], //品牌
+			like_list: [],
+			area_id: '',
+			pageSize: 4,
+			pageNo: 1,
+			list: [],
+			totalRow: 0,
+			h: '', // 秒杀倒计时
+			m: '', // 秒杀倒计时
+			s: '', // 秒杀倒计时
+			hs: '', // 秒杀倒计时
+			ms: '', // 秒杀倒计时
+			ss: '', // 秒杀倒计时
+			is_load: '',
+			lon: '',
+			lat: ''
 		},
-		methods:{
-			jz:function() {
+		methods: {
+			jz: function() {
 				vm.area();
 			},
-			det_kill:function(id,tag){
-				if(tag==1){
+			det_kill: function(id, tag) {
+				if (tag == 1) {
 					api.openWin({
-	          name: 'shopDetail_win',
-	          url: 'widget://html/shop/shopDetail_win.html',
-						pageParam:{
-							id:id
+						name: 'shopDetail_win',
+						url: 'widget://html/shop/shopDetail_win.html',
+						pageParam: {
+							id: id
 						}
-	        });
-				}else{
+					});
+				} else {
 					api.toast({
-					    msg: '抱歉活动还未开始',
-					    duration: 2000,
-					    location: 'bottom'
+						msg: '抱歉活动还未开始',
+						duration: 2000,
+						location: 'bottom'
 					});
 
 				}
 
 			},
-			coupon_list:function() {
-				vm.tag=$api.getStorage('tag');
-				if(!vm.token){
+			coupon_list: function() {
+				vm.tag = $api.getStorage('tag');
+				if (!vm.token) {
 					is_login();
 					return;
 				}
-				if(vm.tag==1){
+				if (vm.tag == 1) {
 					api.openWin({
-							name: 'lingquanZx_win',
-							url: 'widget://html/shop/lingquanZx_win.html',
-							pageParam: {
-							}
+						name: 'lingquanZx_win',
+						url: 'widget://html/shop/lingquanZx_win.html',
+						pageParam: {}
 					});
-				}else if(vm.tag==2){
+				} else if (vm.tag == 2) {
 					api.toast({
-					    msg: '您的门店正在审核中，请耐心等待',
-					    duration: 2000,
-					    location: 'bottom'
+						msg: '您的门店正在审核中，请耐心等待',
+						duration: 2000,
+						location: 'bottom'
 					});
 
-				}else{
+				} else {
 					alert_shops();
 				}
+			},
+			jf_list: function(idx) {
+				console.log('打开积分页面' + idx);
+				api.openWin({
+					name: 'jifen_win',
+					url: 'widget://html/shop/jifen_win.html',
+					pageParam: {
+						id: idx
+					}
+				});
+			},
+			det_fl: function(id, name) {
+				api.openWin({
+					name: 'xinpin_win',
+					url: 'widget://html/shop/xinpin_win.html',
+					pageParam: {
+						id: id,
+						name: name
+					}
+				});
+			},
+			more_kill: function() {
+				api.openWin({
+					name: 'miaosha_win',
+					url: 'widget://html/shop/miaosha_win.html',
+					pageParam: {
 
-			},
-			jf_list:function() {
-				api.openWin({
-						name: 'jifen_win',
-						url: 'widget://html/shop/jifen_win.html',
-						pageParam: {
-						}
+					}
 				});
 			},
-			det_fl:function(id,name) {
-				api.openWin({
-						name: 'xinpin_win',
-						url: 'widget://html/shop/xinpin_win.html',
-						pageParam: {
-							id:id,
-							name:name
-						}
-				});
-			},
-			more_kill:function() {
-				api.openWin({
-						name: 'miaosha_win',
-						url: 'widget://html/shop/miaosha_win.html',
-						pageParam: {
-
-						}
-				});
-			},
-			det_class:function(idx,id,name,urls,win_name){
+			det_class: function(idx, id, name, urls, win_name) {
 				//if(idx==0 || idx==1 || idx==4){
-
-					api.openWin({
-					    name: win_name,
-					    url: urls,
-							pageParam: {
-								idx:idx,
-								id:id,
-								name:name
-							}
-					});
+				console.log('窗口名称++++++++++++++' + win_name);
+				api.openWin({
+					name: win_name,
+					url: urls,
+					pageParam: {
+						idx: idx,
+						id: id,
+						name: name
+					}
+				});
 
 				// }else if(idx==2){
 				// 	api.openWin({
@@ -470,772 +547,768 @@
 				// 	});
 				// }
 			},
-			more_banrd:function(){
+			more_banrd: function() {
 				api.openWin({
-						name: 'pinpai_win',
-						url: 'widget://html/shop/pinpai_win.html',
-						pageParam: {
-						}
+					name: 'pinpai_win',
+					url: 'widget://html/shop/pinpai_win.html',
+					pageParam: {}
 				});
 			},
-			det_brand:function(id) {
+			det_brand: function(id) {
 				api.openWin({
-						name: 'pinpaiDetails_win',
-						url: 'widget://html/shop/pinpaiDetails_win.html',
-						pageParam: {
-							id:id
-						}
+					name: 'pinpaiDetails_win',
+					url: 'widget://html/shop/pinpaiDetails_win.html',
+					pageParam: {
+						id: id
+					}
 				});
 			},
-			det:function(id){
+			det: function(id) {
 				api.openWin({
-          name: 'shopDetail_win',
-          url: 'widget://html/shop/shopDetail_win.html',
-					pageParam:{
-						id:id
+					name: 'shopDetail_win',
+					url: 'widget://html/shop/shopDetail_win.html',
+					pageParam: {
+						id: id
 					}
-        });
+				});
 			},
-			dets:function(id){
+			dets: function(id) {
 				api.openWin({
-          name: 'shopDetail_win',
-          url: 'widget://html/shop/shopDetail_win.html',
-					pageParam:{
-						id:id
+					name: 'shopDetail_win',
+					url: 'widget://html/shop/shopDetail_win.html',
+					pageParam: {
+						id: id
 					}
-        });
+				});
 			},
-			det_jf:function(id){
+			det_jf: function(id) {
 				api.openWin({
 					name: 'jifenDetails_win',
 					url: 'widget://html/shop/jifenDetails_win.html',
-					animation:{
-						type:'none',
-						duration:300
+					animation: {
+						type: 'none',
+						duration: 300
 					},
-					pageParam:{
-						id:id
+					pageParam: {
+						id: id
 					}
 				});
 			},
-			area:function() {
+			area: function() {
 				api.showProgress();
 
 				api.ajax({
-				    url: is_shop_url,
-						dataType:'json',
-						returnAll:false,
-						timeout:30,
-				    method: 'post',
-				    data: {
-				        values: {
-				            token: vm.token,
-										lon:vm.lon,
-										lat:vm.lat
-				        }
-				    }
-					},function(ret, err){
-				    if (ret) {
-							console.log(JSON.stringify(ret));
-							api.hideProgress();
-							if(ret.status==1){
-								vm.is_load=1;
-								$api.setStorage('area_id', ret.data.agency.id);
-								$api.setStorage('tag', ret.data.tag);
-								vm.area_id=$api.getStorage('area_id');
-								api.sendEvent({
-								    name: 'area',
-								    extra: {
-								        is_shop: ret.data.tag,
-								        area_name: ret.data.agency.name,
-								    }
-								});
-								if(ret.data.tag==0){
-									if(vm.token){
-										alert_shops();
-									}
-									//alert_shop();
-								}
-								if(ret.data.tag==1){
-									if(vm.token){
-										vm.alert_newpeople();
-									}
-									//alert_shop();
-								}
-
-								setTimeout(function(){
-									vm.banner();
-									vm.kill();
-									vm.new_list();
-									vm.list_info();
-								},200)
-								api.hideProgress();
-
-							}else{
-									api.toast({
-									    msg: ret.msg,
-									    duration: 2000,
-									    location: 'bottom'
-									});
-							}
-				    }else{
-							api.hideProgress();
-							console.log(JSON.stringify(err));
-							vm.is_load=2;
-							if(err.statusCode==500){
-								api.toast({
-										msg: '服务器请求错误！',
-										duration: 2000,
-										location: 'middle'
-								});
-							}else{
-									if(err.statusCode==404){
-										api.toast({
-												msg: '请求失败',
-												duration: 2000,
-												location: 'middle'
-										});
-									}else{
-										api.toast({
-												msg: '请求超时，请检查网络',
-												duration: 2000,
-												location: 'middle'
-										});
-									}
-
-							}
+					url: is_shop_url,
+					dataType: 'json',
+					returnAll: false,
+					timeout: 30,
+					method: 'post',
+					data: {
+						values: {
+							token: vm.token,
+							lon: vm.lon,
+							lat: vm.lat
 						}
+					}
+				}, function(ret, err) {
+					if (ret) {
+						console.log(JSON.stringify(ret));
+						api.hideProgress();
+						if (ret.status == 1) {
+							vm.is_load = 1;
+							$api.setStorage('area_id', ret.data.agency.id);
+							$api.setStorage('tag', ret.data.tag);
+							vm.area_id = $api.getStorage('area_id');
+							api.sendEvent({
+								name: 'area',
+								extra: {
+									is_shop: ret.data.tag,
+									area_name: ret.data.agency.name,
+								}
+							});
+							if (ret.data.tag == 0) {
+								if (vm.token) {
+									alert_shops();
+								}
+							}
+							if (ret.data.tag == 1) {
+								if (vm.token) {
+									vm.alert_newpeople();
+								}
+							}
+							setTimeout(function() {
+								vm.banner();
+								vm.kill();
+								vm.new_list();
+								vm.list_info();
+							}, 200)
+							api.hideProgress();
+						} else {
+							api.toast({
+								msg: ret.msg,
+								duration: 2000,
+								location: 'bottom'
+							});
+						}
+					} else {
+						api.hideProgress();
+						console.log(JSON.stringify(err));
+						vm.is_load = 2;
+						if (err.statusCode == 500) {
+							api.toast({
+								msg: '服务器请求错误！',
+								duration: 2000,
+								location: 'middle'
+							});
+						} else {
+							if (err.statusCode == 404) {
+								api.toast({
+									msg: '请求失败',
+									duration: 2000,
+									location: 'middle'
+								});
+							} else {
+								api.toast({
+									msg: '请求超时，请检查网络',
+									duration: 2000,
+									location: 'middle'
+								});
+							}
+
+						}
+					}
 				});
 			},
-			alert_newpeople:function() {
+			alert_newpeople: function() {
 				api.ajax({
-				    url: new_comers_url,
-						dataType:'json',
-						returnAll:false,
-						timeout:30,
-				    method: 'post',
-				    data: {
-				        values: {
-				            token: vm.token,
-										agency_manage_id:vm.area_id
-				        }
-				    }
-				},function(ret, err){
-				    if (ret) {
-							vm.is_load=1;
-							console.log(JSON.stringify(ret));
-							api.hideProgress();
-							if(ret.status==1){
-
-								if(ret.data.tag==1 && ret.data.is_state==0 && ret.data.reduce_price!=0){
-									api.openFrame({
-											name: 'xinrenZx',
-											url: 'widget://html/pageone/xinrenZx.html',
-											rect: {
-													x: 0,
-													y: 0,
-													w:'auto',
-													h:api.winHeight
-											},
-											pageParam:{
-												price:ret.data.reduce_price
-											},
-									});
-								}
-
-							}else{
-									api.toast({
-									    msg: ret.msg,
-									    duration: 2000,
-									    location: 'bottom'
-									});
-
-							}
-				    }else{
-								console.log(JSON.stringify(err))
+					url: new_comers_url,
+					dataType: 'json',
+					returnAll: false,
+					timeout: 30,
+					method: 'post',
+					data: {
+						values: {
+							token: vm.token,
+							agency_manage_id: vm.area_id
 						}
-				});
-			},
-			banner:function(){
-				api.ajax({   //banner
-				    url: banners_url,
-						dataType:'json',
-						returnAll:false,
-						timeout:30,
-				    method: 'post',
-				    data: {
-				        values: {
-				            token: vm.token,
-										agency_manage_id:vm.area_id,
-										type:1
-				        }
-				    }
-					},function(ret, err){
-				    if (ret) {
-								//console.log(JSON.stringify(ret));
-								if(ret.status){
-									api.hideProgress();
-									vm.is_load=1;
-									vm.banner_list=ret.data.banner_list;
-									var banners_lists=[];
-									if(ret.data.banner_list.length>0){
-										for (var i = 0; i < ret.data.banner_list.length; i++) {
-											 banners_lists.push($api.trimAll(ret.data.banner_list[i].pic));
-										}
-										vm.banns(banners_lists);
-									}
-								}
+					}
+				}, function(ret, err) {
+					if (ret) {
+						vm.is_load = 1;
+						console.log(JSON.stringify(ret));
+						api.hideProgress();
+						if (ret.status == 1) {
 
-				    }else{
-								api.hideProgress();
-								vm.is_load=2;
-								var UIScrollPicture = api.require('UIScrollPicture');
-								UIScrollPicture.close();
-								if(err.statusCode==500){
-									api.toast({
-											msg: '服务器请求错误！',
-											duration: 2000,
-											location: 'middle'
-									});
-								}else{
-										if(err.statusCode==404){
-											api.toast({
-													msg: '请求失败',
-													duration: 2000,
-													location: 'middle'
-											});
-										}else{
-											api.toast({
-													msg: '请求超时，请检查网络',
-													duration: 2000,
-													location: 'middle'
-											});
-										}
-
-								}
-						}
-				});
-				api.ajax({   //无门槛图片
-				    url: prefecture_url,
-						dataType:'json',
-						returnAll:false,
-						timeout:30,
-				    method: 'post',
-				    data: {
-				        values: {
-				            token: vm.token,
-										agency_manage_id:vm.area_id
-				        }
-				    }
-					},function(ret, err){
-				    if (ret) {
-								if(ret.status==1){
-									vm.thunb_list=ret.data.prefecture_list;
-									vm.no_threshold=ret.data.no_threshold;
-									// setTimeout(function(){
-									// 	var mySwiper = new Swiper('.swiper-container', {
-									// 		slidesPerView:'auto',
-									// 		spaceBetween: 10,
-									// 		freeMode: true,
-									// 		freeModeMomentumRatio:1
-									// 	})
-									// },300)
-								}else{
-									console.log(JSON.stringify(err));
-								}
-				    }else{
-							api.hideProgress();
-							if(err.statusCode==500){
-								api.toast({
-										msg: '服务器请求错误！',
-										duration: 2000,
-										location: 'middle'
+							if (ret.data.tag == 1 && ret.data.is_state == 0 && ret.data.reduce_price != 0) {
+								api.openFrame({
+									name: 'xinrenZx',
+									url: 'widget://html/pageone/xinrenZx.html',
+									rect: {
+										x: 0,
+										y: 0,
+										w: 'auto',
+										h: api.winHeight
+									},
+									pageParam: {
+										price: ret.data.reduce_price
+									},
 								});
-							}else{
-									api.toast({
-											msg: '请求超时，请检查网络',
-											duration: 2000,
-											location: 'middle'
-									});
 							}
-						}
-				});
 
-				api.ajax({   //banner
-				    url: index_navigation_url,
-						dataType:'json',
-						returnAll:false,
-						timeout:30,
-				    method: 'post',
-				    data: {
-				        values: {
-				            token: vm.token,
-										agency_manage_id:vm.area_id,
-										state:1
-				        }
-				    }
-					},function(ret, err){
-				    if (ret) {
-								console.log(JSON.stringify(ret));
-								if(ret.status==1){
-										vm.prefecture_list_top=ret.data.prefecture_list
-								}
-				    }
-				});
-				api.ajax({   //banner
-				    url: index_navigations_url,
-						dataType:'json',
-						returnAll:false,
-						timeout:30,
-				    method: 'post',
-				    data: {
-				        values: {
-				            token: vm.token,
-										agency_manage_id:vm.area_id,
-										state:2
-				        }
-				    }
-					},function(ret, err){
-				    if (ret) {
-								if(ret.status==1){
-									vm.count=ret.data.count;
-									vm.prefecture_list_middle=ret.data.prefecture_list
-								}
-				    }
-				});
-				api.ajax({   //品牌
-						url: select_brand_url,
-						dataType:'json',
-						returnAll:false,
-						timeout:30,
-						method: 'post',
-						data: {
-								values: {
-										token: vm.token,
-										agency_manage_id:vm.area_id
-								}
-						}
-					},function(ret, err){
-						if (ret) {
+						} else {
+							api.toast({
+								msg: ret.msg,
+								duration: 2000,
+								location: 'bottom'
+							});
 
-								if(ret.status==1){
-									vm.brands_list=ret.data.brands_list;
-									setTimeout(function(){
-										var mySwiper = new Swiper('.swiper-container', {
-											slidesPerView:'auto',
-											spaceBetween: 10,
-											freeMode: true,
-											autoplayDisableOnInteraction : false,
-											freeModeMomentumRatio:1
-										})
-									},1000)
-								}
 						}
+					} else {
+						console.log(JSON.stringify(err))
+					}
 				});
 			},
-			kill:function() {
-				api.ajax({   //秒杀
-						url: skill_goods_url,
-						dataType:'json',
-						returnAll:false,
-						timeout:30,
-						method: 'post',
-						data: {
-								values: {
-										token: vm.token,
-										agency_manage_id:vm.area_id
-								}
+			banner: function() {
+				// console.log('获取banner++++++++++++++',vm.area_id);
+				// console.log(vm.token)
+				api.ajax({ //banner
+					url: banners_url,
+					dataType: 'json',
+					returnAll: false,
+					timeout: 30,
+					method: 'post',
+					data: {
+						values: {
+							token: vm.token,
+							agency_manage_id: vm.area_id,
+							type: 1
 						}
-					},function(ret, err){
-						if (ret) {
-								console.log(JSON.stringify(ret));
-								if(ret.status==1){
+					}
+				}, function(ret, err) {
+					if (ret) {
+						console.log('banner请求结束+++++++++++++++++++++++++', JSON.stringify(ret));
+						if (ret.status) {
+							api.hideProgress();
+							vm.is_load = 1;
+							vm.banner_list = ret.data.banner_list;
+							console.log('++++++++++++++++++++++++++++++', JSON.stringify(vm.banner_list));
+							var banners_lists = [];
+							if (ret.data.banner_list.length > 0) {
+								for (var i = 0; i < ret.data.banner_list.length; i++) {
+									banners_lists.push($api.trimAll(ret.data.banner_list[i].pic));
+								}
+								vm.banns(banners_lists);
+							}
+						}
+					} else {
+						api.hideProgress();
+						vm.is_load = 2;
+						var UIScrollPicture = api.require('UIScrollPicture');
+						UIScrollPicture.close();
+						if (err.statusCode == 500) {
+							api.toast({
+								msg: '服务器请求错误！',
+								duration: 2000,
+								location: 'middle'
+							});
+						} else {
+							if (err.statusCode == 404) {
+								api.toast({
+									msg: '请求失败',
+									duration: 2000,
+									location: 'middle'
+								});
+							} else {
+								api.toast({
+									msg: '请求超时，请检查网络',
+									duration: 2000,
+									location: 'middle'
+								});
+							}
 
-									if(ret.data.kill_goods!=null){
-										vm.time_tag=ret.data.kill_goods.time_tag;
-										vm.kill_goods=ret.data.kill_goods;
-										if(ret.data.kill_goods!=null && ret.data.kill_goods!=''){
-											if(ret.data.kill_goods.time_tag==0){
-												if(ret.data.kill_goods.kill_start_time){
-													setInterval(function(){
-							              vm.star_times()
-							            },1000)
-												}
-											}else{
-												if(ret.data.kill_goods.kill_end_time){
-													setInterval(function(){
-							              vm.end_times()
-							            },1000)
-												}
-											}
+						}
+					}
+				});
+				api.ajax({ //无门槛图片
+					url: prefecture_url,
+					dataType: 'json',
+					returnAll: false,
+					timeout: 30,
+					method: 'post',
+					data: {
+						values: {
+							token: vm.token,
+							agency_manage_id: vm.area_id
+						}
+					}
+				}, function(ret, err) {
+					if (ret) {
+						if (ret.status == 1) {
+							vm.thunb_list = ret.data.prefecture_list;
+							vm.no_threshold = ret.data.no_threshold;
+							// setTimeout(function(){
+							// 	var mySwiper = new Swiper('.swiper-container', {
+							// 		slidesPerView:'auto',
+							// 		spaceBetween: 10,
+							// 		freeMode: true,
+							// 		freeModeMomentumRatio:1
+							// 	})
+							// },300)
+						} else {
+							console.log(JSON.stringify(err));
+						}
+					} else {
+						api.hideProgress();
+						if (err.statusCode == 500) {
+							api.toast({
+								msg: '服务器请求错误！',
+								duration: 2000,
+								location: 'middle'
+							});
+						} else {
+							api.toast({
+								msg: '请求超时，请检查网络',
+								duration: 2000,
+								location: 'middle'
+							});
+						}
+					}
+				});
 
+				api.ajax({ //banner
+					url: index_navigation_url,
+					dataType: 'json',
+					returnAll: false,
+					timeout: 30,
+					method: 'post',
+					data: {
+						values: {
+							token: vm.token,
+							agency_manage_id: vm.area_id,
+							state: 1
+						}
+					}
+				}, function(ret, err) {
+					if (ret) {
+						console.log(JSON.stringify(ret));
+						if (ret.status == 1) {
+							vm.prefecture_list_top = ret.data.prefecture_list
+						}
+					}
+				});
+				api.ajax({ //banner
+					url: index_navigations_url,
+					dataType: 'json',
+					returnAll: false,
+					timeout: 30,
+					method: 'post',
+					data: {
+						values: {
+							token: vm.token,
+							agency_manage_id: vm.area_id,
+							state: 2
+						}
+					}
+				}, function(ret, err) {
+					if (ret) {
+						if (ret.status == 1) {
+							vm.count = ret.data.count;
+							vm.prefecture_list_middle = ret.data.prefecture_list
+						}
+					}
+				});
+				api.ajax({ //品牌
+					url: select_brand_url,
+					dataType: 'json',
+					returnAll: false,
+					timeout: 30,
+					method: 'post',
+					data: {
+						values: {
+							token: vm.token,
+							agency_manage_id: vm.area_id
+						}
+					}
+				}, function(ret, err) {
+					if (ret) {
 
+						if (ret.status == 1) {
+							vm.brands_list = ret.data.brands_list;
+							setTimeout(function() {
+								var mySwiper = new Swiper('.swiper-container', {
+									slidesPerView: 'auto',
+									spaceBetween: 10,
+									freeMode: true,
+									autoplayDisableOnInteraction: false,
+									freeModeMomentumRatio: 1
+								})
+							}, 1000)
+						}
+					}
+				});
+			},
+			kill: function() {
+				api.ajax({ //秒杀
+					url: skill_goods_url,
+					dataType: 'json',
+					returnAll: false,
+					timeout: 30,
+					method: 'post',
+					data: {
+						values: {
+							token: vm.token,
+							agency_manage_id: vm.area_id
+						}
+					}
+				}, function(ret, err) {
+					if (ret) {
+						console.log(JSON.stringify(ret));
+						if (ret.status == 1) {
+
+							if (ret.data.kill_goods != null) {
+								vm.time_tag = ret.data.kill_goods.time_tag;
+								vm.kill_goods = ret.data.kill_goods;
+								if (ret.data.kill_goods != null && ret.data.kill_goods != '') {
+									if (ret.data.kill_goods.time_tag == 0) {
+										if (ret.data.kill_goods.kill_start_time) {
+											setInterval(function() {
+												vm.star_times()
+											}, 1000)
+										}
+									} else {
+										if (ret.data.kill_goods.kill_end_time) {
+											setInterval(function() {
+												vm.end_times()
+											}, 1000)
 										}
 									}
 
-									// setTimeout(function(){
-									// 	new Swiper('.swiper-container', {
-									// 			slidesPerView:'auto',
-									// 			spaceBetween: 10,
-									// 			freeMode: true,
-									// 			freeModeMomentumRatio:1
-									// 		})
-									// },500)
-								}else{
-									return;
+
 								}
-						}else{
-							api.hideProgress();
-							if(err.statusCode==500){
-								api.toast({
-										msg: '服务器请求错误！',
-										duration: 2000,
-										location: 'middle'
-								});
-							}else{
-									api.toast({
-											msg: '请求超时，请检查网络',
-											duration: 2000,
-											location: 'middle'
-									});
 							}
+
+							// setTimeout(function(){
+							// 	new Swiper('.swiper-container', {
+							// 			slidesPerView:'auto',
+							// 			spaceBetween: 10,
+							// 			freeMode: true,
+							// 			freeModeMomentumRatio:1
+							// 		})
+							// },500)
+						} else {
+							return;
 						}
+					} else {
+						api.hideProgress();
+						if (err.statusCode == 500) {
+							api.toast({
+								msg: '服务器请求错误！',
+								duration: 2000,
+								location: 'middle'
+							});
+						} else {
+							api.toast({
+								msg: '请求超时，请检查网络',
+								duration: 2000,
+								location: 'middle'
+							});
+						}
+					}
 				});
 
 			},
-			star_times:function(){
-				if(vm.kill_goods){
-					if(vm.kill_goods.kill_start_time!='' && vm.kill_goods.kill_start_time!=undefined ){
-						var time = new Date(vm.kill_goods.kill_start_time.replace(/-/g,"/")).getTime();
+			star_times: function() {
+				if (vm.kill_goods) {
+					if (vm.kill_goods.kill_start_time != '' && vm.kill_goods.kill_start_time != undefined) {
+						var time = new Date(vm.kill_goods.kill_start_time.replace(/-/g, "/")).getTime();
 						var nowTime = new Date().getTime();
 						var endTime = time - nowTime;
 						//console.log(endTime);
-						var h,m,s;
-						if(endTime>=0){
-							h = Math.floor(endTime/1000/60/60%24);
-							m = Math.floor(endTime/1000/60%60);
-							s = Math.floor(endTime/1000%60);
-						}else{
-								console.log("H++2");
+						var h, m, s;
+						if (endTime >= 0) {
+							h = Math.floor(endTime / 1000 / 60 / 60 % 24);
+							m = Math.floor(endTime / 1000 / 60 % 60);
+							s = Math.floor(endTime / 1000 % 60);
+						} else {
+							console.log("H++2");
 							setTimeout(function() {
 								vm.kill();
-							},1000)
+							}, 1000)
 						}
-						if(h < 10){
+						if (h < 10) {
 							h = "0" + h
 						}
-						if(m < 10){
+						if (m < 10) {
 							m = "0" + m
 						}
-						if(s < 10){
+						if (s < 10) {
 							s = "0" + s
 						}
 						vm.h = h;
-						vm.m=m;
-						vm.s=s;
+						vm.m = m;
+						vm.s = s;
 					}
 
 				}
 
 			},
-			end_times:function(){
-				if(vm.kill_goods){
-					if(vm.kill_goods.kill_end_time!='' && vm.kill_goods.kill_end_time!=undefined ){
-						var times = new Date(vm.kill_goods.kill_end_time.replace(/-/g,"/")).getTime();
+			end_times: function() {
+				if (vm.kill_goods) {
+					if (vm.kill_goods.kill_end_time != '' && vm.kill_goods.kill_end_time != undefined) {
+						var times = new Date(vm.kill_goods.kill_end_time.replace(/-/g, "/")).getTime();
 						var nowTimes = new Date().getTime();
 						var endTimes = times - nowTimes;
-						var hs,ms,ss;
+						var hs, ms, ss;
 						//console.log(endTimes);
-						if(endTimes>=0){
-							hs = Math.floor(endTimes/1000/60/60%24);
-							ms = Math.floor(endTimes/1000/60%60);
-							ss = Math.floor(endTimes/1000%60);
-						}else{
+						if (endTimes >= 0) {
+							hs = Math.floor(endTimes / 1000 / 60 / 60 % 24);
+							ms = Math.floor(endTimes / 1000 / 60 % 60);
+							ss = Math.floor(endTimes / 1000 % 60);
+						} else {
 							console.log("H++1");
 							setTimeout(function() {
 								vm.kill();
-							},500)
+							}, 500)
 						}
-						if(hs < 10){
+						if (hs < 10) {
 							hs = "0" + hs
 						}
-						if(ms < 10){
+						if (ms < 10) {
 							ms = "0" + ms
 						}
-						if(ss < 10){
+						if (ss < 10) {
 							ss = "0" + ss
 						}
 						vm.hs = hs;
-						vm.ms=ms;
-						vm.ss=ss;
+						vm.ms = ms;
+						vm.ss = ss;
 					}
 
 				}
 
 			},
-			list_info:function(){
+			list_info: function() {
 				api.ajax({
-				    url: guess_you_like_url,
-						dataType:'json',
-						returnAll:false,
-						timeout:30,
-				    method: 'post',
-				    data: {
-				        values: {
-				            token: vm.token,
-										agency_manage_id:vm.area_id
-				        }
-				    }
-				},function(ret, err){
-						console.log(JSON.stringify(ret))
-				    if (ret) {
-							vm.is_load=1
-							api.hideProgress();
-							if(ret.status==1){
-								vm.like_list=ret.data.page;
-							}else{
-									api.toast({
-									    msg: ret.msg,
-									    duration: 2000,
-									    location: 'bottom'
-									});
-
-							}
-				    }else{
-								console.log(JSON.stringify(err))
+					url: guess_you_like_url,
+					dataType: 'json',
+					returnAll: false,
+					timeout: 30,
+					method: 'post',
+					data: {
+						values: {
+							token: vm.token,
+							agency_manage_id: vm.area_id
 						}
+					}
+				}, function(ret, err) {
+					console.log(JSON.stringify(ret))
+					if (ret) {
+						vm.is_load = 1
+						api.hideProgress();
+						if (ret.status == 1) {
+							for(let i=0;i<ret.data.page.length;i++){
+								var arr = [];
+								for(let j=0;j<ret.data.page[i].market_price.length;j++){
+									arr.push(ret.data.page[i].market_price[j].goods_price);
+								}
+								if(arr.length > 0){
+									arr.sort(sortNumber);
+									if(arr.length == 1){ret.data.page[i].price_space = arr[0];}
+									if(arr.length == 2){ret.data.page[i].price_space = arr[0] + '~' + arr[1]}
+									if(arr.length > 2){ret.data.page[i].price_space = arr[0] + '~' + arr[arr.length - 1]}
+								}else {
+									ret.data.page[i].price_space = "0";
+								}
+							}
+							vm.like_list = ret.data.page;
+						} else {
+							api.toast({
+								msg: ret.msg,
+								duration: 2000,
+								location: 'bottom'
+							});
+
+						}
+					} else {
+						console.log(JSON.stringify(err))
+					}
 				});
 			},
-			banns:function(banners_list){
-					var UIScrollPicture = api.require('UIScrollPicture');
-					UIScrollPicture.open({
-						 rect: {
-									x: 10,
-									y: 0,
-									w: api.winWidth-20,
-									h: 180
+			banns: function(banners_list) {
+				var UIScrollPicture = api.require('UIScrollPicture');
+				UIScrollPicture.open({
+					rect: {
+						x: 10,
+						y: 0,
+						w: api.winWidth - 20,
+						h: 180
+					},
+					data: {
+						paths: banners_list
+					},
+					styles: {
+						caption: {
+							height: 35,
+							color: '#E0FFFF',
+							size: 13,
+							bgColor: '#696969',
+							position: 'bottom'
+						},
+						indicator: {
+							dot: {
+								w: 4,
+								h: 5,
+								r: 2,
+								margin: 5
 							},
-							data: {
-									paths:banners_list
-							},
-							styles: {
-									caption: {
-											height: 35,
-											color: '#E0FFFF',
-											size: 13,
-											bgColor: '#696969',
-											position: 'bottom'
-									},
-									indicator: {
-										 dot:{
-											 w:4,
- 											h:5,
- 											r:2,
- 											margin:5
+							align: 'center',
+							color: '#FFFFFF',
+							activeColor: '#34d594'
+						}
+					},
+					placeholderImg: 'widget://image/banner.jpg',
+					contentMode: 'scaleToFill',
+					interval: 3,
+					fixedOn: api.frameName,
+					loop: true,
+					fixed: false
+				}, function(ret, err) {
+					if (ret) {
+						if (ret.eventType == 'click') {
+							console.log('1051+++++++++++++++++++++++++++++++++', JSON.stringify(vm.banner_list[ret.index].id));
+							if (vm.banner_list) {
+								if (vm.banner_list[ret.index].id == 0) {
+									api.openWin({
+										name: 'dingzhi_win',
+										url: 'widget://html/index/dingzhi_win.html',
+										animation: {
+											type: 'none',
+											duration: 300
 										},
-											align: 'center',
-											color: '#FFFFFF',
-											activeColor: '#34d594'
-									}
-							},
-							placeholderImg: 'widget://image/banner.jpg',
-							contentMode: 'scaleToFill',
-							interval: 3,
-							fixedOn: api.frameName,
-							loop: true,
-							fixed: false
-					}, function(ret, err) {
-							if(ret){
-								if(ret.eventType=='click'){
-									console.log(JSON.stringify(vm.banner_list[ret.index].id));
-									if(vm.banner_list){
-										if(vm.banner_list[ret.index].id==0){
-											api.openWin({
-													name: 'dingzhi_win',
-													url: 'widget://html/index/dingzhi_win.html',
-													animation:{
-														type:'none',
-														duration:300
-													},
-													pageParam: {
-
-													}
-											});
-										}else{
-											api.ajax({   //banner
-													url: good_detail_url,
-													dataType:'json',
-													returnAll:false,
-													timeout:30,
-													method: 'post',
-													data: {
-															values: {
-																	token: vm.token,
-																	agency_manage_id:vm.area_id,
-																	id:vm.banner_list[ret.index].id
-															}
-													}
-												},function(res, err){
-													if (res) {
-															api.hideProgress();
-															var id=vm.banner_list[ret.index].id;
-															console.log(id);
-															if(res.status==1){
-																	api.openWin({
-																			name: 'shopDetail_win',
-																			url: 'widget://html/shop/shopDetail_win.html',
-																			pageParam: {
-																					id:id
-																			}
-																	});
-															}else{
-																api.toast({
-																		msg: res.msg,
-																		duration: 2000,
-																		location: 'bottom'
-																});
-
-															}
-													}else{
-														api.hideProgress();
-														if(err.statusCode==500){
-															api.toast({
-																	msg: '服务器请求错误！',
-																	duration: 2000,
-																	location: 'middle'
-															});
-														}else{
-																api.toast({
-																		msg: '请求超时，请检查网络',
-																		duration: 2000,
-																		location: 'middle'
-																});
-														}
-													}
-											});
-
+										pageParam: {
 
 										}
-									}
-
-
-
-
-
-
-
-
-
-
-
-
-								}
-							}else{
-								 console.log('执行1');
-							}
-					});
-			},
-			new_list:function() {
-				api.ajax({   //品牌
-						url: unread_num_url,
-						dataType:'json',
-						returnAll:false,
-						timeout:30,
-						method: 'post',
-						data: {
-								values: {
-										token: vm.token,
-										agency_manage_id:vm.area_id
-								}
-						}
-					},function(ret, err){
-						if (ret) {
-								if(ret.status==1){
-									api.sendEvent({
-									    name: 'unread_num',
-									    extra: {
-									        unread_num: ret.data.unread_num
-									    }
 									});
-
+								} else {
+									api.ajax({ //banner
+										url: good_detail_url,
+										dataType: 'json',
+										returnAll: false,
+										timeout: 30,
+										method: 'post',
+										data: {
+											values: {
+												token: vm.token,
+												agency_manage_id: vm.area_id,
+												id: vm.banner_list[ret.index].id
+											}
+										}
+									}, function(res, err) {
+										if (res) {
+											api.hideProgress();
+											var id = vm.banner_list[ret.index].id;
+											console.log('1153++++++++++++++++++++++++++++', JSON.stringify(res));
+											if (res.status == 1) {
+												api.openWin({
+													name: 'shopDetail_win',
+													url: 'widget://html/shop/shopDetail_win.html',
+													pageParam: {
+														id: id
+													}
+												});
+											} else {
+												api.toast({
+													msg: res.msg,
+													duration: 2000,
+													location: 'bottom'
+												});
+											}
+										} else {
+											api.hideProgress();
+											if (err.statusCode == 500) {
+												api.toast({
+													msg: '服务器请求错误！',
+													duration: 2000,
+													location: 'middle'
+												});
+											} else {
+												api.toast({
+													msg: '请求超时，请检查网络',
+													duration: 2000,
+													location: 'middle'
+												});
+											}
+										}
+									});
 								}
+							}
 						}
+					} else {
+						console.log('执行1');
+					}
 				});
 			},
-			class_det:function(index,id){
+			new_list: function() {
+				api.ajax({ //品牌
+					url: unread_num_url,
+					dataType: 'json',
+					returnAll: false,
+					timeout: 30,
+					method: 'post',
+					data: {
+						values: {
+							token: vm.token,
+							agency_manage_id: vm.area_id
+						}
+					}
+				}, function(ret, err) {
+					if (ret) {
+						if (ret.status == 1) {
+							api.sendEvent({
+								name: 'unread_num',
+								extra: {
+									unread_num: ret.data.unread_num
+								}
+							});
+
+						}
+					}
+				});
+			},
+			class_det: function(index, id) {
 				api.openWin({
-				    name: 'goods_win',
-				    url: 'widget://html/shop/goods_win.html',
-				    pageParam: {
-				        id:id,
-								name:vm.classify_list[index].name
-				    }
+					name: 'goods_win',
+					url: 'widget://html/shop/goods_win.html',
+					pageParam: {
+						id: id,
+						name: vm.classify_list[index].name
+					}
 				});
 			}
 
 		}
 	})
-	apiready = function(){
-		vm.token= $api.getStorage('token');
+	apiready = function() {
+		vm.token = $api.getStorage('token');
 		var bMap = api.require('bMap');
 
 		vm.alert_newpeople();
 		api.addEventListener({
-		    name: 'is_read_init'
-		}, function(ret, err){
-		    if( ret ){
-		        vm.new_list();
-		    }
+			name: 'is_read_init'
+		}, function(ret, err) {
+			if (ret) {
+				vm.new_list();
+			}
 		});
 		setTimeout(function() {
 			bMap.getLocation({
-			    accuracy: '100m',
-			    autoStop: true,
-			    filter: 1
+				accuracy: '100m',
+				autoStop: true,
+				filter: 1
 			}, function(ret, err) {
-			    if (ret.status) {
-						vm.lon=ret.lon;
-						vm.lat=ret.lat;
-						bMap.stopLocation();
-						vm.area();
-			    } else {
-						bMap.getLocation({
-								accuracy: '100m',
-								autoStop: true,
-								filter: 1
-						}, function(ret, err) {
-								if (ret.status) {
-									vm.lon=ret.lon;
-									vm.lat=ret.lat;
-									bMap.stopLocation();
-									vm.area();
-								} else {
-							setTimeout(function () {
-								api.confirm( {
+				if (ret.status) {
+					vm.lon = ret.lon;
+					vm.lat = ret.lat;
+					bMap.stopLocation();
+					vm.area();
+				} else {
+					bMap.getLocation({
+						accuracy: '100m',
+						autoStop: true,
+						filter: 1
+					}, function(ret, err) {
+						if (ret.status) {
+							vm.lon = ret.lon;
+							vm.lat = ret.lat;
+							bMap.stopLocation();
+							vm.area();
+						} else {
+							setTimeout(function() {
+								api.confirm({
 									title: '定位服务未开启',
-									msg:  '请在系统设置中开启定位服务',
-									buttons: [ '暂不', '确定' ]
-								}, function ( ret, err ) {
+									msg: '请在系统设置中开启定位服务',
+									buttons: ['暂不', '确定']
+								}, function(ret, err) {
 									var index = ret.buttonIndex;
-									if ( index == 1 ) {
-											// api.closeWidget({silent: true});
-										 vm.area();
-									}else{
-										if(api.systemType=='ios'){
+									if (index == 1) {
+										// api.closeWidget({silent: true});
+										vm.area();
+									} else {
+										if (api.systemType == 'ios') {
 											var setJumpNew = api.require('setJumpNew');
 											setJumpNew.open();
-										}else{
+										} else {
 											vm.area();
 										}
 
 									}
 								})
-							},500)
-							}
-						})
-			    }
+							}, 500)
+						}
+					})
+				}
 			});
-		},300)
+		}, 300)
 
 
 		// api.addEventListener({
@@ -1247,241 +1320,242 @@
 		//     }
 		// });
 		api.addEventListener({
-		    name: 'sx'
-			}, function(ret, err){
-		    if( ret ){
-					vm.token= $api.getStorage('token');
-					vm.area_id= $api.getStorage('area_id');
-					vm.tag= $api.getStorage('tag');
-					vm.pageNo=1;
-					vm.list = [];
-					vm.prefecture_list_top=[],		//首页5个分类
-					vm.count='0',//   判断显示第几种
-					vm.prefecture_list_middle=[],   //专区集合
-					vm.brands_list=[],//品牌图片
-					vm.thunb_list=[],
-					vm.no_threshold=[],
-					vm.kill_goods=[],//秒杀商品
+			name: 'sx'
+		}, function(ret, err) {
+			if (ret) {
+				vm.token = $api.getStorage('token');
+				vm.area_id = $api.getStorage('area_id');
+				vm.tag = $api.getStorage('tag');
+				vm.pageNo = 1;
+				vm.list = [];
+				vm.prefecture_list_top = [], //首页5个分类
+					vm.count = '0', //   判断显示第几种
+					vm.prefecture_list_middle = [], //专区集合
+					vm.brands_list = [], //品牌图片
+					vm.thunb_list = [],
+					vm.no_threshold = [],
+					vm.kill_goods = [], //秒杀商品
 					vm.banner();
-					vm.kill();
-					vm.new_list();
-					vm.list_info();
-					if(vm.token){
-						if(vm.tag==2){
-							vm.area();
-						}
-					}
-		    }
-		});
-
-		api.addEventListener({
-		    name: 'reshuf'
-			}, function(ret, err){
-				vm.token= $api.getStorage('token');
-				vm.area_id= $api.getStorage('area_id');
-				vm.tag= $api.getStorage('tag');
-				vm.pageNo=1;
-				vm.list = [];
-				vm.prefecture_list_top=[],		//首页5个分类
-				vm.count='0',//   判断显示第几种
-
-				vm.prefecture_list_middle=[],   //专区集合
-				vm.brand_info=[],//品牌图片
-				vm.hot_info=[], //热销推荐
-				vm.new_info=[],//新品推荐
-				vm.jf_info=[],//积分
-				vm.tj_info=[],//特价
-				vm.kill_goods=[],//秒杀商品
-				vm.banner();
 				vm.kill();
-				vm.alert_newpeople();
+				vm.new_list();
+				vm.list_info();
+				if (vm.token) {
+					if (vm.tag == 2) {
+						vm.area();
+					}
+				}
+			}
+		});
+
+		api.addEventListener({
+			name: 'reshuf'
+		}, function(ret, err) {
+			vm.token = $api.getStorage('token');
+			vm.area_id = $api.getStorage('area_id');
+			vm.tag = $api.getStorage('tag');
+			vm.pageNo = 1;
+			vm.list = [];
+			vm.prefecture_list_top = [], //首页5个分类
+				vm.count = '0', //   判断显示第几种
+
+				vm.prefecture_list_middle = [], //专区集合
+				vm.brand_info = [], //品牌图片
+				vm.hot_info = [], //热销推荐
+				vm.new_info = [], //新品推荐
+				vm.jf_info = [], //积分
+				vm.tj_info = [], //特价
+				vm.kill_goods = [], //秒杀商品
+				vm.banner();
+			vm.kill();
+			vm.alert_newpeople();
 		});
 		api.addEventListener({
-		    name: 'login_init'
-			}, function(ret, err){
-				vm.token= $api.getStorage('token');
-				vm.area_id= $api.getStorage('area_id');
-				vm.tag= $api.getStorage('tag');
-				vm.pageNo=1;
-				vm.list = [];
-				vm.prefecture_list_top=[],		//首页5个分类
-				vm.count='0',//   判断显示第几种
+			name: 'login_init'
+		}, function(ret, err) {
+			vm.token = $api.getStorage('token');
+			vm.area_id = $api.getStorage('area_id');
+			vm.tag = $api.getStorage('tag');
+			vm.pageNo = 1;
+			vm.list = [];
+			vm.prefecture_list_top = [], //首页5个分类
+				vm.count = '0', //   判断显示第几种
 
-				vm.prefecture_list_middle=[],   //专区集合
-				vm.brand_info=[],//品牌图片
-				vm.hot_info=[], //热销推荐
-				vm.new_info=[],//新品推荐
-				vm.jf_info=[],//积分
-				vm.tj_info=[],//特价
-				vm.kill_goods=[],//秒杀商品
+				vm.prefecture_list_middle = [], //专区集合
+				vm.brand_info = [], //品牌图片
+				vm.hot_info = [], //热销推荐
+				vm.new_info = [], //新品推荐
+				vm.jf_info = [], //积分
+				vm.tj_info = [], //特价
+				vm.kill_goods = [], //秒杀商品
 				vm.area();
 		});
 		api.addEventListener({
-		    name: 'select_city_init'
-			}, function(ret, err){
-		    if( ret ){
-					var UIScrollPicture = api.require('UIScrollPicture');
-					UIScrollPicture.close();
-				 vm.token= $api.getStorage('token');
-				 vm.area_id= $api.getStorage('area_id');
- 				 vm.tag= $api.getStorage('tag');
-				 vm.pageNo=1;
-				 vm.list = [];
-				 vm.prefecture_list_top=[],		//首页5个分类
-				 vm.count='0',//   判断显示第几种
+			name: 'select_city_init'
+		}, function(ret, err) {
+			if (ret) {
+				var UIScrollPicture = api.require('UIScrollPicture');
+				UIScrollPicture.close();
+				vm.token = $api.getStorage('token');
+				vm.area_id = $api.getStorage('area_id');
+				vm.tag = $api.getStorage('tag');
+				vm.pageNo = 1;
+				vm.list = [];
+				vm.prefecture_list_top = [], //首页5个分类
+					vm.count = '0', //   判断显示第几种
 
-				 vm.prefecture_list_middle=[],   //专区集合
-				 vm.brand_info=[],//品牌图片
-				 vm.hot_info=[], //热销推荐
-				 vm.new_info=[],//新品推荐
-				 vm.jf_info=[],//积分
-				 vm.tj_info=[],//特价
-				 vm.kill_goods=[],//秒杀商品
-				 //vm.area();
-				 vm.banner();
-				 vm.kill();
-				 vm.list_info();
-				 if(vm.token){
-					 if(vm.tag==0){
-						 alert_shops();
-					 }
-				 }
-		    }
+					vm.prefecture_list_middle = [], //专区集合
+					vm.brand_info = [], //品牌图片
+					vm.hot_info = [], //热销推荐
+					vm.new_info = [], //新品推荐
+					vm.jf_info = [], //积分
+					vm.tj_info = [], //特价
+					vm.kill_goods = [], //秒杀商品
+					//vm.area();
+					vm.banner();
+				vm.kill();
+				vm.list_info();
+				if (vm.token) {
+					if (vm.tag == 0) {
+						alert_shops();
+					}
+				}
+			}
 		});
 		api.addEventListener({
-		    name: 'store'
-			}, function(ret, err){
-		    if( ret ){
-				 vm.token= $api.getStorage('token');
-				 vm.area_id= $api.getStorage('area_id');
- 				 vm.tag= $api.getStorage('tag');
-				 vm.pageNo=1;
-				 vm.list = [];
-				 vm.prefecture_list_top=[],		//首页5个分类
-				 vm.count='0',//   判断显示第几种
+			name: 'store'
+		}, function(ret, err) {
+			if (ret) {
+				vm.token = $api.getStorage('token');
+				vm.area_id = $api.getStorage('area_id');
+				vm.tag = $api.getStorage('tag');
+				vm.pageNo = 1;
+				vm.list = [];
+				vm.prefecture_list_top = [], //首页5个分类
+					vm.count = '0', //   判断显示第几种
 
-				 vm.prefecture_list_middle=[],   //专区集合
-	 			 vm.brands_list=[],//品牌图片
-				 vm.thunb_list=[],
-				 vm.no_threshold=[],
-	 			 vm.kill_goods=[],//秒杀商品
-				 vm.banner();
-				 vm.kill();
-				 vm.list_info();
-		    }
+					vm.prefecture_list_middle = [], //专区集合
+					vm.brands_list = [], //品牌图片
+					vm.thunb_list = [],
+					vm.no_threshold = [],
+					vm.kill_goods = [], //秒杀商品
+					vm.banner();
+				vm.kill();
+				vm.list_info();
+			}
 		});
 
 		api.setRefreshHeaderInfo({
-			 visible: true,
-			 loadingImg: 'widget://image/refresh.png',
-				bgColor: '#f6f6f6',
-			 textColor: '#999',
-			 textDown: '下拉刷新...',
-			 textUp: '松开刷新...',
-			 showTime: true
-		 }, function (ret, err) {
-			 if(ret){
-				 vm.token= $api.getStorage('token');
-				 vm.area_id= $api.getStorage('area_id');
- 				 vm.tag= $api.getStorage('tag');
-				 vm.pageNo=1;
-				 vm.list = [];
-				 vm.prefecture_list_top=[],		//首页5个分类
-	 		 	 vm.count='0',//   判断显示第几种
-	 			 vm.prefecture_list_middle=[],   //专区集合
-	 			 vm.brands_list=[],//品牌图片
-				 vm.thunb_list=[],
-				 vm.no_threshold=[],
-	 			 vm.kill_goods=[],//秒杀商品
-				 vm.banner();
-				 vm.kill();
-				 vm.new_list();
-				 vm.list_info();
-				 if(vm.token){
-					 if(vm.tag==2){
-						 vm.area();
-					 }
-				 }
-				 setTimeout("api.refreshHeaderLoadDone()", '500');
-			 }
-		 });
-		 //上啦加载
-			api.addEventListener({
-					 name:'scrolltobottom',
-					 extra:{
-						 threshold:300
-					 }
-				 },function(ret,err){
-					 if(vm.totalRow == vm.list.length){
-					 	return;
+			visible: true,
+			loadingImg: 'widget://image/refresh.png',
+			bgColor: '#f6f6f6',
+			textColor: '#999',
+			textDown: '下拉刷新...',
+			textUp: '松开刷新...',
+			showTime: true
+		}, function(ret, err) {
+			if (ret) {
+				vm.token = $api.getStorage('token');
+				vm.area_id = $api.getStorage('area_id');
+				vm.tag = $api.getStorage('tag');
+				vm.pageNo = 1;
+				vm.list = [];
+				vm.prefecture_list_top = [], //首页5个分类
+					vm.count = '0', //   判断显示第几种
+					vm.prefecture_list_middle = [], //专区集合
+					vm.brands_list = [], //品牌图片
+					vm.thunb_list = [],
+					vm.no_threshold = [],
+					vm.kill_goods = [], //秒杀商品
+					vm.banner();
+				vm.kill();
+				vm.new_list();
+				vm.list_info();
+				if (vm.token) {
+					if (vm.tag == 2) {
+						vm.area();
 					}
-				 vm.pageNo++;
-				 vm.list_info();
-		 });
+				}
+				setTimeout("api.refreshHeaderLoadDone()", '500');
+			}
+		});
+		//上啦加载
+		api.addEventListener({
+			name: 'scrolltobottom',
+			extra: {
+				threshold: 300
+			}
+		}, function(ret, err) {
+			if (vm.totalRow == vm.list.length) {
+				return;
+			}
+			vm.pageNo++;
+			vm.list_info();
+		});
 	}
-	function alert_shops(){
+
+	function alert_shops() {
 		var dialogBox = api.require('dialogBox');
-		 dialogBox.alert({
-				texts: {
-						title: '提示',
-						content: '申请门店代理之后才能看到商品价格哦！快去申请吧',
-						leftBtnTitle: '暂时不',
-						rightBtnTitle: '去申请'
+		dialogBox.alert({
+			texts: {
+				title: '提示',
+				content: '申请门店代理之后才能看到商品价格哦！快去申请吧',
+				leftBtnTitle: '暂时不',
+				rightBtnTitle: '去申请'
+			},
+			styles: {
+				bg: '#fff',
+				w: 300,
+				corner: 2,
+				title: { //（可选项）JSON对象；弹窗标题栏样式配置，不传则不显示标题区域
+					marginT: 20, //（可选项）数字类型；标题栏与对话框顶端间距；默认：20
+					icon: '', //（可选项）字符串类型；标题前面的图标路径，要求本地路径（widget://、fs://）；图片为正方形的，如：50*50、100*100，建议开发者传大小合适的图片以适配高分辨率手机屏幕，不传则不显示
+					iconSize: 40, //（可选项）数字类型；icon 图标边长大小,若 icon 不存在则此参数无效；默认：24
+					titleSize: 14, //（可选项）数字类型；标题字体大小；默认：14
+					titleColor: '#000' //（可选项）字符串类型；标题字体颜色，支持#、rgb、rgba；默认：#fff
 				},
-				styles: {
-						bg: '#fff',
-						w: 300,
-						corner:2,
-						title:{                //（可选项）JSON对象；弹窗标题栏样式配置，不传则不显示标题区域
-								 marginT: 20,       //（可选项）数字类型；标题栏与对话框顶端间距；默认：20
-								 icon: '',          //（可选项）字符串类型；标题前面的图标路径，要求本地路径（widget://、fs://）；图片为正方形的，如：50*50、100*100，建议开发者传大小合适的图片以适配高分辨率手机屏幕，不传则不显示
-								 iconSize: 40,      //（可选项）数字类型；icon 图标边长大小,若 icon 不存在则此参数无效；默认：24
-								 titleSize: 14,     //（可选项）数字类型；标题字体大小；默认：14
-								 titleColor: '#000' //（可选项）字符串类型；标题字体颜色，支持#、rgb、rgba；默认：#fff
-						 },
-						content: {
-								color: '#000',
-								size: 14
-						},
-						left: {
-								marginB: 7,
-								marginL: 20,
-								w: 130,
-								h: 35,
-								corner: 2,
-								bg: '#fff',
-								color: '#000',
-								size: 12
-						},
-						right: {
-								marginB: 7,
-								marginL: 10,
-								w: 130,
-								h: 35,
-								corner: 2,
-								bg: '#fff',
-								color: '#45a1b4',
-								size: 12
-						}
+				content: {
+					color: '#000',
+					size: 14
+				},
+				left: {
+					marginB: 7,
+					marginL: 20,
+					w: 130,
+					h: 35,
+					corner: 2,
+					bg: '#fff',
+					color: '#000',
+					size: 12
+				},
+				right: {
+					marginB: 7,
+					marginL: 10,
+					w: 130,
+					h: 35,
+					corner: 2,
+					bg: '#fff',
+					color: '#45a1b4',
+					size: 12
 				}
-		 }, function(ret) {
-				if (ret.eventType == 'left') {
-						var dialogBox = api.require('dialogBox');
-						dialogBox.close({
-								dialogName: 'alert'
-						});
-				}else{
-					var dialogBox = api.require('dialogBox');
-					dialogBox.close({
-							dialogName: 'alert'
+			}
+		}, function(ret) {
+			if (ret.eventType == 'left') {
+				var dialogBox = api.require('dialogBox');
+				dialogBox.close({
+					dialogName: 'alert'
+				});
+			} else {
+				var dialogBox = api.require('dialogBox');
+				dialogBox.close({
+					dialogName: 'alert'
+				});
+				setTimeout(function() {
+					api.openWin({
+						name: 'shenqingDli_win',
+						url: 'widget://html/index/shenqingDli_win.html',
 					});
-					setTimeout(function(){
-						api.openWin({
-								 name: 'shenqingDli_win',
-								 url: 'widget://html/index/shenqingDli_win.html',
-						 });
-					},300)
-				}
-		 });
+				}, 300)
+			}
+		});
 	}
 </script>

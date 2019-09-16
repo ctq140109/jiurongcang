@@ -139,7 +139,8 @@
 			like_list:[],
 			account:'',
 			pageNo:'',
-			pageSize:10
+			pageSize:10,
+			prefecture_id:''
 		},
 		methods:{
 			det:function(id){
@@ -170,7 +171,8 @@
 				            token: vm.token,
 										agency_manage_id:vm.area_id,
 										pageNo:vm.pageNo,
-										pageSize:6
+										pageSize:6,
+										prefecture_id:vm.prefecture_id
 				        }
 				    }
 					},function(ret, err){
@@ -259,6 +261,7 @@
 	apiready = function(){
 		vm.token=$api.getStorage('token');
 		vm.area_id=$api.getStorage('area_id')
+		vm.prefecture_id=api.pageParam.prefecture_id;
 		vm.init();
 		vm.list_info();
 		api.addEventListener({

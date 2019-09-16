@@ -1,675 +1,671 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
-	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-		<title>确认订单</title>
-		<link rel="stylesheet" href="../../css/aui.css" />
-		<link rel="stylesheet" href="../../css/common.css" />
-		<link rel="stylesheet" href="../../css/global.css"/>
-	</head>
-	<style type="text/css">
-		.aui-row{ position: relative;}
-    	.aui-row i{ position: absolute;top: 50%;right: 0.75rem;margin-top: -7.5px;}
-    	.dizhi{ position: relative;}
-		.dizhi .aui-list-item-media{width:2.25rem !important;align-items: center !important;}
-		.dizhi .aui-list-item-media img{width: 1.5rem;}
-    	.line{ position: absolute;bottom: 0;left:0;width: 100%;height: 4px;}
 
-	    .shop .aui-list-item-media{width: 5.25rem !important;height: 5.5rem;overflow: hidden;}
-	    .shop .aui-list-item-media img{width: 100%;height: 100%;object-fit: cover;}
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>确认订单</title>
+	<link rel="stylesheet" href="../../css/aui.css" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/global.css" />
+</head>
+<style type="text/css">
+	.aui-row {
+		position: relative;
+	}
 
-	    .pay{ width: 1.2rem;vertical-align: middle;margin-right: 0.25rem;}
+	.aui-row i {
+		position: absolute;
+		top: 50%;
+		right: 0.75rem;
+		margin-top: -7.5px;
+	}
 
-			.shaixuan .aui-media-list-item-inner{padding-top: 0 !important;padding-bottom: 0 !important;}
-			.shaixuan .aui-list-item-inner{min-height: auto !important;padding-right: 0.6rem !important;padding-bottom: 0 !important; padding-top: 0 !important;height: 2.3rem; line-height: 2.3rem;}
-			.aui-list-item-media{width: auto !important;}
+	.dizhi {
+		position: relative;
+	}
 
-	</style>
-	<body class="aui-bg-grayer">
-		<div class="aui-content" id="app" v-cloak v-if="is_load">
+	.dizhi .aui-list-item-media {
+		width: 2.25rem !important;
+		align-items: center !important;
+	}
 
-			<!--地址-->
-			<div class="aui-list aui-media-list dizhi aui-padded-t-5 aui-padded-b-5 aui-border-bgT" v-if="add"  @click="open_address_list()">
-				<div class="aui-list-item aui-padded-l-12">
-					<div class="aui-media-list-item-inner">
+	.dizhi .aui-list-item-media img {
+		width: 1.5rem;
+	}
+
+	.line {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 4px;
+	}
+
+	.shop .aui-list-item-media {
+		width: 5.25rem !important;
+		height: 5.5rem;
+		overflow: hidden;
+	}
+
+	.shop .aui-list-item-media img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.pay {
+		width: 1.2rem;
+		vertical-align: middle;
+		margin-right: 0.25rem;
+	}
+
+	.shaixuan .aui-media-list-item-inner {
+		padding-top: 0 !important;
+		padding-bottom: 0 !important;
+	}
+
+	.shaixuan .aui-list-item-inner {
+		min-height: auto !important;
+		padding-right: 0.6rem !important;
+		padding-bottom: 0 !important;
+		padding-top: 0 !important;
+		height: 2.3rem;
+		line-height: 2.3rem;
+	}
+
+	.aui-list-item-media {
+		width: auto !important;
+	}
+</style>
+
+<body class="aui-bg-grayer">
+	<div class="aui-content" id="app" v-cloak v-if="is_load">
+		<!--地址-->
+		<div class="aui-list aui-media-list dizhi aui-padded-t-5 aui-padded-b-5 aui-border-bgT" v-if="add" @click="open_address_list()">
+			<div class="aui-list-item aui-padded-l-12">
+				<div class="aui-media-list-item-inner">
+					<div class="aui-list-item-media">
+						<img src="../../image/dizhi1.jpg" />
+					</div>
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-text aui-font-size-15">
+							<div class="aui-text-blacker">{{add.name}} <span class="aui-text-grayer">{{add.mobile}}</span> </div>
+						</div>
+						<div class="aui-list-item-text aui-text-blacker aui-margin-t-10">
+							{{add.full_address}}{{add.address_info}}</div>
+					</div>
+				</div>
+			</div>
+			<img src="../../image/line.jpg" class="line" />
+		</div>
+
+		<!--没添加地址-->
+		<div class="aui-row aui-bg-white aui-padded-12 aui-border-bgT" v-else onclick="open_window('personal','addressAdd_win')">
+			<div class="aui-font-size-14 aui-text-blacker" style="width: 90%;line-height: 1.3rem;">
+				您还没有添加过收货地址，快去添加吧
+			</div>
+			<i class="aui-iconfont aui-icon-right aui-font-weight"></i>
+		</div>
+
+
+
+		<div v-if="is_subOrder==1">
+			<div class="aui-list aui-media-list shop aui-border-bgT ">
+				<!--商品-->
+				<div class="aui-list-item aui-padded-l-0">
+					<div class="aui-media-list-item-inner aui-padded-l-12 aui-padded-r-12">
 						<div class="aui-list-item-media">
-							<img src="../../image/dizhi1.jpg"/>
+							<!-- <img :src="g_list.thumb" /> -->
 						</div>
-						<div class="aui-list-item-inner">
-							<div class="aui-list-item-text aui-font-size-15">
-								<div class="aui-text-blacker">{{add.name}}   <span class="aui-text-grayer">{{add.mobile}}</span>  </div>
+						<div class="aui-list-item-inner aui-padded-r-0">
+							<div class="aui-list-item-text aui-padded-t-5">
+								<span class="aui-ellipsis-1 aui-font-size-15 aui-text-black">{{g_list.goods_name}}</span>
 							</div>
-							<div class="aui-list-item-text aui-text-blacker aui-margin-t-10">{{add.full_address}}{{add.address_info}}</div>
+							<div class="aui-list-item-text aui-padded-t-10">
+								<div class="aui-font-size-12" v-if="g_list.spec_name">{{g_list.spec_name}}</div>
+								<span class="aui-text-grayer aui-pull-right">x{{g_list.goods_num}}</span>
+							</div>
+							<div class="aui-list-item-text aui-padded-t-15 aui-font-size-17 aui-text-danger">
+								￥{{g_list.market_price}}</div>
 						</div>
 					</div>
 				</div>
-				<img src="../../image/line.jpg" class="line"/>
-			</div>
-
-			<!--没添加地址-->
-			<div class="aui-row aui-bg-white aui-padded-12 aui-border-bgT" v-else  onclick="open_window('personal','addressAdd_win')">
-				<div class="aui-font-size-14 aui-text-blacker" style="width: 90%;line-height: 1.3rem;">
-					您还没有添加过收货地址，快去添加吧
+				<!--  -->
+				<div class="aui-list-item aui-border-bgT" v-if="g_list.type==0">
+					<div class="aui-media-list-item-inner" v-if="discounts_list.length>0">
+						<div class="aui-list-item-inner" @click="discounts(discounts_list)">
+							<div class="aui-list-item-text">
+								<div class="aui-ellipsis-1">
+									<span class="aui-margin-r-10 aui-text-grayBlue">优惠</span>
+									<span class="aui-text-blacker aui-padded-r-10">{{type_name}}</span>
+								</div>
+								<div class="aui-font-size-13">
+									<i class="aui-iconfont aui-icon-right aui-font-size-12 aui-font-weight"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--  购物车-->
+					<div class="aui-media-list-item-inner aui-border-t" v-if="coupon_list_chage.length>0">
+						<div class="aui-list-item-inner" @click="coupon()">
+							<div class="aui-list-item-text">
+								<div class="aui-ellipsis-1">
+									<span class="aui-margin-r-10 aui-text-grayBlue">使用优惠券</span>
+									<span class="aui-text-blacker">
+										<span
+											class="quan aui-text-center aui-text-danger aui-margin-r-5">{{coupon_list_chage_name}}</span>
+									</span>
+								</div>
+								<div class="aui-font-size-13">
+									<i class="aui-iconfont aui-icon-right aui-font-size-12 aui-font-weight"></i>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
-				<i class="aui-iconfont aui-icon-right aui-font-weight"></i>
 			</div>
-
-
-
-			<div  v-if="is_subOrder==1">
+		</div>
+		<div v-else>
+			<!--商品信息-->
+			<template v-for="(v,index) in list">
 				<div class="aui-list aui-media-list shop aui-border-bgT ">
-					<!--商品-->
-						<div class="aui-list-item aui-padded-l-0">
-							<div class="aui-media-list-item-inner aui-padded-l-12 aui-padded-r-12">
-								<div class="aui-list-item-media">
-									<img :src="g_list.thumb" />
-								</div>
-								<div class="aui-list-item-inner aui-padded-r-0">
-									<div class="aui-list-item-text aui-padded-t-5">
-										<span class="aui-ellipsis-1 aui-font-size-15 aui-text-black">{{g_list.goods_name}}</span>
-									</div>
-									<div class="aui-list-item-text aui-padded-t-10">
-										<div class="aui-font-size-12" v-if="g_list.spec_name">{{g_list.spec_name}}</div>
-										<span class="aui-text-grayer aui-pull-right">x{{g_list.goods_num}}</span>
-									</div>
-									<div class="aui-list-item-text aui-padded-t-15 aui-font-size-17 aui-text-danger">￥{{g_list.market_price}}</div>
-								</div>
+					<div class="aui-list-item aui-padded-l-0">
+						<div class="aui-media-list-item-inner aui-padded-l-12 aui-padded-r-12">
+							<div class="aui-list-item-media">
+								<img :src="v.thumb" />
 							</div>
-						</div>
-
-						<div class="aui-list-item aui-border-bgT" v-if="g_list.type==0">
-							<div class="aui-media-list-item-inner" v-if="discounts_list.length>0">
-								<div class="aui-list-item-inner"  @click="discounts(discounts_list)">
-									<div class="aui-list-item-text">
-										<div class="aui-ellipsis-1">
-											<span class="aui-margin-r-10 aui-text-grayBlue">优惠</span>
-											<span class="aui-text-blacker aui-padded-r-10">{{type_name}}</span>
-										</div>
-										<div class="aui-font-size-13">
-											<i class="aui-iconfont aui-icon-right aui-font-size-12 aui-font-weight"></i>
-										</div>
-									</div>
+							<div class="aui-list-item-inner aui-padded-r-0">
+								<div class="aui-list-item-text aui-padded-t-5">
+									<span class="aui-ellipsis-1 aui-font-size-15 aui-text-black">{{v.goods_name}}</span>
 								</div>
-							</div>
-
-							<div class="aui-media-list-item-inner aui-border-t" v-if="coupon_list_chage.length>0">
-								<div class="aui-list-item-inner" @click="coupon()">
-									<div class="aui-list-item-text">
-										<div class="aui-ellipsis-1">
-											<span class="aui-margin-r-10 aui-text-grayBlue">使用优惠券</span>
-											<span class="aui-text-blacker">
-											<span class="quan aui-text-center aui-text-danger aui-margin-r-5">{{coupon_list_chage_name}}</span>
-											</span>
-										</div>
-										<div class="aui-font-size-13">
-											<i class="aui-iconfont aui-icon-right aui-font-size-12 aui-font-weight"></i>
-										</div>
-									</div>
+								<div class="aui-list-item-text aui-padded-t-10">
+									<div class="aui-font-size-12" v-if="v.spec_name">{{v.spec_name}}</div>
+									<span class="aui-text-grayer aui-pull-right">x{{v.goods_num}}</span>
 								</div>
-							</div>
-						</div>
-
-
-
-					</div>
-
-
-
-					</div>
-				<div v-else>
-				<!--商品信息-->
-					<template v-for="(v,index) in list">
-						<div class="aui-list aui-media-list shop aui-border-bgT ">
-							<div class="aui-list-item aui-padded-l-0">
-							<div class="aui-media-list-item-inner aui-padded-l-12 aui-padded-r-12">
-								<div class="aui-list-item-media">
-									<img :src="v.thumb" />
-								</div>
-								<div class="aui-list-item-inner aui-padded-r-0">
-									<div class="aui-list-item-text aui-padded-t-5">
-										<span class="aui-ellipsis-1 aui-font-size-15 aui-text-black">{{v.goods_name}}</span>
-									</div>
-									<div class="aui-list-item-text aui-padded-t-10">
-										<div class="aui-font-size-12" v-if="v.spec_name">{{v.spec_name}}</div>
-										<span class="aui-text-grayer aui-pull-right">x{{v.goods_num}}</span>
-									</div>
-									<div class="aui-list-item-text aui-padded-t-15 aui-font-size-17 aui-text-danger">￥{{v.market_price}}</div>
-								</div>
+								<div class="aui-list-item-text aui-padded-t-15 aui-font-size-17 aui-text-danger">
+									￥{{v.market_price}}</div>
 							</div>
 						</div>
 					</div>
-				</template>
-				<div class="aui-list" v-if="coupon_list_chage">
-					<div class="aui-list-item aui-border-bgT">
-						<div class="aui-list-item-inner">
-							<div class="aui-list-item-inner" @click="coupons()">
-									<div class="aui-ellipsis-1">
-										<span class="aui-margin-r-5 aui-text-grayBlue">使用优惠券</span>
-										<span class="aui-text-blacker">
+				</div>
+			</template>
+			<div class="aui-list" v-if="coupon_list_chage.length>0">
+				<div class="aui-list-item aui-border-bgT">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-inner" @click="coupons()">
+							<div class="aui-ellipsis-1">
+								<span class="aui-margin-r-5 aui-text-grayBlue">使用优惠券</span>
+								<span class="aui-text-blacker">
 
-										</span>
-									</div>
-									<div class="aui-font-size-13">
-										<span class="quan aui-text-center aui-text-danger aui-margin-r-5">{{coupon_list_chage_name}}</span>
-										<i class="aui-iconfont aui-icon-right aui-font-size-12 aui-font-weight"></i>
-									</div>
+								</span>
+							</div>
+							<div class="aui-font-size-13">
+								<span class="quan aui-text-center aui-text-danger aui-margin-r-5">{{coupon_list_chage_name}}</span>
+								<i class="aui-iconfont aui-icon-right aui-font-size-12 aui-font-weight"></i>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<!--商品信息结束-->
-			<div class="aui-border-bgT aui-padded-12 aui-padded-b-0 aui-font-size-14 aui-bg-white aui-text-grayerBlue">
-				<textarea style="height:5rem;"  placeholder="留言 :选填填写内容已和卖家协商确认"  v-model="content" onclick="contents()" id="content" name="name" rows="8" cols="80"></textarea>
-			</div>
+		</div>
+		<!--商品信息结束-->
+		<div class="aui-border-bgT aui-padded-12 aui-padded-b-0 aui-font-size-14 aui-bg-white aui-text-grayerBlue">
+			<textarea style="height:5rem;" placeholder="留言 :选填填写内容已和卖家协商确认" v-model="content" onclick="contents()" id="content" name="name" rows="8" cols="80"></textarea>
+		</div>
 
 
-			<div class="aui-padded-12 aui-padded-b-0 aui-bg-white aui-border-bgT">
-				<!-- <div class="aui-font-size-13 aui-padded-b-12">
+		<div class="aui-padded-12 aui-padded-b-0 aui-bg-white aui-border-bgT">
+			<!-- <div class="aui-font-size-13 aui-padded-b-12">
 					<span class="aui-text-grayerBlue">运费</span>
 					<span class="aui-text-blacker aui-pull-right">￥10</span>
 				</div> -->
-				<div class="aui-font-size-13 aui-padded-b-12">
-					<span class="aui-text-grayerBlue">商品合计</span>
-					<span class="aui-text-blacker aui-pull-right fweight-5">￥{{all_total}}</span>
-				</div>
-				<div class="aui-font-size-13 aui-padded-b-12">
-					<span class="aui-text-grayerBlue">送积分</span>
-					<span class="aui-text-blacker aui-pull-right fweight-5">{{total_return_score}}积分</span>
-				</div>
-				<div class="aui-font-size-13 aui-padded-b-12">
-					<span class="aui-text-grayerBlue">商品优惠</span>
-					<span class="aui-text-blacker aui-pull-right">-￥{{discounts_money}}</span>
-				</div>
-
+			<div class="aui-font-size-13 aui-padded-b-12">
+				<span class="aui-text-grayerBlue">商品合计</span>
+				<span class="aui-text-blacker aui-pull-right fweight-5">￥{{all_total}}</span>
 			</div>
-
-			<div class="aui-padded-12 aui-font-size-16 aui-text-grayerBlue">
-				支付方式
+			<div class="aui-font-size-13 aui-padded-b-12">
+				<span class="aui-text-grayerBlue">送积分</span>
+				<span class="aui-text-blacker aui-pull-right fweight-5">{{total_return_score}}积分</span>
 			</div>
-			<div class="aui-list aui-bg-white aui-padded-l-12 aui-border-bgB">
-				<div class="aui-list-item aui-padded-l-0  aui-padded-t-5 aui-padded-b-5" @click="select_pay(1)">
-					<div class="aui-list-item-inner aui-padded-r-15 ">
-						<div class="aui-list-item-title aui-font-size-14">
-							<img src="../../image/qrfk_08.jpg" class="pay"/> 微信支付
-						</div>
-						<div class="aui-list-item-right">
-							<input type="radio" name="is_pay" class="aui-radio" checked=""/>
-						</div>
-					</div>
-				</div>
-				<div class="aui-list-item aui-padded-l-0 aui-border-t aui-padded-t-5 aui-padded-b-5" @click="select_pay(2)">
-					<div class="aui-list-item-inner aui-padded-r-15 ">
-						<div class="aui-list-item-title aui-font-size-14">
-							<img src="../../image/qrfk_10.jpg"  class="pay"/> 支付宝支付
-						</div>
-						<div class="aui-list-item-right">
-							<input type="radio" name="is_pay" class="aui-radio"/>
-						</div>
-					</div>
-				</div>
-			 <div class="aui-list-item aui-padded-l-0 aui-border-t aui-padded-t-5 aui-padded-b-5" @click="select_pay(3)">
-					<div class="aui-list-item-inner aui-padded-r-15 ">
-						<div class="aui-list-item-title aui-font-size-14">
-							<img src="../../image/yk.png"  class="pay"/>银联支付
-						</div>
-						<div class="aui-list-item-right">
-							<input type="radio" name="is_pay" class="aui-radio"/>
-						</div>
-					</div>
-				</div>
+			<div class="aui-font-size-13 aui-padded-b-12">
+				<span class="aui-text-grayerBlue">商品优惠</span>
+				<span class="aui-text-blacker aui-pull-right">-￥{{discounts_money}}</span>
 			</div>
 
 		</div>
 
-	</body>
+		<div class="aui-padded-12 aui-font-size-16 aui-text-grayerBlue">
+			支付方式
+		</div>
+		<div class="aui-list aui-bg-white aui-padded-l-12 aui-border-bgB">
+			<div class="aui-list-item aui-padded-l-0  aui-padded-t-5 aui-padded-b-5" @click="select_pay(1)">
+				<div class="aui-list-item-inner aui-padded-r-15 ">
+					<div class="aui-list-item-title aui-font-size-14">
+						<img src="../../image/qrfk_08.jpg" class="pay" /> 微信支付
+					</div>
+					<div class="aui-list-item-right">
+						<input type="radio" name="is_pay" class="aui-radio" checked="" />
+					</div>
+				</div>
+			</div>
+			<div class="aui-list-item aui-padded-l-0 aui-border-t aui-padded-t-5 aui-padded-b-5" @click="select_pay(2)">
+				<div class="aui-list-item-inner aui-padded-r-15 ">
+					<div class="aui-list-item-title aui-font-size-14">
+						<img src="../../image/qrfk_10.jpg" class="pay" /> 支付宝支付
+					</div>
+					<div class="aui-list-item-right">
+						<input type="radio" name="is_pay" class="aui-radio" />
+					</div>
+				</div>
+			</div>
+			<div class="aui-list-item aui-padded-l-0 aui-border-t aui-padded-t-5 aui-padded-b-5" @click="select_pay(3)">
+				<div class="aui-list-item-inner aui-padded-r-15 ">
+					<div class="aui-list-item-title aui-font-size-14">
+						<img src="../../image/yk.png" class="pay" />银联支付
+					</div>
+					<div class="aui-list-item-right">
+						<input type="radio" name="is_pay" class="aui-radio" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
 </html>
 <script type="text/javascript" src="../../script/api.js"></script>
 <script type="text/javascript" src="../../script/vue.js"></script>
 <script type="text/javascript" src="../../script/common.js"></script>
 <script>
 	var vm = new Vue({
-		el:"#app",
-		data:{
-			token:'',
-			id:'',
-			cart_id:'',
-			cart_arr:'',
-			area_id:'',
-
-
-
-			data:'',
-			list:[],
-			g_list:[],
-			type:'',
-			type_name:'请选择优惠',
-			coupon_list_chage_name:'请选择优惠券',
-			add:'',
-			is_subOrder:'',
-			spec_id:'',
-			num:'',
-			pay_type:1,
-			is_load:'',
-			content:'',
-			content_arr:[],
-			total_num:'',
-			paid_money:'',
-			discounts_money:0,
-			coupon_count:'',  //优惠券总数
-			coupon_list:'',
-			coupon_list_chage:[],   //优惠券列表
-			coupon_id:'',//优惠券id
-			discounts_list:[],
-			total_return_score:'',
-			order_sn:'',
-			total_price:'',		//原价总金额
-			total_prices:'',   //选择优惠券的金额
-			total_price_es:'',  //第一次筛选优惠的金额
-			f_money:'',   //第一次的总金额  不会改变的
-			all_total:'',
-
-			total_price_all:'', //购物车第一次的金额
+		el: "#app",
+		data: {
+			token: '',
+			id: '',
+			cart_id: '',
+			cart_arr: '',
+			area_id: '',
+			data: '',
+			list: [],
+			g_list: [],
+			type: '',
+			type_name: '请选择优惠',
+			coupon_list_chage_name: '请选择优惠券',
+			add: '',
+			is_subOrder: '',
+			spec_id: '',
+			num: '',
+			pay_type: 1,
+			is_load: '',
+			content: '',
+			content_arr: [],
+			total_num: '',
+			paid_money: '',
+			discounts_money: 0,
+			coupon_count: '', //优惠券总数
+			coupon_list: '',
+			coupon_list_chage: [], //优惠券列表
+			coupon_id: '', //优惠券id
+			discounts_list: [],
+			total_return_score: '',
+			order_sn: '',
+			total_price: '', //原价总金额
+			total_prices: '', //选择优惠券的金额
+			total_price_es: '', //第一次筛选优惠的金额
+			f_money: '', //第一次的总金额  不会改变的
+			all_total: '',
+			total_price_all: '', //购物车第一次的金额
+			price_money: ''
 		},
-		methods:{
-			select_pay:function(idx){
+		methods: {
+			select_pay: function(idx) {
 				vm.pay_type = idx;
 			},
-			discounts:function(discounts_list){
+			discounts: function(discounts_list) {
+				console.log('打开优惠弹框' + JSON.stringify(discounts_list));
 				api.openFrame({
-						name: 'shop_chage',
-						url: 'widget://html/pageone/shop_chage.html',
-						rect: {
-								x: 0,
-								y: 0,
-								w:'auto',
-								h:api.winHeight
-						},
-						pageParam:{
-							list:discounts_list,
-							id:vm.g_list.id
-						},
+					name: 'shop_chage',
+					url: 'widget://html/pageone/shop_chage.html',
+					rect: {
+						x: 0,
+						y: 0,
+						w: 'auto',
+						h: api.winHeight
+					},
+					pageParam: {
+						list: discounts_list,
+						id: vm.g_list.id
+					},
 				});
 			},
-			coupon:function() {
+			// 存在优惠时点击优惠券
+			coupon: function() {
+				console.log('+++++++coupon1111111111111++++++', JSON.stringify(vm.coupon_list));
 				api.openFrame({
-						name: 'shop_lingquan',
-						url: 'widget://html/pageone/shop_lingquan.html',
-						rect: {
-								x: 0,
-								y: 0,
-								w:'auto',
-								h:api.winHeight
-						},
-						pageParam:{
-							list:vm.coupon_list
-						},
+					name: 'shop_lingquan',
+					url: 'widget://html/pageone/shop_lingquan.html',
+					rect: {
+						x: 0,
+						y: 0,
+						w: 'auto',
+						h: api.winHeight
+					},
+					pageParam: {
+						list: vm.coupon_list
+					},
 				});
 			},
-			coupons:function() {
+			// 不存在优惠时点击优惠券
+			coupons: function() {
+				console.log('+++++++coupon22222222222222++++++' + JSON.stringify(vm.coupon_list_chage));
 				api.openFrame({
-						name: 'shop_lingquans',
-						url: 'widget://html/pageone/shop_lingquans.html',
-						rect: {
-								x: 0,
-								y: 0,
-								w:'auto',
-								h:api.winHeight
-						},
-						pageParam:{
-							list:vm.coupon_list_chage
-						},
+					name: 'shop_lingquans',
+					url: 'widget://html/pageone/shop_lingquans.html',
+					rect: {
+						x: 0,
+						y: 0,
+						w: 'auto',
+						h: api.winHeight
+					},
+					pageParam: {
+						list: vm.coupon_list_chage
+					},
 				});
 			},
-
-			yh:function() {
-				api.ajax({   //无门槛图片
-				    url: select_good_attr_url,
-						dataType:'json',
-						returnAll:false,
-						timeout:30,
-				    method: 'post',
-				    data: {
-				        values: {
-				            token: vm.token,
-										agency_manage_id:vm.area_id,
-										good_id:vm.g_list.id,
-										spec_id:vm.spec_id,
-										type:vm.type,
-										goods_num:vm.num
-
-				        }
-				    }
-					},function(ret, err){
-				    if (ret) {
-								if(ret.status==1){
-									console.log(JSON.stringify(ret));
-									vm.coupon_list_chage=ret.data.coupon_list;
-									vm.total_price=ret.data.money;
-									vm.total_price_es=ret.data.money;
-									vm.discounts_money=ret.data.reduces;
-									api.sendEvent({
-									    name: 'money',
-									    extra: {
-									        price: ret.data.money
-									    }
-									});
-
-
-								}else{
-									console.log(JSON.stringify(err));
+			cart_yhj: function() {
+				api.ajax({ //无门槛图片
+					url: cart_select_coupon_url,
+					dataType: 'json',
+					returnAll: false,
+					timeout: 30,
+					method: 'post',
+					data: {
+						values: {
+							token: vm.token,
+							agency_manage_id: vm.area_id,
+							money: vm.total_price_all,
+							coupon_id: vm.coupon_id
+						}
+					}
+				}, function(ret, err) {
+					if (ret) {
+						if (ret.status == 1) {
+							console.log(JSON.stringify(ret));
+							vm.total_price = ret.data.money;
+							api.sendEvent({
+								name: 'money',
+								extra: {
+									price: ret.data.money
 								}
-				    }
+							});
+						} else {
+							console.log(JSON.stringify(err));
+						}
+					}
 				});
 			},
-			yhj:function() {
-				api.ajax({   //无门槛图片
-				    url: select_coupon_url,
-						dataType:'json',
-						returnAll:false,
-						timeout:30,
-				    method: 'post',
-				    data: {
-				        values: {
-				            token: vm.token,
-										agency_manage_id:vm.area_id,
-										money:vm.total_price_es,
-										coupon_id:vm.coupon_id
-
-				        }
-				    }
-					},function(ret, err){
-				    if (ret) {
-								if(ret.status==1){
-									console.log(JSON.stringify(ret));
-									vm.total_price=ret.data.money;
-									vm.total_prices=ret.data.rmoney;
-									api.sendEvent({
-									    name: 'money',
-									    extra: {
-									        price: ret.data.money
-									    }
-									});
-
-
-								}else{
-									console.log(JSON.stringify(err));
-								}
-				    }
-				});
-			},
-			cart_yhj:function() {
-				api.ajax({   //无门槛图片
-				    url: cart_select_coupon_url,
-						dataType:'json',
-						returnAll:false,
-						timeout:30,
-				    method: 'post',
-				    data: {
-				        values: {
-			            token: vm.token,
-									agency_manage_id:vm.area_id,
-									money:vm.total_price_all,
-									coupon_id:vm.coupon_id
-				        }
-				    }
-					},function(ret, err){
-				    if (ret) {
-								if(ret.status==1){
-									console.log(JSON.stringify(ret));
-									vm.total_price=ret.data.money;
-									api.sendEvent({
-									    name: 'money',
-									    extra: {
-									        price: ret.data.money
-									    }
-									});
-
-
-								}else{
-									console.log(JSON.stringify(err));
-								}
-				    }
-				});
-			},
-			init:function(){
+			init: function() {
 				api.showProgress();
-				if(vm.is_subOrder){
+				if (vm.is_subOrder) {
 					api.ajax({
-						url:goods_submit_url,
-						method:'post',
-						timeout:30,
-						dataType:"json",
-						returnAll:false,
-						data:{
-							values:{
-								id:vm.id,
-								spec_id:vm.spec_id,
-								count:vm.num,
-								agency_manage_id:vm.area_id,
-								token:vm.token
+						url: goods_submit_url,
+						method: 'post',
+						timeout: 30,
+						dataType: "json",
+						returnAll: false,
+						data: {
+							values: {
+								id: vm.id,
+								spec_id: vm.spec_id,
+								count: vm.num,
+								agency_manage_id: vm.area_id,
+								token: vm.token
 							}
 						}
-					},function(ret,err){
-						if(ret){
-								console.log(JSON.stringify(ret))
+					}, function(ret, err) {
+						if (ret) {
+							console.log('+++++++点击商品进入+++++++', JSON.stringify(ret))
 							api.hideProgress();
 							vm.is_load = 1;
 							vm.g_list = ret.data.good;
 							vm.add = ret.data.address;
-							vm.coupon_count=ret.data.coupon_count;
-							vm.coupon_list=ret.data.coupon_list;
-							vm.discounts_list=ret.data.discounts_list;
-							vm.discounts_money=ret.data.discounts_money;
-							vm.all_total=ret.data.total_price;
-							vm.total_price=ret.data.total_price;
-							vm.total_return_score=ret.data.total_return_score;
-							vm.f_money=ret.data.total_price;
-							vm.all_total=ret.data.total_price;
+							vm.coupon_count = ret.data.coupon_count;
+							vm.coupon_list = ret.data.coupon_list;
+							vm.discounts_list = ret.data.discounts_list;
+							vm.discounts_money = ret.data.discounts_money;
+							vm.all_total = ret.data.total_price;
+							vm.total_price = ret.data.total_price;
+							vm.total_prices = ret.data.total_price; //-----------------------------------------------------------
+							vm.total_price_es = ret.data.total_price; //-----------------------------------------------------------
+							vm.price_money = ret.data.total_price;
+							vm.total_return_score = ret.data.total_return_score;
+							vm.f_money = ret.data.total_price;
+							// vm.is_load = 1;
+							// vm.add = ret.data.address;
+							vm.list = ret.data.cart_list;
+							vm.data = ret.data;
+							vm.total_num = ret.data.total_num;
+							// vm.total_price = ret.data.total_price;
+							vm.paid_money = ret.data.paid_money;
+							// vm.discounts_money = ret.data.discounts_money;
+							vm.coupon_list_chage = ret.data.coupon_list;
+							// vm.total_return_score = ret.data.total_return_score;
+							// vm.coupon_count = ret.data.coupon_count;
+							vm.total_price_all = ret.data.paid_money;
+							// vm.all_total = ret.data.total_price;
 							api.sendEvent({
-							    name: 'money',
-							    extra: {
-							        price: ret.data.total_price
-							    }
+								name: 'money',
+								extra: {
+									price: ret.data.total_price
+								}
 							});
-
-						}else{
+						} else {
 							console.log(JSON.stringify(err))
 						}
 					});
-				}else{
+				} else {
 					api.ajax({
-							url:cart_submit_url,
-							method:'post',
-							timeout:30,
-							dataType:"json",
-							returnAll:false,
-							data:{
-								values:{
-									cart_id:vm.cart_id,
-									token:vm.token,
-									agency_manage_id:vm.area_id,
-									cart_arr:vm.cart_arr
-								}
+						url: cart_submit_url,
+						method: 'post',
+						timeout: 30,
+						dataType: "json",
+						returnAll: false,
+						data: {
+							values: {
+								cart_id: vm.cart_id,
+								token: vm.token,
+								agency_manage_id: vm.area_id,
+								cart_arr: vm.cart_arr
 							}
-						},function(ret,err){
-							if(ret){
-								console.log(JSON.stringify(ret))
-								if(ret.status){
-									 api.hideProgress();
-									 vm.is_load = 1;
-									 vm.add = ret.data.address;
-									 vm.list = ret.data.cart_list;
-									 vm.data = ret.data;
-									 vm.total_num = ret.data.total_num;
-									 vm.total_price = ret.data.total_price;
-									 vm.paid_money=ret.data.paid_money;
-									 vm.discounts_money=ret.data.discounts_money;
-									 vm.coupon_list_chage=ret.data.coupon_list;
-									 vm.total_return_score=ret.data.total_return_score;
-									 vm.coupon_count=ret.data.coupon_count;
-									 vm.total_price_all=ret.data.paid_money;
-									 vm.all_total=ret.data.total_price;
-
-									 api.sendEvent({
-									    name: 'money',
-									    extra: {
-									        price: ret.data.paid_money
-									    }
-									});
-								}else{
-									api.toast({
-									    msg: ret.msg,
-									    duration: 2000,
-									    location: 'bottom'
-									});
-								}
-							}else{
-								console.log(JSON.stringify(err))
+						}
+					}, function(ret, err) {
+						if (ret) {
+							console.log('++++++++++++++购物车进入++++++++++++++++' + JSON.stringify(ret))
+							if (ret.status) {
+								api.hideProgress();
+								vm.is_load = 1;
+								vm.add = ret.data.address;
+								vm.list = ret.data.cart_list;
+								vm.data = ret.data;
+								vm.total_num = ret.data.total_num;
+								vm.total_price = ret.data.total_price;
+								vm.paid_money = ret.data.paid_money;
+								vm.discounts_money = ret.data.discounts_money;
+								vm.coupon_list_chage = ret.data.coupon_list;
+								vm.total_return_score = ret.data.total_return_score;
+								vm.coupon_count = ret.data.coupon_count;
+								vm.total_price_all = ret.data.paid_money;
+								vm.all_total = ret.data.total_price;
+								vm.f_money = ret.data.total_price;
+								api.sendEvent({
+									name: 'money',
+									extra: {
+										price: ret.data.paid_money
+									}
+								});
+							} else {
+								api.toast({
+									msg: ret.msg,
+									duration: 2000,
+									location: 'bottom'
+								});
 							}
+						} else {
+							console.log(JSON.stringify(err))
+						}
 					});
 				}
 			},
-			sub:function(){//提交订单
-
-				if(!vm.add){
+			//提交订单
+			sub: function() {
+				if (!vm.add) {
 					api.toast({
-						msg:'请选择收货地址',
-						duration:2000,
-						location:'middle'
+						msg: '请选择收货地址',
+						duration: 2000,
+						location: 'middle'
 					});
 
 					return;
 				}
 				var url = '';
-				if(vm.pay_type==1){   //微信
-					if(vm.is_subOrder){
+				if (vm.pay_type == 1) { //微信
+					if (vm.is_subOrder) {
 						url = goods_order_submits_url;
-					}else{
+					} else {
 						url = wx_order_submit_url;
 					}
-				}else if(vm.pay_type==2){
-					if(vm.is_subOrder){
-						url = goods_order_submit_url;  //立即支付宝
-					}else{
+				} else if (vm.pay_type == 2) {
+					if (vm.is_subOrder) {
+						url = goods_order_submit_url; //立即支付宝
+					} else {
 						url = alipay_submit_order_url;
 					}
-				}else{
-					if(vm.is_subOrder){
-						url = bulidParam_url;  //立即支付宝
-					}else{
+				} else {
+					if (vm.is_subOrder) {
+						url = bulidParam_url; //立即银联支付
+					} else {
 						url = cart_bulidParam_url;
 					}
 				}
 				api.showProgress();
-				if(vm.is_subOrder){
+				if (vm.is_subOrder) {
+					let values = {
+						token: vm.token,
+						id: vm.id,
+						spec_id: vm.spec_id,
+						content: vm.content,
+						type: vm.type,
+						coupon_id: vm.coupon_id,
+						agency_manage_id: vm.area_id,
+						count: vm.num,
+						address_id: vm.add.id
+					};
+					console.log(vm.spec_id+'++++++++++++++++商品直接购买结算+++++++++++++++' + JSON.stringify(values));
 					api.ajax({
-						url:url,
-						method:'post',
-						timeout:30,
-						dataType:'json',
-						returnAll:false,
-						data:{
-							values:{
-								token:vm.token,
-								id:vm.id,
-								spec_id:vm.spec_id,
-								content:vm.content,
-								type:vm.type,
-								coupon_id:vm.coupon_id,
-								agency_manage_id:vm.area_id,
-								count:vm.num,
-								address_id:vm.add.id
+						url: url,
+						method: 'post',
+						timeout: 30,
+						dataType: 'json',
+						returnAll: false,
+						data: {
+							values: {
+								token: vm.token,
+								id: vm.id,
+								spec_id: vm.spec_id,
+								content: vm.content,
+								type: vm.type,
+								coupon_id: vm.coupon_id,
+								agency_manage_id: vm.area_id,
+								count: vm.num,
+								address_id: vm.add.id
 							}
 						}
-					},function(ret,err){
-						if(ret){
-								console.log(JSON.stringify(ret))
+					}, function(ret, err) {
+						console.log('提交订单后的回调');
+						if (ret) {
+							console.log(JSON.stringify(ret))
 							api.hideProgress();
-							if(ret.status!=1 && ret.status!=0){
+							if (ret.status != 1 && ret.status != 0) {
 								api.sendEvent({
-								    name: 'order_num',
+									name: 'order_num',
 								});
-
 								console.log(JSON.stringify(ret))
-								if(vm.pay_type==1){
+								if (vm.pay_type == 1) {
+									console.log('入口1');
 									vm.wxpay(ret);
-								}else if(vm.pay_type==2){
+								} else if (vm.pay_type == 2) {
 									vm.alipay(ret);
-								}else{
+								} else {
 									vm.unPays(ret);
 								}
-							}else{
-									api.toast({
-									    msg: ret.msg,
-									    duration: 2000,
-									    location: 'bottom'
-									});
+							} else {
+								api.toast({
+									msg: ret.msg,
+									duration: 2000,
+									location: 'bottom'
+								});
 
 							}
 
-						}else{
+						} else {
 							console.log(JSON.stringify(err))
 						}
 					});
-				}else{
+				} else {
+					console.log('++++++++++++++++购物车购买结算+++++++++++++++');
 					api.ajax({
-						url:url,
-						method:'post',
-						timeout:30,
-						dataType:'json',
-						returnAll:false,
-						data:{
-							values:{
-								token:vm.token,
-								cart_id:vm.cart_id,
-								address_id:vm.add.id,
-								content:vm.content,
-								coupon_id:vm.coupon_id,
-								agency_manage_id:vm.area_id,
-								cart_arr:vm.cart_arr
+						url: url,
+						method: 'post',
+						timeout: 30,
+						dataType: 'json',
+						returnAll: false,
+						data: {
+							values: {
+								token: vm.token,
+								cart_id: vm.cart_id,
+								address_id: vm.add.id,
+								content: vm.content,
+								coupon_id: vm.coupon_id,
+								agency_manage_id: vm.area_id,
+								cart_arr: vm.cart_arr
 							}
 						}
-					},function(ret,err){
-						if(ret){
-								api.hideProgress();
-								if(ret.status!=1 && ret.status!=0){
-									api.sendEvent({
-										name:'addCart_init'
-									});
-									api.sendEvent({
-									    name: 'order_num',
-									});
-									if(vm.pay_type==1){
-										vm.wxpay(ret);
-									}else if(vm.pay_type==2){
-										vm.alipay(ret);
-									}else{
-										vm.unPays(ret);
-									}
-								}else{
-									api.toast({
-									    msg: ret.msg,
-									    duration: 2000,
-									    location: 'bottom'
-									});
-
+					}, function(ret, err) {
+						if (ret) {
+							api.hideProgress();
+							if (ret.status != 1 && ret.status != 0) {
+								api.sendEvent({
+									name: 'addCart_init'
+								});
+								api.sendEvent({
+									name: 'order_num',
+								});
+								if (vm.pay_type == 1) {
+									console.log('入口2');
+									vm.wxpay(ret);
+								} else if (vm.pay_type == 2) {
+									vm.alipay(ret);
+								} else {
+									vm.unPays(ret);
 								}
-
-
-
-
-						}else{
+							} else {
+								api.toast({
+									msg: ret.msg,
+									duration: 2000,
+									location: 'bottom'
+								});
+							}
+						} else {
 							console.log(JSON.stringify(err))
 						}
 					});
 				}
 			},
-			unPays:function(ret){
+			// 银联支付
+			unPays: function(ret) {
 				api.showProgress();
-
 				console.log(JSON.stringify(ret));
 				// var unPay = api.require('unionPay');
 				// unPay.pay({
@@ -683,355 +679,437 @@
 				//     url: ret.data
 				// });
 				api.sendEvent({
-				    name: 'footer_height',
+					name: 'footer_height',
 				});
 
-				vm.order_sn=ret.orderSn;
+				vm.order_sn = ret.orderSn;
 				var obj = api.require('UIWebBrowser');
-					obj.open({
-					    rect: {
-					        x: 0,
-					        y: 0,
-					        w: api.winWidth,
-					        h: api.winHeight
-					    },
-					    path: ret.data,
-					    fixedOn: api.frameName,
-					    fixed: false,
-					    button: {
-					        normal: 'widget://res/UIWebBrowser/normal.png',
-					        highlight: 'widget://res/UIWebBrowser/highlight.png',
-					        selected: 'widget://res/UIWebBrowser/selected.png',
-					        title: 'test',
-					        width: 55,
-					        height: 30,
-					        position: 'bottom'
-					    }
-					}, function(ret) {
-					    console.log(JSON.stringify(ret));
-							if(ret.eventType=='show'){
-									api.hideProgress();
-
-									vm.codes()
-
-							}
-					});
-
-			},
-			codes:function(){
-				var timer = null;
-				timer = setInterval(function(){
-						api.ajax({   //时刻请求数据
-						    url: bank_backUrl_url,
-								dataType:'json',
-								returnAll:false,
-								timeout:30,
-						    method: 'post',
-						    data: {
-						        values: {
-						            token: vm.token,
-												orderSn:vm.order_sn
-						        }
-						    }
-							},function(ret, err){
-								console.log(JSON.stringify(ret));
-						    if (ret) {
-										if(ret.status==1){
-												api.sendEvent({
-													 name:'addCart_init'
-												 });
-												api.toast({
-													msg:'付款成功',
-													duration:2000,
-													location:'middle'
-												});
-
-											 setTimeout(function(){
-												 clearInterval(timer);
-												api.openWin({
-														 name: 'myOrder_win',
-														 url: 'widget://html/order/myOrder_win.html',
-														 pageParam:{
-															state:1,
-															is_suborder:vm.is_subOrder?1:2
-														 }
-													 });
-											},500)
-										}else if(ret.status==0){
-											api.sendEvent({
-												 name:'addCart_init'
-											 });
-
-											 api.toast({
-													msg:'已取消支付',
-													duration:2000,
-													location:'middle'
-												});
-
-												setTimeout(function(){
-													clearInterval(timer);
-												 api.openWin({
-															name: 'myOrder_win',
-															url: 'widget://html/order/myOrder_win.html',
-															pageParam:{
-															 state:0,
-															 is_suborder:vm.is_subOrder?1:2
-															}
-														});
-											 },500)
-										}
-						    }
-						});
-				},3000)
-			},
-			wxpay:function(ret){
-				var wxPay = api.require('wxPay');
-					wxPay.payOrder({
-						apiKey:ret.appid,
-							orderId: ret.prepayid,
-							mchId: ret.partnerid,
-							nonceStr: ret.noncestr,
-							timeStamp: ret.timestamp,
-							package:ret.package,
-							sign: ret.sign
-					}, function(ret, err) {
+				obj.open({
+					rect: {
+						x: 0,
+						y: 0,
+						w: api.winWidth,
+						h: api.winHeight
+					},
+					path: ret.data,
+					fixedOn: api.frameName,
+					fixed: false,
+					button: {
+						normal: 'widget://res/UIWebBrowser/normal.png',
+						highlight: 'widget://res/UIWebBrowser/highlight.png',
+						selected: 'widget://res/UIWebBrowser/selected.png',
+						title: 'test',
+						width: 55,
+						height: 30,
+						position: 'bottom'
+					}
+				}, function(ret) {
+					console.log(JSON.stringify(ret));
+					if (ret.eventType == 'show') {
 						api.hideProgress();
-							if (ret.status) {
-							api.sendEvent({
-									name:'addCart_init'
+
+						vm.codes()
+
+					}
+				});
+
+			},
+			codes: function() {
+				var timer = null;
+				timer = setInterval(function() {
+					api.ajax({ //时刻请求数据
+						url: bank_backUrl_url,
+						dataType: 'json',
+						returnAll: false,
+						timeout: 30,
+						method: 'post',
+						data: {
+							values: {
+								token: vm.token,
+								orderSn: vm.order_sn
+							}
+						}
+					}, function(ret, err) {
+						console.log(JSON.stringify(ret));
+						if (ret) {
+							if (ret.status == 1) {
+								api.sendEvent({
+									name: 'addCart_init'
+								});
+								api.toast({
+									msg: '付款成功',
+									duration: 2000,
+									location: 'middle'
+								});
+
+								setTimeout(function() {
+									clearInterval(timer);
+									api.openWin({
+										name: 'myOrder_win',
+										url: 'widget://html/order/myOrder_win.html',
+										pageParam: {
+											state: 1,
+											is_suborder: vm.is_subOrder ? 1 : 2
+										}
+									});
+								}, 500)
+							} else if (ret.status == 0) {
+								api.sendEvent({
+									name: 'addCart_init'
 								});
 
 								api.toast({
-									msg:'付款成功',
-									duration:2000,
-									location:'middle'
+									msg: '已取消支付',
+									duration: 2000,
+									location: 'middle'
 								});
 
-								setTimeout(function(){
+								setTimeout(function() {
+									clearInterval(timer);
 									api.openWin({
-											 name: 'myOrder_win',
-											 url: 'widget://html/order/myOrder_win.html',
-											 pageParam:{
-												state:1,
-												is_suborder:vm.is_subOrder?1:2
-											 }
-										 });
-								},500)
+										name: 'myOrder_win',
+										url: 'widget://html/order/myOrder_win.html',
+										pageParam: {
+											state: 0,
+											is_suborder: vm.is_subOrder ? 1 : 2
+										}
+									});
+								}, 500)
+							}
+						}
+					});
+				}, 3000)
+			},
+			wxpay: function(ret) {
+				console.log('开始微信支付');
+				console.log(JSON.stringify(ret));
+				var wxPay = api.require('wxPay');
+				wxPay.payOrder({
+					apiKey: ret.appid,
+					orderId: ret.prepayid,
+					mchId: ret.partnerid,
+					nonceStr: ret.noncestr,
+					timeStamp: ret.timestamp,
+					package: ret.package,
+					sign: ret.sign
+				}, function(ret, err) {
+					console.log(ret);
+					console.log(err);
+					api.hideProgress();
+					if (ret.status) {
+						api.sendEvent({
+							name: 'addCart_init'
+						});
 
-							} else {
-									if(err.code==-2){
+						api.toast({
+							msg: '付款成功',
+							duration: 2000,
+							location: 'middle'
+						});
 
-									 api.sendEvent({
-											name:'addCart_init'
-										});
-
-										api.toast({
-											 msg:'已取消支付',
-											 duration:2000,
-											 location:'middle'
-										 });
-
-										 setTimeout(function(){
-										api.openWin({
-												 name: 'myOrder_win',
-												 url: 'widget://html/order/myOrder_win.html',
-												 pageParam:{
-													state:0,
-													is_suborder:vm.is_subOrder?1:2
-												 }
-											 });
-									},500)
+						setTimeout(function() {
+							api.openWin({
+								name: 'myOrder_win',
+								url: 'widget://html/order/myOrder_win.html',
+								pageParam: {
+									state: 1,
+									is_suborder: vm.is_subOrder ? 1 : 2
 								}
-						}
-				});
-			},
-			alipay:function(ret){
+							});
+						}, 500)
 
-				var aliPayPlus = api.require('aliPayPlus');
-					aliPayPlus.payOrder({
-							orderInfo: ret.data
-					}, function(ret, err) {
-						api.hideProgress();
+					} else {
+						if (err.code == -2) {
 
-						if(ret.code==9000){
 							api.sendEvent({
-								name:'addCart_init'
+								name: 'addCart_init'
 							});
 
 							api.toast({
-									msg:'付款成功',
-									duration:2000,
-									location:'middle'
+								msg: '已取消支付',
+								duration: 2000,
+								location: 'middle'
+							});
+
+							setTimeout(function() {
+								api.openWin({
+									name: 'myOrder_win',
+									url: 'widget://html/order/myOrder_win.html',
+									pageParam: {
+										state: 0,
+										is_suborder: vm.is_subOrder ? 1 : 2
+									}
 								});
-
-							setTimeout(function(){
-								api.openWin({
-										 name: 'myOrder_win',
-										 url: 'widget://html/order/myOrder_win.html',
-										 pageParam:{
-											state:1,
-											is_suborder:vm.is_subOrder?1:2
-										 }
-									 });
-							},500)
-
+							}, 500)
 						}
-
-						if(ret.code==4000){
-							api.toast({
-								msg:'支付失败，请重新支付',
-								duration:2000,
-								location:'middle'
-							});
-						}
-
-						if(ret.code==6001){
-
-							api.toast({
-								msg:'已取消支付',
-								duration:2000,
-								location:'middle'
-							});
-
-							setTimeout(function(){
-								api.openWin({
-										 name: 'myOrder_win',
-										 url: 'widget://html/order/myOrder_win.html',
-										 pageParam:{
-											state:0,
-											is_subOrder:vm.is_subOrder?1:2
-										 }
-									 });
-							},500)
-						}
+					}
 				});
 			},
-			open_address_list:function(){
+			alipay: function(ret) {
+				console.log('开始支付宝支付');
+				var aliPayPlus = api.require('aliPayPlus');
+				aliPayPlus.payOrder({
+					orderInfo: ret.data
+				}, function(ret, err) {
+					api.hideProgress();
+
+					if (ret.code == 9000) {
+						api.sendEvent({
+							name: 'addCart_init'
+						});
+
+						api.toast({
+							msg: '付款成功',
+							duration: 2000,
+							location: 'middle'
+						});
+
+						setTimeout(function() {
+							api.openWin({
+								name: 'myOrder_win',
+								url: 'widget://html/order/myOrder_win.html',
+								pageParam: {
+									state: 1,
+									is_suborder: vm.is_subOrder ? 1 : 2
+								}
+							});
+						}, 500)
+
+					}
+
+					if (ret.code == 4000) {
+						api.toast({
+							msg: '支付失败，请重新支付',
+							duration: 2000,
+							location: 'middle'
+						});
+					}
+
+					if (ret.code == 6001) {
+
+						api.toast({
+							msg: '已取消支付',
+							duration: 2000,
+							location: 'middle'
+						});
+
+						setTimeout(function() {
+							api.openWin({
+								name: 'myOrder_win',
+								url: 'widget://html/order/myOrder_win.html',
+								pageParam: {
+									state: 0,
+									is_subOrder: vm.is_subOrder ? 1 : 2
+								}
+							});
+						}, 500)
+					}
+				});
+			},
+			open_address_list: function() {
 				api.openWin({
 					name: 'address_win',
 					url: 'widget://html/personal/address_win.html',
-					pageParam:{
-						is_change:1
+					pageParam: {
+						is_change: 1
+					}
+				});
+			},
+			yh: function() {
+				api.ajax({ //select_good_attr
+					url: select_good_attr_url,
+					dataType: 'json',
+					returnAll: false,
+					timeout: 30,
+					method: 'post',
+					data: {
+						values: {
+							token: vm.token,
+							agency_manage_id: vm.area_id,
+							good_id: vm.g_list.id,
+							spec_id: vm.spec_id,
+							type: vm.type,
+							goods_num: vm.num
+						}
+					}
+				}, function(ret, err) {
+					if (ret) {
+						if (ret.status == 1) {
+							console.log('++++++++++select_good_attr请求结果+++++++++++++' + JSON.stringify(ret));
+							// vm.coupon_list_chage = ret.data.coupon_list;
+							// vm.total_price = ret.data.money;
+							// vm.total_price_es = ret.data.money;
+							vm.total_price = vm.total_price - ret.data.reduces;
+							vm.discounts_money = ret.data.reduces;
+							api.sendEvent({
+								name: 'money',
+								extra: {
+									// price: ret.data.money
+									price: vm.total_price
+								}
+							});
+						} else {
+							console.log(JSON.stringify(err));
+						}
+					}
+				});
+			},
+			yhj: function() {
+				console.log('++++++++++当前价格++++++' + vm.f_money);
+				api.ajax({ //无门槛图片
+					url: select_coupon_url,
+					dataType: 'json',
+					returnAll: false,
+					timeout: 30,
+					method: 'post',
+					data: {
+						values: {
+							token: vm.token,
+							agency_manage_id: vm.area_id,
+							money: vm.f_money, //vm.total_price_es10
+							coupon_id: vm.coupon_id
+						}
+					}
+				}, function(ret, err) {
+					if (ret) {
+						if (ret.status == 1) {
+							console.log('+++++++++扣除优惠后+++++++++' + JSON.stringify(ret));
+							vm.total_price = ret.data.money;
+							vm.total_prices = ret.data.rmoney;
+							api.sendEvent({
+								name: 'money',
+								extra: {
+									price: ret.data.money
+								}
+							});
+						} else {
+							console.log(JSON.stringify(err));
+						}
 					}
 				});
 			}
 		}
 	})
 
-	apiready  =  function(){
+	apiready = function() {
 		vm.token = $api.getStorage("token");
 		vm.area_id = $api.getStorage("area_id");
 		vm.cart_id = api.pageParam.cart_id;
 		vm.id = api.pageParam.id;
 		vm.cart_arr = api.pageParam.cart_arr;
-		if(api.pageParam.is_subOrder){
+		if (api.pageParam.is_subOrder) {
 			vm.spec_id = api.pageParam.spec_id;
 			vm.num = api.pageParam.num;
 			vm.is_subOrder = api.pageParam.is_subOrder;
 		}
 		vm.init();
 		api.addEventListener({
-		    name: 'sub'
-			}, function(ret, err){
-		    if( ret ){
-		         vm.sub();
-		    }
+			name: 'sub'
+		}, function(ret, err) {
+			if (ret) {
+				vm.sub();
+			}
 		});
 		api.addEventListener({
-		    name: 'shop_yhj'
-			}, function(ret, err){
-		    if( ret ){
-					if(ret.value.id!=0){
-					 vm.coupon_id=ret.value.id;
-					 vm.coupon_list_chage_name='已选择优惠金额'+ret.value.money+'元';
-					 console.log(JSON.stringify(ret));
-					 setTimeout(function(){
-						 vm.yhj();
-					 },300)
-				 }else{
-					 	vm.coupon_id='',
-						vm.coupon_list_chage_name='请选择优惠券',
-						 api.sendEvent({
-								name: 'money',
-								extra: {
-										price: vm.total_price_es
-								}
+			name: 'shop_yhj'
+		}, function(ret, err) {
+			if (ret) {
+				if (ret.value.id != 0) {
+					console.log('++++++++++++使用优惠券++++++++++');
+					vm.coupon_id = ret.value.id;
+					vm.coupon_list_chage_name = '已选择优惠金额' + ret.value.money + '元';
+					console.log(JSON.stringify(ret));
+					setTimeout(function() {
+						vm.yhj();
+					}, 300)
+				} else {
+					console.log('++++++++++++不使用优惠券++++++++++');
+					vm.coupon_id = '',
+						vm.coupon_list_chage_name = '请选择优惠券',
+						api.sendEvent({
+							name: 'money',
+							extra: {
+								price: vm.total_prices
+							}
 						});
-
-				 }
-		    }
+				}
+			}
 		});
 
 		api.addEventListener({
-		    name: 'cart_shop_yhj'
-			}, function(ret, err){
-		    if( ret ){
-					if(ret.value.id!=0){
-					 vm.coupon_id=ret.value.id;
-					 vm.coupon_list_chage_name='已选择优惠金额'+ret.value.price+'元';
-					 console.log(JSON.stringify(ret));
-					 setTimeout(function(){
-						 vm.cart_yhj();
-					 },300)
-				 }else{
-					 	vm.coupon_id='',
-						vm.coupon_list_chage=[];
-						vm.coupon_list_chage_name='请选择优惠券',
-						 api.sendEvent({
-								name: 'money',
-								extra: {
-										price: vm.total_price_all
-								}
+			name: 'cart_shop_yhj'
+		}, function(ret, err) {
+			if (ret) {
+				if (ret.value.id != 0) {
+					vm.coupon_id = ret.value.id;
+					vm.coupon_list_chage_name = '已选择优惠金额' + ret.value.price + '元';
+					console.log(JSON.stringify(ret));
+					setTimeout(function() {
+						vm.cart_yhj();
+					}, 300)
+				} else {
+					vm.coupon_id = '',
+						// vm.coupon_list_chage = [];
+						vm.coupon_list_chage_name = '请选择优惠券',
+						api.sendEvent({
+							name: 'money',
+							extra: {
+								price: vm.total_price_all
+							}
 						});
+				}
+			}
+		});
+		// 点击选择一项优惠后
+		api.addEventListener({
+			name: 'shop_yh'
+		}, function(ret, err) {
+			if (ret) {
+				if (ret.value.type != 0) {
+					vm.type = ret.value.type;
+					vm.type_name = ret.value.type_name;
+					console.log('+++++++选择优惠++++++++' + JSON.stringify(ret));
+					setTimeout(function() {
+						vm.yh();
 
-				 }
-		    }
+					}, 300)
+				} else {
+					console.log('+++++++不选择优惠+++++++');
+					vm.type = '',
+						// vm.coupon_list_chage = [];
+						vm.total_price = vm.f_money;
+					// if(vm.total_price == vm.f_money){
+					// vm.total_price = vm.f_money;
+					// }else {
+					// 	vm.total_price = vm.total_price_es;
+					// }
+					vm.type_name = '请选择优惠',
+						api.sendEvent({
+							name: 'money',
+							extra: {
+								price: vm.f_money
+									// price:vm.total_price_es
+							}
+						});
+				}
+			}
 		});
 
 		api.addEventListener({
-		    name: 'shop_yh'
-			}, function(ret, err){
-		    if( ret ){
-						if(ret.value.type!=0){
-							vm.type=ret.value.type;
-							vm.type_name=ret.value.type_name;
-							console.log(JSON.stringify(ret));
-							setTimeout(function(){
-								vm.yh();
-							},300)
-						}else{
-							vm.type='',
-							vm.coupon_list_chage=[];
-							vm.total_price=vm.f_money;
-							vm.type_name='请选择优惠',
-							api.sendEvent({
-								 name: 'money',
-								 extra: {
-										 price: vm.f_money
-								 }
-						 });
-
-						}
-
-		    }
-		});
-
-		api.addEventListener({
-			name:'add_address_init'
-			},function(ret,err){
-			 vm.token = $api.getStorage("token");
-
-			 vm.init()
+			name: 'add_address_init'
+		}, function(ret, err) {
+			vm.token = $api.getStorage("token");
+			vm.init()
 		});
 	}
-	function contents(){
-		if(api.systemType=='ios'){
-	    // 使用模块弹出键盘
-	    var softInput = api.require('softInputMgr');
-	    softInput.toggleKeyboard();
-	    // 将相应的输入框获取焦点
 
-	      document.getElementById("content").focus()
-	    }
+	function contents() {
+		if (api.systemType == 'ios') {
+			// 使用模块弹出键盘
+			var softInput = api.require('softInputMgr');
+			softInput.toggleKeyboard();
+			// 将相应的输入框获取焦点
+			document.getElementById("content").focus()
+		}
 	}
 </script>

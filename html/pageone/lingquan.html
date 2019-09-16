@@ -58,7 +58,7 @@
 								</div>
 							</li>
 						</template>
-						
+
 				   </ul>
 				</div>
 			</div>
@@ -152,8 +152,9 @@
 								},
 						}
 				},function(ret, err){
+					console.log('++++++++++155++++++++++'+JSON.stringify(ret));
 						if (ret) {
-								console.log(JSON.stringify(ret));
+								console.log('++++++++++156++++++++++',JSON.stringify(ret));
 								$api.css($api.dom('.hide'),'height:'+api.winHeight-$api.dom('.aui-content').offsetHeight+'px')
 								if(ret.status==1){
 									vm.list=vm.list.concat(ret.data.page.list);

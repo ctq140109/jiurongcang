@@ -1,96 +1,95 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
-	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-		<title>确认订单</title>
-		<link rel="stylesheet" href="../../css/aui.css" />
-		<link rel="stylesheet" href="../../css/common.css" />
-		<link rel="stylesheet" href="../../css/global.css"/>
-	</head>
-	<style type="text/css">
 
-	</style>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>确认订单</title>
+	<link rel="stylesheet" href="../../css/aui.css" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/global.css" />
+</head>
+<style type="text/css">
 
-	<body>
-		<header class="aui-bar aui-bar-nav aui-bar-light">
-		    <a class="aui-pull-left aui-btn" onclick="closeWin()">
-		        <span class="aui-iconfont   aui-icon-left"></span>
-		    </a>
-		    <div class="aui-title">确认订单</div>
-		</header>
+</style>
 
-		<footer class="aui-bar aui-bar-tab aui-border-t" id="footer" v-if="height==1">
-			<div class="aui-row">
-				<div class="aui-col-xs-8 aui-text-left aui-padded-l-12 aui-font-size-15 aui-text-blacker" style="line-height: 45px;">
-			    	应付金额：<span class="aui-font-size-16 fweight-5  aui-text-danger">￥{{price}}</span>
-			    </div>
-			    <div class="aui-col-xs-4"  @click="sub()">
-			    	<div class="aui-bg-blue aui-font-size-16 aui-btn-block aui-text-white" style="border-radius: 0;">立即结算</div>
-			    </div>
+<body>
+	<header class="aui-bar aui-bar-nav aui-bar-light">
+		<a class="aui-pull-left aui-btn" onclick="closeWin()">
+			<span class="aui-iconfont   aui-icon-left"></span>
+		</a>
+		<div class="aui-title">确认订单</div>
+	</header>
+
+	<footer class="aui-bar aui-bar-tab aui-border-t" id="footer" v-if="height==1">
+		<div class="aui-row">
+			<div class="aui-col-xs-8 aui-text-left aui-padded-l-12 aui-font-size-15 aui-text-blacker" style="line-height: 45px;">
+				应付金额：<span class="aui-font-size-16 fweight-5  aui-text-danger">￥{{price}}</span>
 			</div>
-		</footer>
+			<div class="aui-col-xs-4" @click="sub()">
+				<div class="aui-bg-blue aui-font-size-16 aui-btn-block aui-text-white" style="border-radius: 0;">立即结算</div>
+			</div>
+		</div>
+	</footer>
 
-	</body>
+</body>
+
 </html>
 <script type="text/javascript" src="../../script/api.js"></script>
 <script type="text/javascript" src="../../script/vue.js"></script>
 <script type="text/javascript" src="../../script/common.js"></script>
 <script>
 	var vm = new Vue({
-		el:'#footer',
-		data:{
-			price:'0',
-			total_score:'0',
-			height:1
+		el: '#footer',
+		data: {
+			price: '0',
+			total_score: '0',
+			height: 1
 		},
-		methods:{
-			sub:function() {
+		methods: {
+			sub: function() {
 				api.sendEvent({
-						name: 'sub',
+					name: 'sub',
 				});
-
 			}
 		}
 	})
-	apiready = function(){
-		 $api.fixIos7Bar($api.dom("header"));//修复ios系统bar
-      api.openFrame({
-          name: 'buy_frm',
-          url: 'widget://html/shop/buy_frm.html',
-          rect: {
-              x: 0,
-              y: $api.dom('header').offsetHeight,
-              w: 'auto',
-              h: api.winHeight - $api.dom('header').offsetHeight - $api.dom('footer').offsetHeight
-          },
-          bounces: true,
-          pageParam: {
-							id: api.pageParam.id,
-              cart_id: api.pageParam.cart_id,
-							is_subOrder:api.pageParam.is_subOrder,
-							cart_arr:api.pageParam.cart_arr,
-
-							spec_id:api.pageParam.spec_id,
-          		num:api.pageParam.num
-          }
-      });
-			api.addEventListener({
-			    name: 'footer_height'
-			}, function(ret, err){
-			    if( ret ){
-			        vm.height=0
-			    }
-			});
-
-			api.addEventListener({
-			    name: 'money'
-			}, function(ret, err){
-			    if( ret ){
-			      vm.price=ret.value.price
-			    }
-			});
+	apiready = function() {
+		$api.fixIos7Bar($api.dom("header")); //修复ios系统bar
+		api.openFrame({
+			name: 'buy_frm',
+			url: 'widget://html/shop/buy_frm.html',
+			rect: {
+				x: 0,
+				y: $api.dom('header').offsetHeight,
+				w: 'auto',
+				h: api.winHeight - $api.dom('header').offsetHeight - $api.dom('footer').offsetHeight
+			},
+			bounces: true,
+			pageParam: {
+				id: api.pageParam.id,
+				cart_id: api.pageParam.cart_id,
+				is_subOrder: api.pageParam.is_subOrder,
+				cart_arr: api.pageParam.cart_arr,
+				spec_id: api.pageParam.spec_id,
+				num: api.pageParam.num
+			}
+		});
+		api.addEventListener({
+			name: 'footer_height'
+		}, function(ret, err) {
+			if (ret) {
+				vm.height = 0
+			}
+		});
+		api.addEventListener({
+			name: 'money'
+		}, function(ret, err) {
+			if (ret) {
+				console.log('++++++++++++应付金额赋值++++++++++++++' + ret.value.price);
+				vm.price = ret.value.price
+			}
+		});
 	};
-
 </script>

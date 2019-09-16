@@ -1,67 +1,72 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
-	    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-		<title>专属定制</title>
-		<link rel="stylesheet" href="../../css/aui.css" />
-		<link rel="stylesheet" href="../../css/common.css" />
-		<link rel="stylesheet" href="../../css/global.css"/>
-	</head>
-	<style type="text/css">
-		img{width: 100%;}
-	</style>
-	<body>
-		<div class="pic" id="app" v-cloak>
-			<img :src="urls"/>
-		</div>
-	</body>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>专属定制</title>
+	<link rel="stylesheet" href="../../css/aui.css" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/global.css" />
+</head>
+<style type="text/css">
+	img {
+		width: 100%;
+	}
+</style>
+
+<body>
+	<div class="pic" id="app" v-cloak>
+		<img :src="urls" />
+	</div>
+</body>
+
 </html>
 <script type="text/javascript" src="../../script/api.js"></script>
 <script type="text/javascript" src="../../script/vue.js"></script>
 <script type="text/javascript" src="../../script/common.js"></script>
 <script>
 	var vm = new Vue({
-		el:'#app',
-		data:{
-			token:'',
-			urls:''
+		el: '#app',
+		data: {
+			token: '',
+			urls: ''
 		},
-		methods:{
-			init:function(){
+		methods: {
+			init: function() {
 				api.showProgress();
 				api.ajax({
-          url:customized_background_url,
-          method:'get',
-          timeout:30,
-          dataType:'json',
-          returnAll:false,
-          data:{
-          	values:{
-          		token:vm.token
-          	}
-          }
-        },function(ret,err){
-        	if(ret){
+					url: customized_background_url,
+					method: 'get',
+					timeout: 30,
+					dataType: 'json',
+					returnAll: false,
+					data: {
+						values: {
+							token: vm.token
+						}
+					}
+				}, function(ret, err) {
+					if (ret) {
 						api.hideProgress();
 						console.log(JSON.stringify(ret));
-        		if(ret.status){
-							vm.urls =ret.data.urls
-						}else{
+						if (ret.status) {
+							vm.urls = ret.data.urls
+						} else {
 							api.toast({
-						    msg: ret.msg,
-						    duration: 2000,
-						    location: 'bottom'
+								msg: ret.msg,
+								duration: 2000,
+								location: 'bottom'
 							});
 						}
-        	}
-        });
+					}
+				});
 			}
 		}
 	})
 
-	apiready = function(){
+	apiready = function() {
 		vm.token = $api.getStorage("token");
 
 		vm.init();

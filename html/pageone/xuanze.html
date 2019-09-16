@@ -25,23 +25,25 @@
 	<body style="background-color: rgba(0,0,0,0.3)">
 		<div class="hide" onclick="hides()"></div>
 		<div class='aui-list aui-media-list aui-padded-15 aui-bg-white dialog animated slideInUp' id="app" v-cloak>
-			<!-- <div style="position: absolute;top: 0rem;right: 0.6rem;">
-				<img style="width: 0.9rem;" src="../../image/close2.png"  @click="hides()"/>
-			</div> -->
 			<div class="aui-text-center aui-font-size-15 aui-font-weight aui-padded-r-12" style="">
-
-				<!-- <div style="position: absolute;top: 0.5rem;right: 0.6rem;">
-					<img style="width: 0.9rem;" src="../../image/close2.png" @click="hides()"/>
-				</div> -->
 			</div>
       <div class="guigeSel">
             <div class="aui-media-list-item-inner">
+							<!--  图片-->
                 <div class="aui-list-item-media" style='width:5.5rem'>
                     <image :src="info.thumb" style='width:5.5rem;height: 4.5rem'></image>
                 </div>
+								<!--  价格，库存，商品名称信息-->
                 <div class="aui-list-item-inner aui-font-size-15">
                     <div class="aui-list-item-text aui-margin-b-5" style='position:relative;'>
-                        <div class="aui-list-item-title aui-text-danger">￥{{info.market_price}}</div>
+                        <div class="aui-list-item-title aui-text-danger">￥
+													<template v-for="(item,index) in info.market_price">
+														<span v-if="num >= item.area_start && num <= item.area_end && item.area_end && item.area_start">{{item.goods_price}}</span>
+														<span v-else>
+															<span v-if="!item.area_end && num >= item.area_start">{{item.goods_price}}</span>
+														</span>
+													</template>
+												</div>
                         <img src='../../image/close2.png'  @click="hides()" style='width: 0.9rem;position:absolute;right:-1rem;top:-0.5rem'>
                     </div>
                     <div class="aui-list-item-text aui-margin-b-5  aui-text-black" style="display:block;padding-right:5px;">
@@ -85,23 +87,7 @@
 		            </div>
 		        </div>
 				</div>
-
-        <!-- <div class='aui-list-item aui-padded-l-0 aui-border-t'>
-            <div class='aui-list-item-inner'>
-                <div class='aui-list-item-text'>购买数量</div>
-                <div class='aui-list-item-text aui-margin-t-10'>
-                    <div class='aui-margin-r-5' @click="miusNum()">
-                        <image src='../../image/mius.jpg' style='width:1.75rem;height:1.45rem;vertical-align:middle'></image>
-                    </div>
-                    <div class='aui-margin-r-5'>
-                        <input class='aui-text-center num' type='text' readonly="" :value="num"></input>
-                    </div>
-                    <div class='aui-margin-r-5' @click="addNum()">
-                        <image src='../../image/add.jpg' style='width:1.75rem;height:1.45rem;vertical-align:middle'></image>
-                    </div>
-                </div>
-            </div>
-        </div> -->
+				<!-- 弹框底部 -->
 				<div class='aui-list-item aui-padded-l-0 aui-border-t'>
 						<div class='aui-list-item-inner aui-padded-r-0'>
 							<div class='aui-list-item-text aui-text-blacker aui-pull-left aui-padded-b-5 aui-font-size-15'>
@@ -120,9 +106,6 @@
 							</div>
 					</div>
 			</div>
-
-
-
 				<div class="aui-padded-t-12 aui-padded-r-12 aui-padded-l-12" @click="closes()">
 					<div class="aui-btn aui-btn-block" style="background-color:#21af9d;color:#fff">完成</div>
 				</div>
@@ -133,7 +116,10 @@
 <script type="text/javascript" src="../../script/vue.js"></script>
 <script type="text/javascript" src="../../script/common.js"></script>
 <script type="text/javascript">
-
+function sortNumber(a, b) {
+	return a - b;
+	console.log(a - b)
+}
 	var vm = new Vue({
 		el:"#app",
 		data:{
@@ -148,7 +134,8 @@
 			th_idx:0,
 			info:'',
 			num:1,
-			token:''
+			token:'',
+			market_price:''
 		},
 		methods:{
 			add_number:function(goods_num) {
@@ -246,17 +233,34 @@
 						if(ret){
 							api.hideProgress();
 
-						console.log(JSON.stringify(ret))
+						console.log('+++++++++++252++++++++++++++++++'+JSON.stringify(ret))
 						vm.data = ret;
-						if(vm.data.tag!=0){
+
+						//区间价格
+						// if (ret.market_price.length > 0) {
+						// 	var maxPrice = 0;
+						// 	var minPrice = 0;
+						// 	var arr = [];
+						// 	for (let i = 0; i < ret.market_price.length; i++) {
+						// 		arr.push(ret.market_price[i].goods_price);
+						// 	}
+						// 	if(arr.length > 0){
+						// 		arr.sort(sortNumber);
+						// 		if(arr.length == 1){vm.market_price = arr[0]}
+						// 		if(arr.length == 2){vm.market_price = arr[0] + ' — ' + arr[1]}
+						// 		if(arr.length > 2){vm.market_price = arr[0] + ' — ' + arr[arr.length - 1]}
+						// 	}
+						// 	console.log('价格数组'+JSON.stringify(arr));
+						// }
+
+						console.log('++++tag+++'+vm.data.tag);
+						if(vm.data.tag != 0){
 							if(vm.data.one[vm.o_idx].two){
 								vm.t_list = vm.data.one[vm.o_idx].two;
-
 								if(vm.data.one[vm.o_idx].two.list[vm.t_idx].three){
 									vm.th_list = vm.data.one[vm.o_idx].two.list[vm.t_idx].three
 								}
 							}
-
 						}
 						vm.is_spec();
 
@@ -394,7 +398,7 @@
 
 			addNum:function(){
 				var num = vm.num;
-				num += 1
+				num += 1;
 				api.ajax({
 					url:add_num_url,
 					method:'get',
@@ -410,7 +414,7 @@
 					}
 				},function(ret,err){
 					if(ret){
-
+						console.log('+++++++++++数量增加+++++++++++'+JSON.stringify(ret));
 						if(ret.status==1){
 							vm.num += 1;
 						}else{
@@ -421,6 +425,11 @@
 							});
 						}
 					}else{
+						api.toast({
+							msg:'网络请求超时',
+							duration:2000,
+							location:'middle'
+						});
 						console.log(JSON.stringify(err))
 					}
 				});

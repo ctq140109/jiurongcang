@@ -1013,7 +1013,6 @@ function open_meiQia() {
             });
             mq.show();
         } else {
-
             alert(JSON.stringify(err));//初始化失败
         }
     })
@@ -1026,10 +1025,8 @@ function resize(){
 		   var thisHeight=$(this).height();
 		    if(winHeight - thisHeight >50){
 		         $("footer").hide();
-
 		    }else{
 		        $("footer").show();
-
 		    }
 		});
 }
@@ -1106,12 +1103,11 @@ function alert_shop(){
    });
 }
 
-//var base_url = "http://192.168.1.114:8083";
-//var base_url = "http://192.168.1.175:529";
-// var base_url = "http://192.168.0.165:8080";
-var base_url = "http://9rongcang.yunxiaochengxu.top";
-var qiniu = 'http://9rc.yunxiaochengxu.top'
-//通用
+// var base_url = "http://192.168.0.166:8080";
+var base_url = "http://jrcapp.9rongcang.com:8080";
+// var qiniu = 'http://9rc.yunxiaochengxu.top';
+var qiniu = 'http://pic.9rongcang.com';
+// 通用
 var prefecture_gooods_list_url = base_url + '/jrcapp/goods/prefecture_gooods_list';//商品列表
 var good_detail_url = base_url + '/jrcapp/goods/good_detail';//商品详情
 var cart_num_url = base_url + '/jrcapp/cart/cart_num';//购物车 数量
